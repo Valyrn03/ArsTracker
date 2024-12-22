@@ -1,4 +1,4 @@
-package com.valyrn.arstracker;
+package com.valyrn;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

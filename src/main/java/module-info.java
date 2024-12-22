@@ -1,4 +1,4 @@
-module com.valyrn.arstracker {
+module com.valyrn {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -10,6 +10,6 @@ module com.valyrn.arstracker {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
 
-    opens com.valyrn.arstracker to javafx.fxml;
-    exports com.valyrn.arstracker;
+    opens com.valyrn to javafx.fxml;
+    exports com.valyrn;
 }

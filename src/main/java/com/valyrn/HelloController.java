@@ -1,4 +1,4 @@
-package com.valyrn.arstracker;
+package com.valyrn;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
