@@ -6,11 +6,8 @@
 
 <?import javafx.scene.control.Button?>
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.valyrn.HelloController">
-  <padding>
-    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-  </padding>
-
-  <Label fx:id="welcomeText"/>
-  <Button text="Hello!" onAction="#onHelloButtonClick"/>
+      fx:controller="application.CharacterBaseController">
+  <Label fx:id="characterName"/>
+  <Label fx:id="characterAge"/>
+  <Button fx:id="randomButton" text="Load Character" onAction="#loadCharacter"/>
 </VBox>

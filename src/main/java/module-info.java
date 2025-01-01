@@ -1,4 +1,4 @@
-module com.valyrn {
+module application {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -9,7 +9,8 @@ module com.valyrn {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
+    requires java.logging;
 
-    opens com.valyrn to javafx.fxml;
-    exports com.valyrn;
+    opens application to javafx.fxml;
+    exports application;
 }

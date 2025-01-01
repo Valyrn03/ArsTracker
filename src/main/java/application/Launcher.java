@@ -1,8 +1,4 @@
-package com.valyrn;
-
-import javafx.stage.Stage;
-
-import java.io.IOException;
+package application;
 
 public class Launcher {
     public static void main(String[] args){
