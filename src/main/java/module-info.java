@@ -13,4 +13,9 @@ module application {
 
     opens application to javafx.fxml;
     exports application;
+    exports application.controllers;
+    opens application.controllers to javafx.fxml;
+    exports application.displays;
+    opens application.displays to javafx.fxml;
+    exports application.utils;
 }

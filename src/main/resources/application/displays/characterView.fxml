@@ -3,11 +3,21 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="application.CharacterBaseController">
+      fx:controller="application.controllers.CharacterBaseController">
   <Label fx:id="characterName"/>
   <Label fx:id="characterAge"/>
-  <Button fx:id="randomButton" text="Load Character" onAction="#loadCharacter"/>
+
+  <HBox>
+    <VBox>
+      <HBox fx:id="basicStats" spacing="6.0" alignment="CENTER"></HBox>
+    </VBox>
+
+    <VBox>
+      <HBox fx:id="abilityTable" spacing="6.0" alignment="CENTER"></HBox>
+    </VBox>
+  </HBox>
 </VBox>

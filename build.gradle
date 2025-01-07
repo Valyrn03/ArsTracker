@@ -13,10 +13,6 @@ repositories {
   mavenCentral()
 }
 
-ext {
-  junitVersion = '5.10.2'
-}
-
 sourceCompatibility = '21'
 targetCompatibility = '21'
 
@@ -48,12 +44,12 @@ dependencies {
     exclude(group: 'org.openjfx')
   }
 
-  testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+  testImplementation(platform('org.junit:junit-bom:5.11.4'))
+  testImplementation('org.junit.jupiter:junit-jupiter')
+  testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 }
 
-test {
-useJUnitPlatform()}
+test {useJUnitPlatform()}
 
 jlink {
   imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip")
