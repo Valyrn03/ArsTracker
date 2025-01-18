@@ -11,7 +11,7 @@
   <Label fx:id="characterName"/>
   <Label fx:id="characterAge"/>
 
-  <HBox>
+  <HBox spacing="10" alignment="CENTER">
     <VBox>
       <HBox fx:id="basicStats" spacing="6.0" alignment="CENTER"></HBox>
     </VBox>
@@ -19,5 +19,22 @@
     <VBox>
       <HBox fx:id="abilityTable" spacing="6.0" alignment="CENTER"></HBox>
     </VBox>
+
+    <VBox>
+      <HBox fx:id="artTable" spacing="6.0" alignment="CENTER"></HBox>
+    </VBox>
   </HBox>
+
+
+  <HBox alignment="CENTER" spacing="25">
+    <VBox fx:id="virtues" spacing="4">
+      <Label style="-fx-font-weight: bold">Virtues</Label>
+    </VBox>
+
+    <VBox fx:id="flaws" spacing="4">
+      <Label style="-fx-font-weight: bold">Flaws</Label>
+    </VBox>
+  </HBox>
+
+  <Button fx:id="returnButton">Return To Landing Page</Button>
 </VBox>

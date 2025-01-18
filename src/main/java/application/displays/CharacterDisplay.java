@@ -11,21 +11,15 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class CharacterDisplay extends Application {
-    @Override
-    public void start(Stage stage) throws IOException {
+public class CharacterDisplay{
+    public static Scene start(CharacterBase character) throws IOException {
         Logger logger = Logger.getLogger("Character Loader");
         FXMLLoader fxmlLoader = new FXMLLoader(CharacterDisplay.class.getResource("characterView.fxml"));
         Parent root = (Parent) fxmlLoader.load();
         CharacterBaseController controller = fxmlLoader.getController();
-        CharacterBase character = new CharacterBase("Sample", "Character", 18);
-        character.improveAbility("Test Ability", 75);
         controller.setCharacter(character);
         controller.loadCharacter();
 
-        Scene scene = new Scene(root, 1024, 760);
-        stage.setTitle("Character Sheet");
-        stage.setScene(scene);
-        stage.show();
+        return new Scene(root, 1024, 760);
     }
 }

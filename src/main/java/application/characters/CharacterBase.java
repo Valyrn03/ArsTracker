@@ -18,11 +18,10 @@ public class CharacterBase {
     private HashMap<String, String> specialities;
     //Tracking if not a grog
     private HashMap<String, Boolean> characterType;
-    ArrayList<CharacterFeature> virtues;
-    ArrayList<CharacterFeature> flaws;
+    ArrayList<CharacterFeature> features;
     UUID id;
 
-    public CharacterBase(String firstName, String lastName, int age){
+    public CharacterBase(String firstName, String lastName, int age, boolean magus){
         name = new String[]{firstName, lastName};
         baseAttributes = new HashMap<>();
         baseAttributes.put("Age", age);
@@ -34,6 +33,10 @@ public class CharacterBase {
         characterType = new HashMap<>();
         characterType.put("Magus", false);
         characterType.put("Companion", false);
+        if(magus){
+            setMagus();
+        }
+        features = new ArrayList<>();
     }
 
     private void setDefaultAttributes(){
@@ -114,6 +117,10 @@ public class CharacterBase {
 
     public int getAbilityScore(String ability){
         return abilities.get(ability);
+    }
+
+    public ArrayList<CharacterFeature> getFeatures(){
+        return features;
     }
 
     public String getSpeciality(String ability){
