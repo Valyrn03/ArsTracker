@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http:javafx.com/fxml"
+      fx:controller="application.controllers.CharacteristicController">
+
+    <HBox spacing="10" alignment="CENTER">
+        <VBox fx:id="selectorBox">
+            <Label>Characteristics</Label>
+
+            <MenuButton fx:id="characteristicSelector">Default</MenuButton>
+
+            <Button fx:id="closeMenuButton">Save And Close</Button>
+        </VBox>
+
+        <VBox>
+            <Label>Value</Label>
+
+            <TextField fx:id="valueOfCharacteristic">Current Value</TextField>
+        </VBox>
+    </HBox>
+</VBox>

@@ -5,6 +5,7 @@ import java.util.HashMap;
 public abstract class CharacterFeature {
     private HashMap<String, Integer> attributes;
     private boolean isVirtue;
+    private String name;
 
     public int getAttribute(String attribute){
         if(!attributes.containsKey(attribute)){
@@ -19,5 +20,10 @@ public abstract class CharacterFeature {
 
     public boolean isFlaw(){
         return !isVirtue;
+    }
+
+    @Override
+    public String toString(){
+        return name;
     }
 }

@@ -1,7 +1,9 @@
 package application;
 
+import application.displays.LandingPage;
+
 public class Launcher {
     public static void main(String[] args){
-        App.launch(App.class, args);
+        LandingPage.launch(LandingPage.class, args);
     }
 }
