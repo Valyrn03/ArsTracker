@@ -4,6 +4,7 @@ import application.utils.CharacterFeature;
 import application.utils.characterUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -20,6 +21,7 @@ public class CharacterBase {
     private HashMap<String, Boolean> characterType;
     ArrayList<CharacterFeature> features;
     UUID id;
+    Logger logger;
 
     public CharacterBase(String firstName, String lastName, int age, boolean magus){
         name = new String[]{firstName, lastName};
@@ -37,16 +39,22 @@ public class CharacterBase {
             setMagus();
         }
         features = new ArrayList<>();
+        logger = Logger.getLogger(Arrays.toString(this.name));
     }
 
     private void setDefaultAttributes(){
-        for(String attribute : characterUtils.attributeList()){
-            baseAttributes.put(attribute, 0);
+        for(characterUtils.AttributeList attribute : characterUtils.AttributeList.values()){
+            if(logger == null){
+                logger = Logger.getLogger(Arrays.toString(this.name));
+                logger.info("Logger was null");
+            }
+            baseAttributes.put(String.valueOf(attribute), 0);
         }
     }
 
     public void setAttribute(String attribute, int value){
         baseAttributes.put(attribute, value);
+        logger.info(String.format("Setting Attribute %s to value %d", attribute, value));
     }
 
     public String getName(){
@@ -100,8 +108,9 @@ public class CharacterBase {
     public HashMap<String, Integer> getAttributes(){
         HashMap<String, Integer> map = new HashMap<>();
 
-        for(String attribute : characterUtils.attributeList()){
-            map.put(attribute, baseAttributes.get(attribute));
+        for(characterUtils.AttributeList attribute : characterUtils.AttributeList.values()){
+            int value = baseAttributes.get(String.valueOf(attribute));
+            map.put(String.valueOf(attribute), value);
         }
 
         return map;

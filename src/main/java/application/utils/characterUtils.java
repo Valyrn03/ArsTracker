@@ -4,19 +4,8 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class characterUtils {
-    public static ArrayList<String> attributeList(){
-        ArrayList<String> attributes = new ArrayList<>();
-
-        attributes.add("Intelligence");
-        attributes.add("Perception");
-        attributes.add("Strength");
-        attributes.add("Stamina");
-        attributes.add("Presence");
-        attributes.add("Communication");
-        attributes.add("Dexterity");
-        attributes.add("Quickness");
-
-        return attributes;
+    public enum AttributeList {
+        INTELLIGENCE, PERCEPTION, STRENGTH, STAMINA, PRESENCE, COMMUNICATION, DEXTERITY, QUICKNESS;
     }
     
     public static int abilityExperienceToScore(int experience){

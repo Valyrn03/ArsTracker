@@ -39,27 +39,8 @@ public class LandingPageController {
 
             view.getChildren().add(new Region());
             HBox.setHgrow(view.getChildren().get(1), Priority.ALWAYS);
-
-            logger.log(Level.INFO, "Adding Button for Character");
-            Button button = new Button("Show Character");
-            button.setOnAction(event -> {
-                Scene scene = null;
-                try {
-                    scene = CharacterDisplay.start(character);
-                } catch (IOException e) {
-                    logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-                }
-
-                Stage stage = (Stage) characterListView.getScene().getWindow();
-                if(scene != null){
-                    stage.setScene(scene);
-                }
-            });
+            Button button = getCharacterViewButton(character, logger);
             view.getChildren().add(button);
-
-            view.getChildren().forEach((child) -> {
-                logger.log(Level.INFO, child.toString());
-            });
 
             view.setSpacing(10);
 
@@ -68,5 +49,23 @@ public class LandingPageController {
         characterListView.getItems().forEach((child) -> {
             logger.log(Level.INFO, "Item: " + Arrays.toString(child.getChildren().toArray()));
         });
+    }
+
+    private Button getCharacterViewButton(CharacterBase character, Logger logger) {
+        Button button = new Button("Show Character");
+        button.setOnAction(event -> {
+            Scene scene = null;
+            try {
+                scene = CharacterDisplay.start(character);
+            } catch (IOException e) {
+                logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            }
+
+            Stage stage = (Stage) characterListView.getScene().getWindow();
+            if(scene != null){
+                stage.setScene(scene);
+            }
+        });
+        return button;
     }
 }

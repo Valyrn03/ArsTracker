@@ -37,4 +37,5 @@
   </HBox>
 
   <Button fx:id="returnButton">Return To Landing Page</Button>
+  <Button fx:id="refreshButton">Refresh</Button>
 </VBox>
