@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 import static application.utils.characterUtils.abilityExperienceToScore;
 
-public class CharacterBaseController {
+public class CharacterSheetController {
     CharacterBase character;
     Logger logger;
 
@@ -102,18 +102,18 @@ public class CharacterBaseController {
         VBox specialities = new VBox(4);
         VBox scores = new VBox(4);
 
-        for(Map.Entry entry : character.getAbilities().entrySet()){
-            logger.info("Adding Ability: " + entry.toString());
-            abilities.getChildren().add(new Label((String) entry.getKey()));
-            scores.getChildren().add(new Label(Integer.toString(abilityExperienceToScore((Integer) entry.getValue()))));
-            if(character.getSpeciality((String) entry.getKey()) == null){
+        for(String entry : character.getAbilities().keySet()){
+            logger.info("Adding Ability: " + entry);
+            abilities.getChildren().add(new Label(entry));
+            scores.getChildren().add(new Label(Integer.toString(character.getAbilityScore(entry))));
+            if(character.getSpeciality(entry) == null){
                 specialities.getChildren().add(new Label("None"));
             }else{
-                specialities.getChildren().add(new Label(character.getSpeciality((String) entry.getKey())));
+                specialities.getChildren().add(new Label(character.getSpeciality(entry)));
             }
         }
 
-        if(abilities.getChildren().size() != 0){
+        if(!abilities.getChildren().isEmpty()){
             logger.info("Adding Abilities");
             abilityTable.getChildren().add(abilities);
             abilityTable.getChildren().add(scores);
@@ -148,7 +148,7 @@ public class CharacterBaseController {
     public void setCharacter(CharacterBase input){
         character = input;
 
-        logger = Logger.getLogger(CharacterBaseController.class.getName());
+        logger = Logger.getLogger(CharacterSheetController.class.getName());
     }
 
     public void refresh(){
