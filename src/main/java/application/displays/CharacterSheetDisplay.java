@@ -1,22 +1,20 @@
 package application.displays;
 
 import application.characters.CharacterBase;
-import application.controllers.CharacterBaseController;
-import javafx.application.Application;
+import application.controllers.CharacterSheetController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class CharacterDisplay{
+public class CharacterSheetDisplay {
     public static Scene start(CharacterBase character) throws IOException {
         Logger logger = Logger.getLogger("Character Loader");
-        FXMLLoader fxmlLoader = new FXMLLoader(CharacterDisplay.class.getResource("characterView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(CharacterSheetDisplay.class.getResource("characterView.fxml"));
         Parent root = (Parent) fxmlLoader.load();
-        CharacterBaseController controller = fxmlLoader.getController();
+        CharacterSheetController controller = fxmlLoader.getController();
         controller.setCharacter(character);
         controller.loadCharacter();
 

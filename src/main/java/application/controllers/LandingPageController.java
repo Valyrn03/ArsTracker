@@ -1,19 +1,12 @@
 package application.controllers;
 
 import application.characters.CharacterBase;
-import application.displays.CharacterDisplay;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
+import application.displays.CharacterSheetDisplay;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -56,7 +49,7 @@ public class LandingPageController {
         button.setOnAction(event -> {
             Scene scene = null;
             try {
-                scene = CharacterDisplay.start(character);
+                scene = CharacterSheetDisplay.start(character);
             } catch (IOException e) {
                 logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
             }

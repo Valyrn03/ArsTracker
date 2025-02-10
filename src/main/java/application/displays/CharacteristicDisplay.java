@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class CharacteristicDisplay {

@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="application.controllers.CharacterBaseController">
+      fx:controller="application.controllers.CharacterSheetController">
   <Label fx:id="characterName"/>
   <Label fx:id="characterAge"/>
 

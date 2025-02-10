@@ -10,6 +10,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//Random comment
+
 public class CharacterBase {
     private String[] name;
     //Stores age, size, confidence (if applicable), decrepitude, warping, characteristics, fatigue (name -> digit)
@@ -77,7 +79,7 @@ public class CharacterBase {
             score += abilities.get(ability);
         }
 
-        abilities.put(ability, increment);
+        abilities.put(ability, score);
     }
 
     public void addSpeciality(String ability, String speciality){
@@ -125,7 +127,11 @@ public class CharacterBase {
     }
 
     public int getAbilityScore(String ability){
-        return abilities.get(ability);
+        return characterUtils.abilityExperienceToScore(getAbility(ability));
+    }
+
+    public int getAbility(String ability){
+        return abilities.getOrDefault(ability, 0);
     }
 
     public ArrayList<CharacterFeature> getFeatures(){
