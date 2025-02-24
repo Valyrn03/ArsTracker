@@ -44,11 +44,11 @@ dependencies {
     exclude(group: 'org.openjfx')
   }
 
+  implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.49.0.0'
+
   testImplementation(platform('org.junit:junit-bom:5.11.4'))
   testImplementation('org.junit.jupiter:junit-jupiter')
   testRuntimeOnly('org.junit.platform:junit-platform-launcher')
-
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.18.2'
 }
 
 test {useJUnitPlatform()}
