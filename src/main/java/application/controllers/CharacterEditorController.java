@@ -5,6 +5,7 @@ import application.displays.LandingPage;
 import application.utils.Abilities;
 import application.utils.characterUtils;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -42,14 +43,18 @@ public class CharacterEditorController {
     @FXML
     private Button saveAndCloseButton;
 
-    public void initialize(CharacterBase character){
+    private Stage currentStage;
+
+    public void initialize(CharacterBase character, Stage currentStage){
 
         //Preparing Ability Table
         List<Abilities.Ability> abilities = character.getAbilities().keySet().stream().toList();
         abilities.sort(null);
 
+        //Setting Formatter so that the text fields can only accept integers
         TextFormatter<Integer> formatter = new TextFormatter<>(new IntegerStringConverter());
 
+        //Populating Ability Table
         for(Abilities.Ability ability : abilities){
             HBox item = new HBox();
             item.getChildren().add(new Label(ability.name()));
@@ -58,6 +63,7 @@ public class CharacterEditorController {
             abilityTable.getChildren().add(item);
         }
 
+        //Populating Characteristics Table
         for(characterUtils.Attribute characteristic: characterUtils.Attribute.values()){
             HBox item = new HBox();
             item.getChildren().add(new Label(characteristic.name()));
@@ -66,11 +72,12 @@ public class CharacterEditorController {
             characteristicTable.getChildren().add(item);
         }
 
+        //
         closeMenuButton.setOnAction(event -> {
             try {
-                LandingPage.resetScene();
-            } catch (IOException | SQLException e) {
-                throw new RuntimeException(e);
+                CharacterSheetController.resetScene(character, currentStage);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         });
     }

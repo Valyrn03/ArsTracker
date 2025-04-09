@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 public class CharacterEditorDisplay {
-    public static void initialize(CharacterBase character, Boolean editingAbility){
+    public static void initialize(CharacterBase character, Stage currentStage){
         Logger logger = Logger.getLogger("Characteristic Editor");
 
         try {
@@ -22,7 +22,7 @@ public class CharacterEditorDisplay {
             FXMLLoader loader = new FXMLLoader(url);
             Parent root = (Parent) loader.load();
             CharacterEditorController controller = loader.getController();
-            controller.initialize(character);
+            controller.initialize(character, currentStage);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root, 420, 315));

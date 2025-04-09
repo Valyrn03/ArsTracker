@@ -2,11 +2,15 @@ package application.controllers;
 
 import application.characters.CharacterBase;
 import application.displays.CharacterEditorDisplay;
+import application.displays.CharacterSheetDisplay;
 import application.displays.LandingPage;
 import application.utils.Abilities;
 import application.utils.CharacterFeature;
 import application.utils.characterUtils;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -65,7 +69,7 @@ public class CharacterSheetController {
         });
 
         refreshButton.setOnAction(event -> {
-            CharacterEditorDisplay.initialize(character, false);
+            CharacterEditorDisplay.initialize(character, (Stage) refreshButton.getScene().getWindow());
         });
     }
 
@@ -153,5 +157,17 @@ public class CharacterSheetController {
         if(character.isMagus()){
             setArts();
         }
+    }
+
+    public static void resetScene(CharacterBase character, Stage currentStage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(CharacterSheetDisplay.class.getResource("characterView.fxml"));
+
+        Parent root = (Parent) loader.load();
+        CharacterSheetController controller = loader.getController();
+        controller.setCharacter(character);
+
+        Scene currentScene = new Scene(root, 1024, 760);
+
+        currentStage.setScene(currentScene);
     }
 }
