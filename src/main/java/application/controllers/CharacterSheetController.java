@@ -1,21 +1,23 @@
 package application.controllers;
 
 import application.characters.CharacterBase;
-import application.displays.CharacteristicDisplay;
+import application.displays.CharacterEditorDisplay;
 import application.displays.LandingPage;
+import application.utils.Abilities;
 import application.utils.CharacterFeature;
+import application.utils.characterUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import static application.utils.characterUtils.abilityExperienceToScore;
 
 public class CharacterSheetController {
     CharacterBase character;
@@ -39,12 +41,13 @@ public class CharacterSheetController {
     private Button returnButton;
     @FXML
     private Button refreshButton;
+    @FXML
+    private Button saveButton;
 
     public void loadCharacter() {
-        character = new CharacterBase("Sample", "Name", 20, false);
         characterName.setText(character.getName() + " " + character.getSurname());
-        if(!Integer.valueOf((character.getAttribute("Age"))).equals(Integer.MAX_VALUE)){
-            characterAge.setText(Integer.toString(character.getAttribute("Age")));
+        if(!Integer.valueOf((character.getAttribute(characterUtils.ExtraneousAttribute.AGE))).equals(Integer.MAX_VALUE)){
+            characterAge.setText(Integer.toString(character.getAttribute(characterUtils.ExtraneousAttribute.AGE)));
         }else{
             characterAge.setText("ERROR: Age Not Set");
         }
@@ -57,14 +60,12 @@ public class CharacterSheetController {
         }
 
         returnButton.setOnAction((event) -> {
-            try {
-                LandingPage.resetScene();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            Stage stage = (Stage) returnButton.getScene().getWindow();
+            stage.close();
         });
+
         refreshButton.setOnAction(event -> {
-            refresh();
+            CharacterEditorDisplay.initialize(character, false);
         });
     }
 
@@ -83,12 +84,6 @@ public class CharacterSheetController {
         }
         logger.info("Attributes Located:\n" + entries.toString());
 
-        Button button = new Button("Edit Characteristics");
-        button.setOnAction((event) -> {
-            CharacteristicDisplay.initialize(character, false);
-        });
-        statNames.getChildren().add(button);
-
         basicStats.getChildren().add(statNames);
         basicStats.getChildren().add(statValues);
     }
@@ -102,9 +97,9 @@ public class CharacterSheetController {
         VBox specialities = new VBox(4);
         VBox scores = new VBox(4);
 
-        for(String entry : character.getAbilities().keySet()){
+        for(Abilities.Ability entry : character.getAbilities().keySet()){
             logger.info("Adding Ability: " + entry);
-            abilities.getChildren().add(new Label(entry));
+            abilities.getChildren().add(new Label(entry.name()));
             scores.getChildren().add(new Label(Integer.toString(character.getAbilityScore(entry))));
             if(character.getSpeciality(entry) == null){
                 specialities.getChildren().add(new Label("None"));

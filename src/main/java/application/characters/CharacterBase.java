@@ -1,5 +1,6 @@
 package application.characters;
 
+import application.utils.Abilities;
 import application.utils.CharacterFeature;
 import application.utils.characterUtils;
 
@@ -15,10 +16,11 @@ import java.util.logging.Logger;
 public class CharacterBase {
     private String[] name;
     //Stores age, size, confidence (if applicable), decrepitude, warping, characteristics, fatigue (name -> digit)
-    private HashMap<String, Integer> baseAttributes;
+    private HashMap<characterUtils.Attribute, Integer> baseAttributes;
     //Ability <-> XP
-    private HashMap<String, Integer> abilities;
-    private HashMap<String, String> specialities;
+    private HashMap<Abilities.Ability, Integer> abilities;
+    private HashMap<Abilities.Ability, String> specialities;
+    private HashMap<characterUtils.ExtraneousAttribute, Integer> attributes;
     //Tracking if not a grog
     private HashMap<String, Boolean> characterType;
     ArrayList<CharacterFeature> features;
@@ -28,8 +30,9 @@ public class CharacterBase {
     public CharacterBase(String firstName, String lastName, int age, boolean magus){
         name = new String[]{firstName, lastName};
         baseAttributes = new HashMap<>();
-        baseAttributes.put("Age", age);
-        baseAttributes.put("Size", 0);
+        attributes = new HashMap<>();
+        attributes.put(characterUtils.ExtraneousAttribute.AGE, age);
+        attributes.put(characterUtils.ExtraneousAttribute.SIZE, 0);
         setDefaultAttributes();
         abilities = new HashMap<>();
         specialities = new HashMap<>();
@@ -45,16 +48,16 @@ public class CharacterBase {
     }
 
     private void setDefaultAttributes(){
-        for(characterUtils.AttributeList attribute : characterUtils.AttributeList.values()){
+        for(characterUtils.Attribute attribute : characterUtils.Attribute.values()){
             if(logger == null){
                 logger = Logger.getLogger(Arrays.toString(this.name));
                 logger.info("Logger was null");
             }
-            baseAttributes.put(String.valueOf(attribute), 0);
+            baseAttributes.put(attribute, 0);
         }
     }
 
-    public void setAttribute(String attribute, int value){
+    public void setAttribute(characterUtils.Attribute attribute, int value){
         baseAttributes.put(attribute, value);
         logger.info(String.format("Setting Attribute %s to value %d", attribute, value));
     }
@@ -67,10 +70,16 @@ public class CharacterBase {
         return name[1];
     }
 
-    public int getAttribute(String attribute){
+    public int getAttribute(characterUtils.Attribute attribute){
         Logger logger = Logger.getLogger("Characters");
         logger.log(Level.FINER, baseAttributes.toString());
         return baseAttributes.getOrDefault(attribute, Integer.MAX_VALUE);
+    }
+
+    public int getAttribute(characterUtils.ExtraneousAttribute attribute){
+        Logger logger = Logger.getLogger("Characters");
+        logger.log(Level.FINER, baseAttributes.toString());
+        return attributes.getOrDefault(attribute, Integer.MAX_VALUE);
     }
 
     public void improveAbility(String ability, int increment){
@@ -79,10 +88,10 @@ public class CharacterBase {
             score += abilities.get(ability);
         }
 
-        abilities.put(ability, score);
+        abilities.put(Abilities.Ability.valueOf(ability), score);
     }
 
-    public void addSpeciality(String ability, String speciality){
+    public void addSpeciality(Abilities.Ability ability, String speciality){
         specialities.put(ability, speciality);
     }
 
@@ -110,7 +119,7 @@ public class CharacterBase {
     public HashMap<String, Integer> getAttributes(){
         HashMap<String, Integer> map = new HashMap<>();
 
-        for(characterUtils.AttributeList attribute : characterUtils.AttributeList.values()){
+        for(characterUtils.Attribute attribute : characterUtils.Attribute.values()){
             int value = baseAttributes.get(String.valueOf(attribute));
             map.put(String.valueOf(attribute), value);
         }
@@ -118,19 +127,19 @@ public class CharacterBase {
         return map;
     }
 
-    public HashMap<String, Integer> getAbilities(){
+    public HashMap<Abilities.Ability, Integer> getAbilities(){
         return abilities;
     }
 
-    public HashMap<String, String> getSpecialities(){
+    public HashMap<Abilities.Ability, String> getSpecialities(){
         return specialities;
     }
 
-    public int getAbilityScore(String ability){
+    public int getAbilityScore(Abilities.Ability ability){
         return characterUtils.abilityExperienceToScore(getAbility(ability));
     }
 
-    public int getAbility(String ability){
+    public int getAbility(Abilities.Ability ability){
         return abilities.getOrDefault(ability, 0);
     }
 
@@ -138,7 +147,7 @@ public class CharacterBase {
         return features;
     }
 
-    public String getSpeciality(String ability){
+    public String getSpeciality(Abilities.Ability ability){
         return specialities.get(ability);
     }
 }

@@ -36,6 +36,7 @@
     </VBox>
   </HBox>
 
-  <Button fx:id="returnButton">Return To Landing Page</Button>
-  <Button fx:id="refreshButton">Refresh</Button>
+  <Button fx:id="saveButton">Save And Return</Button>
+  <Button fx:id="returnButton">Return</Button>
+  <Button fx:id="editButton">Edit</Button>
 </VBox>

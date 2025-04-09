@@ -1,11 +1,14 @@
 package application.utils;
 
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class characterUtils {
-    public enum AttributeList {
+    public enum Attribute {
         INTELLIGENCE, PERCEPTION, STRENGTH, STAMINA, PRESENCE, COMMUNICATION, DEXTERITY, QUICKNESS;
+    }
+
+    public enum ExtraneousAttribute {
+        AGE, SIZE, CONFIDENCE_SCORE, CONFIDENCE_POINTS, DECREPITUDE, WARPING
     }
     
     public static int abilityExperienceToScore(int experience){
