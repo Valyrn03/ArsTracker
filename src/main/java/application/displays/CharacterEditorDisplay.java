@@ -1,7 +1,7 @@
 package application.displays;
 
 import application.characters.CharacterBase;
-import application.controllers.CharacteristicController;
+import application.controllers.CharacterEditorController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,18 +11,18 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Logger;
 
-public class CharacteristicDisplay {
-    public static void initialize(CharacterBase character, Boolean editingAbility){
+public class CharacterEditorDisplay {
+    public static void initialize(CharacterBase character, Stage currentStage){
         Logger logger = Logger.getLogger("Characteristic Editor");
 
         try {
-            URL url = CharacteristicDisplay.class.getResource("characteristicView.fxml");
+            URL url = CharacterEditorDisplay.class.getResource("characterEditor.fxml");
             logger.info(url.toString());
 
             FXMLLoader loader = new FXMLLoader(url);
             Parent root = (Parent) loader.load();
-            CharacteristicController controller = loader.getController();
-            controller.initialize(character, editingAbility);
+            CharacterEditorController controller = loader.getController();
+            controller.initialize(character, currentStage);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root, 420, 315));

@@ -1,8 +1,11 @@
 package application.controllers;
 
 import application.characters.CharacterBase;
+import application.displays.CharacterEditorDisplay;
 import application.displays.CharacterSheetDisplay;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -44,19 +47,25 @@ public class LandingPageController {
         });
     }
 
+    /*
+    Creates the button that can be clicked that opens a new Character Sheet Stage
+     */
     private Button getCharacterViewButton(CharacterBase character, Logger logger) {
         Button button = new Button("Show Character");
         button.setOnAction(event -> {
-            Scene scene = null;
+            FXMLLoader loader = new FXMLLoader(CharacterSheetDisplay.class.getResource("characterView.fxml"));
             try {
-                scene = CharacterSheetDisplay.start(character);
-            } catch (IOException e) {
-                logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            }
-
-            Stage stage = (Stage) characterListView.getScene().getWindow();
-            if(scene != null){
+                Parent root = (Parent) loader.load();
+                CharacterSheetController controller = loader.getController();
+                logger.info("[Landing Page] Set Character: " + character.toString());
+                controller.setCharacter(character);
+                Scene scene = new Scene(root, 1024, 760);
+                Stage stage = new Stage();
                 stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                logger.severe(String.format("[Landing Page] Exited on Loading Character 1$s", character));
+                throw new RuntimeException(e);
             }
         });
         return button;
