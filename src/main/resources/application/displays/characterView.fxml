@@ -13,10 +13,12 @@
 
   <HBox spacing="10" alignment="CENTER">
     <VBox>
+      <Label>Stats: </Label>
       <HBox fx:id="basicStats" spacing="6.0" alignment="CENTER"></HBox>
     </VBox>
 
     <VBox>
+      <Label>Abilities:</Label>
       <HBox fx:id="abilityTable" spacing="6.0" alignment="CENTER"></HBox>
     </VBox>
 
@@ -36,7 +38,7 @@
     </VBox>
   </HBox>
 
-  <Button fx:id="saveButton">Save And Return</Button>
+  <Button fx:id="saveButton">Save</Button>
   <Button fx:id="returnButton">Return</Button>
   <Button fx:id="editButton">Edit</Button>
 </VBox>

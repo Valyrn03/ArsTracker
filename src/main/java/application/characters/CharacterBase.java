@@ -54,6 +54,7 @@ public class CharacterBase {
                 logger.info("Logger was null");
             }
             baseAttributes.put(attribute, 0);
+            logger.info("[Character] Adding Defaulted Attribute " + attribute.toString() + " to Character " + getName());
         }
     }
 
@@ -120,7 +121,7 @@ public class CharacterBase {
         HashMap<String, Integer> map = new HashMap<>();
 
         for(characterUtils.Attribute attribute : characterUtils.Attribute.values()){
-            int value = baseAttributes.get(String.valueOf(attribute));
+            int value = baseAttributes.get(attribute);
             map.put(String.valueOf(attribute), value);
         }
 

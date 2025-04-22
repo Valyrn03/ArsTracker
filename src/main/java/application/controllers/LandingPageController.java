@@ -47,6 +47,9 @@ public class LandingPageController {
         });
     }
 
+    /*
+    Creates the button that can be clicked that opens a new Character Sheet Stage
+     */
     private Button getCharacterViewButton(CharacterBase character, Logger logger) {
         Button button = new Button("Show Character");
         button.setOnAction(event -> {
@@ -54,13 +57,14 @@ public class LandingPageController {
             try {
                 Parent root = (Parent) loader.load();
                 CharacterSheetController controller = loader.getController();
+                logger.info("[Landing Page] Set Character: " + character.toString());
                 controller.setCharacter(character);
                 Scene scene = new Scene(root, 1024, 760);
                 Stage stage = new Stage();
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
-                logger.severe(String.format("Exited on Loading Character 1$s", character));
+                logger.severe(String.format("[Landing Page] Exited on Loading Character 1$s", character));
                 throw new RuntimeException(e);
             }
         });
