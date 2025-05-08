@@ -29,7 +29,7 @@ public class LandingPageController {
         Logger logger = Logger.getLogger("Landing Page Initialization");
         ArrayList<HBox> characterView = new ArrayList<>();
         for(CharacterBase character : characters){
-            logger.log(Level.INFO, "Adding Character: " + character.getName() + " " + character.getSurname());
+            logger.log(Level.INFO, "Adding Character: " + character.getName());
             HBox view = new HBox();
             view.getChildren().add(new Label(character.toString()));
 

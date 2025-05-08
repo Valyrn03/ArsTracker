@@ -4,6 +4,7 @@ import application.utils.Abilities;
 import application.utils.CharacterFeature;
 import application.utils.characterUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,8 +14,8 @@ import java.util.logging.Logger;
 
 //Random comment
 
-public class CharacterBase {
-    private String[] name;
+public class CharacterBase implements Serializable {
+    private String name;
     //Stores age, size, confidence (if applicable), decrepitude, warping, characteristics, fatigue (name -> digit)
     private HashMap<characterUtils.Attribute, Integer> baseAttributes;
     //Ability <-> XP
@@ -27,8 +28,8 @@ public class CharacterBase {
     UUID id;
     Logger logger;
 
-    public CharacterBase(String firstName, String lastName, int age, boolean magus){
-        name = new String[]{firstName, lastName};
+    public CharacterBase(String name, int age, String characterCategory){
+        this.name = name;
         baseAttributes = new HashMap<>();
         attributes = new HashMap<>();
         attributes.put(characterUtils.ExtraneousAttribute.AGE, age);
@@ -38,37 +39,42 @@ public class CharacterBase {
         specialities = new HashMap<>();
         id = UUID.randomUUID();
         characterType = new HashMap<>();
-        characterType.put("Magus", false);
-        characterType.put("Companion", false);
-        if(magus){
-            setMagus();
+        if(characterCategory.equals("magus")){
+            characterType.put("Magus", true);
+            characterType.put("Companion", false);
+            characterType.put("Grog", false);
+        }else if(characterCategory.equals("companion")){
+            characterType.put("Magus", false);
+            characterType.put("Companion", true);
+            characterType.put("Grog", false);
+        }else{
+            characterType.put("Magus", false);
+            characterType.put("Companion", false);
+            characterType.put("Grog", true);
         }
         features = new ArrayList<>();
-        logger = Logger.getLogger(Arrays.toString(this.name));
+        logger = Logger.getLogger(this.name);
     }
 
     private void setDefaultAttributes(){
         for(characterUtils.Attribute attribute : characterUtils.Attribute.values()){
             if(logger == null){
-                logger = Logger.getLogger(Arrays.toString(this.name));
+                logger = Logger.getLogger(this.name);
                 logger.info("Logger was null");
             }
             baseAttributes.put(attribute, 0);
-            logger.info("[Character] Adding Defaulted Attribute " + attribute.toString() + " to Character " + getName());
         }
     }
 
-    public void setAttribute(characterUtils.Attribute attribute, int value){
-        baseAttributes.put(attribute, value);
-        logger.info(String.format("Setting Attribute %s to value %d", attribute, value));
+    public void setAttributes(ArrayList<Integer> characteristics){
+        characterUtils.Attribute[] attributes = characterUtils.Attribute.values();
+        for(int i = 0; i < characteristics.size(); i++){
+            baseAttributes.put(attributes[i], characteristics.get(i));
+        }
     }
 
     public String getName(){
-        return name[0];
-    }
-
-    public String getSurname(){
-        return name[1];
+        return name;
     }
 
     public int getAttribute(characterUtils.Attribute attribute){
@@ -98,7 +104,7 @@ public class CharacterBase {
 
     @Override
     public String toString(){
-        return name[0] + " " + name[1];
+        return getName();
     }
 
     public void setMagus(){
@@ -150,5 +156,56 @@ public class CharacterBase {
 
     public String getSpeciality(Abilities.Ability ability){
         return specialities.get(ability);
+    }
+
+    public void addFeature(String feature, boolean isVirtue){
+        features.add(new CharacterFeature(feature, "", isVirtue));
+    }
+
+    public static String serialize(CharacterBase character){
+        return "";
+    }
+
+    public Logger exportLogger(){
+        return logger;
+    }
+
+    /*
+    Input: ArrayList of Lines
+    Structure:
+        Name
+        Characteristics
+        Virtues
+            *
+        Flaws
+            *
+        Abilities
+            *
+     */
+    public static CharacterBase deserialize(ArrayList<String> content){
+        //CREATING CHARACTER
+        String name = content.getFirst();
+        String[] ageAndType = content.get(1).split(" ");
+        CharacterBase character = new CharacterBase(name, Integer.parseInt(ageAndType[0]), ageAndType[1]);
+
+        Logger logger = character.exportLogger();
+
+        //HANDLING CHARACTERISTICS
+        String[] characteristicStrings = content.get(2).split(" ");
+        logger.info("[Deserialization] Loaded Characteristics: " + Arrays.toString(characteristicStrings));
+        ArrayList<Integer> characteristics = new ArrayList<>();
+        for(int i = 1; i < characteristicStrings.length; i += 2){
+            characteristics.add(Integer.parseInt(characteristicStrings[i]));
+        }
+        character.setAttributes(characteristics);
+
+        int counter = 3;
+        while(content.get(counter).startsWith("\t")){
+            logger.info("Feature: " + Arrays.toString(content.get(counter).split(" ")));
+//            character.addFeature(content.get(counter));
+            counter++;
+        }
+
+        return character;
     }
 }

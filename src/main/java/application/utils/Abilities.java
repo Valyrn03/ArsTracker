@@ -60,6 +60,7 @@ public class Abilities {
         MEDICINE,
         MUSIC,
         MYSTERY_CULT_LORE,
+        NATIVE_LANGUAGE,
         ORGANIZATION_LORE,
         PARMA_MAGICA,
         PENETRATION,

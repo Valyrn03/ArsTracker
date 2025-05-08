@@ -2,10 +2,18 @@ package application.utils;
 
 import java.util.HashMap;
 
-public abstract class CharacterFeature {
+public class CharacterFeature {
     private HashMap<String, Integer> attributes;
     private boolean isVirtue;
     private String name;
+    private String description;
+
+    public CharacterFeature(String name, String description, boolean virtue){
+        this.name = name;
+        this.description = description;
+        attributes = deriveAttribute(description);
+        isVirtue = virtue;
+    }
 
     public int getAttribute(String attribute){
         if(!attributes.containsKey(attribute)){
@@ -20,6 +28,10 @@ public abstract class CharacterFeature {
 
     public boolean isFlaw(){
         return !isVirtue;
+    }
+
+    public HashMap<String, Integer> deriveAttribute(String description){
+        return null;
     }
 
     @Override

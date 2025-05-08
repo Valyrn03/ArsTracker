@@ -53,7 +53,7 @@ public class CharacterSheetController {
      */
     public void loadCharacter() {
         logger.info("[Character Sheet] Loading Character " + character.toString());
-        characterName.setText(character.getName() + " " + character.getSurname());
+        characterName.setText(character.getName());
         if(!Integer.valueOf((character.getAttribute(characterUtils.ExtraneousAttribute.AGE))).equals(Integer.MAX_VALUE)){
             characterAge.setText(Integer.toString(character.getAttribute(characterUtils.ExtraneousAttribute.AGE)));
         }else{
@@ -90,10 +90,10 @@ public class CharacterSheetController {
         VBox statValues = new VBox(4);
 
         ArrayList<String> entries = new ArrayList<>();
-        for(Map.Entry<String, Integer> entry: character.getAttributes().entrySet()){
-            statNames.getChildren().add(new Label(entry.getKey()));
-            statValues.getChildren().add(new Label(Integer.toString(entry.getValue())));
-            entries.add(String.format("\nAttribute: %s, Value: %s", entry.getKey(), entry.getValue()));
+        for(characterUtils.Attribute attribute : characterUtils.Attribute.values()){
+            statNames.getChildren().add(new Label(attribute.toString()));
+            statValues.getChildren().add(new Label(Integer.toString(character.getAttribute(attribute))));
+            entries.add(String.format("\nAttribute: %s, Value: %s", attribute.toString(), character.getAttribute(attribute)));
         }
 
         basicStats.getChildren().add(statNames);

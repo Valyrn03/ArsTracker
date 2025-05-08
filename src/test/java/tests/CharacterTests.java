@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CharacterTests {
     @Test
     void testCharacterAbilities(){
-        CharacterBase character = new CharacterBase("Character", "One", 20, false);
+        CharacterBase character = new CharacterBase("Character One", 20, "grog");
 //        character.improveAbility("AbilityOne", 15);
 //        character.improveAbility("AbilityTwo", 10);
 //

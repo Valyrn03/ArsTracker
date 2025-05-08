@@ -9,7 +9,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -37,7 +42,7 @@ public class LandingPage extends Application {
         LandingPageController controller = loader.getController();
         if(characters == null || characters.isEmpty()){
             characters = new ArrayList<>();
-            characters.add(createSampleCharacter());
+            characters.add(getCharacter("Elvira_Seoane"));
         }
         controller.setCharacters(characters);
 
@@ -83,7 +88,22 @@ public class LandingPage extends Application {
         connection.close();
     }
 
-    private static CharacterBase createSampleCharacter(){
-        return new CharacterBase("Sample", "Name", 20, false);
+    private static CharacterBase getCharacter(String name){
+        Logger logger = Logger.getLogger(LandingPage.class.getName());
+        ArrayList<String> content;
+        try{
+            Path path = new File("src/main/resources/characters/" + name).toPath();
+            content = new ArrayList<>(Files.readAllLines(path));
+        } catch (NullPointerException exp){
+            logger.info("Failed to Locate Character File\n\nException: " + exp.toString());
+            return null;
+        } catch (IOException exp){
+            logger.info("Failed to Read Character File {" + name + "}\n\nException: " + exp.toString());
+            return null;
+        }
+
+        logger.info("Located Character, Deserializing");
+
+        return CharacterBase.deserialize(content);
     }
 }
