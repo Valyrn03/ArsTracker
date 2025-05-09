@@ -1,6 +1,6 @@
 package application.displays;
 
-import application.characters.CharacterBase;
+import application.characters.Character;
 import application.controllers.CharacterEditorController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 public class CharacterEditorDisplay {
-    public static void initialize(CharacterBase character, Stage currentStage){
+    public static void initialize(Character character, Stage currentStage){
         Logger logger = Logger.getLogger("Characteristic Editor");
 
         try {

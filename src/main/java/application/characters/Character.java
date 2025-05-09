@@ -9,9 +9,11 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.util.Collections.sort;
+
 //Random comment
 
-public class CharacterBase implements Serializable {
+public class Character implements Serializable, Comparable<Character> {
     private String name;
     //Stores age, size, confidence (if applicable), decrepitude, warping, characteristics, fatigue (name -> digit)
     private HashMap<characterUtils.Attribute, Integer> baseAttributes;
@@ -25,7 +27,7 @@ public class CharacterBase implements Serializable {
     UUID id;
     Logger logger;
 
-    public CharacterBase(String name, int age, String characterCategory){
+    public Character(String name, int age, String characterCategory){
         this.name = name;
         baseAttributes = new HashMap<>();
         attributes = new HashMap<>();
@@ -169,15 +171,18 @@ public class CharacterBase implements Serializable {
         }
     }
 
-    public static String serialize(CharacterBase character){
+    public String serialize(){
         StringBuilder builder = new StringBuilder();
-        builder.append(character.getName()).append("\n");
-        builder.append(character.getAttribute(characterUtils.ExtraneousAttribute.AGE)).append(" ").append(character.getType()).append("\n");
+        builder.append(getName()).append("\n");
+        builder.append(getAttribute(characterUtils.ExtraneousAttribute.AGE)).append(" ").append(getType()).append("\n");
 
         ArrayList<CharacterFeature> flaws = new ArrayList<>();
 
+        ArrayList<CharacterFeature> features = getFeatures();
+        sort(features);
+
         builder.append("Virtues").append("\n");
-        for(CharacterFeature feature : character.getFeatures()){
+        for(CharacterFeature feature : features){
             if(feature.isVirtue()){
                 builder.append("\t").append(feature.toString()).append("\n");
             }else{
@@ -185,13 +190,14 @@ public class CharacterBase implements Serializable {
             }
         }
 
+        sort(flaws);
         builder.append("Flaws").append("\n");
         for(CharacterFeature feature : flaws){
             builder.append("\t").append(feature.toString()).append("\n");
         }
 
         builder.append("Abilities").append("\n");
-        for(Map.Entry<Abilities.Ability, Integer> ability : character.getAbilities().entrySet()){
+        for(Map.Entry<Abilities.Ability, Integer> ability : getAbilities().entrySet()){
             builder.append("\t").append(ability.getValue()).append(" ").append(ability.getKey().name()).append("\n");
         }
 
@@ -214,11 +220,11 @@ public class CharacterBase implements Serializable {
         Abilities
             *
      */
-    public static CharacterBase deserialize(ArrayList<String> content){
+    public static Character deserialize(ArrayList<String> content){
         //CREATING CHARACTER
         String name = content.getFirst();
         String[] ageAndType = content.get(1).split(" ");
-        CharacterBase character = new CharacterBase(name, Integer.parseInt(ageAndType[0]), ageAndType[1]);
+        Character character = new Character(name, Integer.parseInt(ageAndType[0]), ageAndType[1]);
 
         Logger logger = character.exportLogger();
 
@@ -261,5 +267,10 @@ public class CharacterBase implements Serializable {
         }
 
         return character;
+    }
+
+    @Override
+    public int compareTo(Character o) {
+        return 0;
     }
 }

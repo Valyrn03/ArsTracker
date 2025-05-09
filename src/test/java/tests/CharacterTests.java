@@ -1,8 +1,7 @@
 package tests;
 
-import application.characters.CharacterBase;
+import application.characters.Character;
 import application.utils.Abilities;
-import application.utils.characterUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class CharacterTests {
     @Test
     void testCharacterAbilities(){
-        CharacterBase character = new CharacterBase("Character One", 20, "grog");
+        Character character = new Character("Character One", 20, "grog");
         character.improveAbility(Abilities.Ability.STEALTH, 15);
         character.improveAbility(Abilities.Ability.SINGLE_WEAPON, 10);
 
@@ -32,11 +31,36 @@ public class CharacterTests {
 
     @Test
     void testSerialize(){
-        fail();
+        Character sampleCharacter = new Character("Sample Character", 100, "companion");
+
+        String serialized = "Sample Character\n100 companion\nVirtues\nFlaws\nAbilities\n";
+        assertEquals(serialized, sampleCharacter.serialize());
+
+        sampleCharacter.addFeature("Feature A", true);
+        serialized = "Sample Character\n100 companion\nVirtues\n\tFeature A\nFlaws\nAbilities\n";
+        assertEquals(serialized, sampleCharacter.serialize());
+
+        sampleCharacter.addFeature("Feature B", true);
+        serialized = "Sample Character\n100 companion\nVirtues\n\tFeature A\n\tFeature B\nFlaws\nAbilities\n";
+        assertEquals(serialized, sampleCharacter.serialize());
+
+        sampleCharacter.addFeature("Feature C", false);
+        serialized = "Sample Character\n100 companion\nVirtues\n\tFeature A\n\tFeature B\nFlaws\n\tFeature C\nAbilities\n";
+        assertEquals(serialized, sampleCharacter.serialize());
+
+        sampleCharacter.improveAbility(Abilities.Ability.ART_OF_MEMORY, 30);
+        serialized = "Sample Character\n100 companion\nVirtues\n\tFeature A\n\tFeature B\nFlaws\n\tFeature C\nAbilities\n\t30 ART_OF_MEMORY\n";
+        assertEquals(serialized, sampleCharacter.serialize());
+
+        sampleCharacter.improveAbility(Abilities.Ability.ATHLETICS, 82);
+        serialized = "Sample Character\n100 companion\nVirtues\n\tFeature A\n\tFeature B\nFlaws\n\tFeature C\nAbilities\n\t30 ART_OF_MEMORY\n\t82 ATHLETICS\n";
+        assertEquals(serialized, sampleCharacter.serialize());
     }
 
     @Test
     void testDeserialize(){
-        fail();
+        Character character = new Character("Character", 27, "magus");
+
+
     }
 }

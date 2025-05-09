@@ -1,7 +1,6 @@
 package application.controllers;
 
-import application.characters.CharacterBase;
-import application.displays.CharacterEditorDisplay;
+import application.characters.Character;
 import application.displays.CharacterSheetDisplay;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,10 +24,10 @@ public class LandingPageController {
     @FXML
     private ListView<HBox> characterListView;
 
-    public void setCharacters(ArrayList<CharacterBase> characters){
+    public void setCharacters(ArrayList<Character> characters){
         Logger logger = Logger.getLogger("Landing Page Initialization");
         ArrayList<HBox> characterView = new ArrayList<>();
-        for(CharacterBase character : characters){
+        for(Character character : characters){
             logger.log(Level.INFO, "Adding Character: " + character.getName());
             HBox view = new HBox();
             view.getChildren().add(new Label(character.toString()));
@@ -50,7 +49,7 @@ public class LandingPageController {
     /*
     Creates the button that can be clicked that opens a new Character Sheet Stage
      */
-    private Button getCharacterViewButton(CharacterBase character, Logger logger) {
+    private Button getCharacterViewButton(Character character, Logger logger) {
         Button button = new Button("Show Character");
         button.setOnAction(event -> {
             FXMLLoader loader = new FXMLLoader(CharacterSheetDisplay.class.getResource("characterView.fxml"));
