@@ -5,10 +5,7 @@ import application.utils.CharacterFeature;
 import application.utils.characterUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -89,13 +86,13 @@ public class CharacterBase implements Serializable {
         return attributes.getOrDefault(attribute, Integer.MAX_VALUE);
     }
 
-    public void improveAbility(String ability, int increment){
+    public void improveAbility(Abilities.Ability ability, int increment){
         int score = increment;
         if(abilities.containsKey(ability)){
             score += abilities.get(ability);
         }
 
-        abilities.put(Abilities.Ability.valueOf(ability), score);
+        abilities.put(ability, score);
     }
 
     public void addSpeciality(Abilities.Ability ability, String speciality){
@@ -162,8 +159,43 @@ public class CharacterBase implements Serializable {
         features.add(new CharacterFeature(feature, "", isVirtue));
     }
 
+    public String getType(){
+        if(characterType.get("Magus")){
+            return "magus";
+        }else if(characterType.get("Companion")){
+            return "companion";
+        }else{
+            return "grog";
+        }
+    }
+
     public static String serialize(CharacterBase character){
-        return "";
+        StringBuilder builder = new StringBuilder();
+        builder.append(character.getName()).append("\n");
+        builder.append(character.getAttribute(characterUtils.ExtraneousAttribute.AGE)).append(" ").append(character.getType()).append("\n");
+
+        ArrayList<CharacterFeature> flaws = new ArrayList<>();
+
+        builder.append("Virtues").append("\n");
+        for(CharacterFeature feature : character.getFeatures()){
+            if(feature.isVirtue()){
+                builder.append("\t").append(feature.toString()).append("\n");
+            }else{
+                flaws.add(feature);
+            }
+        }
+
+        builder.append("Flaws").append("\n");
+        for(CharacterFeature feature : flaws){
+            builder.append("\t").append(feature.toString()).append("\n");
+        }
+
+        builder.append("Abilities").append("\n");
+        for(Map.Entry<Abilities.Ability, Integer> ability : character.getAbilities().entrySet()){
+            builder.append("\t").append(ability.getValue()).append(" ").append(ability.getKey().name()).append("\n");
+        }
+
+        return builder.toString();
     }
 
     public Logger exportLogger(){
@@ -199,10 +231,32 @@ public class CharacterBase implements Serializable {
         }
         character.setAttributes(characteristics);
 
-        int counter = 3;
-        while(content.get(counter).startsWith("\t")){
-            logger.info("Feature: " + Arrays.toString(content.get(counter).split(" ")));
-//            character.addFeature(content.get(counter));
+        //Virtues & Flaws
+        int counter = 4;
+        while(content.get(counter).startsWith(" ")){
+            logger.info("[Deserialization] Virtue: " + Arrays.toString(content.get(counter).split(" ")));
+            character.addFeature(content.get(counter), true);
+            counter++;
+        }
+
+        counter++;
+        while(content.get(counter).startsWith(" ")){
+            logger.info("[Deserialization] Flaw: " + Arrays.toString(content.get(counter).split(" ")));
+            character.addFeature(content.get(counter), false);
+            counter++;
+        }
+
+        //Abilities
+        counter++;
+        while(counter < content.size()){
+            String[] abilityLine = content.get(counter).split(" ");
+            if(abilityLine.length == 6){
+                logger.info("[Deserialization] Ability: " + Arrays.toString(abilityLine));
+                character.improveAbility(Abilities.Ability.valueOf(abilityLine[5]), Integer.parseInt(abilityLine[4]));
+            }else{
+                logger.info("[Deserialization] Ability: " + Arrays.toString(abilityLine));
+                character.improveAbility(Abilities.Ability.valueOf(abilityLine[5]), Integer.parseInt(abilityLine[4]));
+            }
             counter++;
         }
 
