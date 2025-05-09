@@ -1,8 +1,7 @@
 package application.displays;
 
-import application.characters.CharacterBase;
+import application.characters.Character;
 import application.controllers.LandingPageController;
-import application.utils.characterUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,8 +9,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,7 +18,7 @@ import java.util.logging.Logger;
 
 public class LandingPage extends Application {
     static Stage stage;
-    static ArrayList<CharacterBase> characters;
+    static ArrayList<Character> characters;
 
     @Override
     public void start(Stage primaryStage) throws IOException, SQLException {
@@ -88,7 +85,7 @@ public class LandingPage extends Application {
         connection.close();
     }
 
-    private static CharacterBase getCharacter(String name){
+    private static Character getCharacter(String name){
         Logger logger = Logger.getLogger(LandingPage.class.getName());
         ArrayList<String> content;
         try{
@@ -104,6 +101,6 @@ public class LandingPage extends Application {
 
         logger.info("Located Character, Deserializing");
 
-        return CharacterBase.deserialize(content);
+        return Character.deserialize(content);
     }
 }

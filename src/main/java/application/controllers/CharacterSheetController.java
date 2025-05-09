@@ -1,9 +1,8 @@
 package application.controllers;
 
-import application.characters.CharacterBase;
+import application.characters.Character;
 import application.displays.CharacterEditorDisplay;
 import application.displays.CharacterSheetDisplay;
-import application.displays.LandingPage;
 import application.utils.Abilities;
 import application.utils.CharacterFeature;
 import application.utils.characterUtils;
@@ -18,13 +17,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class CharacterSheetController {
-    CharacterBase character;
+    Character character;
     Logger logger;
 
     @FXML
@@ -156,7 +153,7 @@ public class CharacterSheetController {
         }
     }
 
-    public void setCharacter(CharacterBase input){
+    public void setCharacter(Character input){
         character = input;
 
         logger = Logger.getLogger(CharacterSheetController.class.getName());
@@ -168,7 +165,7 @@ public class CharacterSheetController {
     /*
     Replaces and/or refreshes character display
      */
-    public static void resetScene(CharacterBase character, Stage currentStage) throws IOException {
+    public static void resetScene(Character character, Stage currentStage) throws IOException {
         FXMLLoader loader = new FXMLLoader(CharacterSheetDisplay.class.getResource("characterView.fxml"));
 
         Parent root = (Parent) loader.load();
