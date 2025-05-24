@@ -197,8 +197,10 @@ public class Character implements Serializable, Comparable<Character> {
         }
 
         builder.append("Abilities").append("\n");
-        for(Map.Entry<Abilities.Ability, Integer> ability : getAbilities().entrySet()){
-            builder.append("\t").append(ability.getValue()).append(" ").append(ability.getKey().name()).append("\n");
+        ArrayList<Abilities.Ability> abilities = new ArrayList<>(getAbilities().keySet().stream().toList());
+        sort(abilities);
+        for(Abilities.Ability ability : abilities){
+            builder.append("\t").append(getAbility(ability)).append(" ").append(ability.name()).append("\n");
         }
 
         return builder.toString();
@@ -239,16 +241,16 @@ public class Character implements Serializable, Comparable<Character> {
 
         //Virtues & Flaws
         int counter = 4;
-        while(content.get(counter).startsWith(" ")){
-            logger.info("[Deserialization] Virtue: " + Arrays.toString(content.get(counter).split(" ")));
-            character.addFeature(content.get(counter), true);
+        while(!content.get(counter).equals("Flaws")){
+            logger.info("[Deserialization] Virtue: " + content.get(counter).substring(1));
+            character.addFeature(content.get(counter).substring(1), true);
             counter++;
         }
 
         counter++;
-        while(content.get(counter).startsWith(" ")){
-            logger.info("[Deserialization] Flaw: " + Arrays.toString(content.get(counter).split(" ")));
-            character.addFeature(content.get(counter), false);
+        while(!content.get(counter).equals("Abilities")){
+            logger.info("[Deserialization] Flaw: " + content.get(counter).substring(1));
+            character.addFeature(content.get(counter).substring(1), false);
             counter++;
         }
 
@@ -258,10 +260,10 @@ public class Character implements Serializable, Comparable<Character> {
             String[] abilityLine = content.get(counter).split(" ");
             if(abilityLine.length == 6){
                 logger.info("[Deserialization] Ability: " + Arrays.toString(abilityLine));
-                character.improveAbility(Abilities.Ability.valueOf(abilityLine[5]), Integer.parseInt(abilityLine[4]));
+                character.improveAbility(Abilities.Ability.valueOf(abilityLine[1]), Integer.parseInt(abilityLine[0]));
             }else{
                 logger.info("[Deserialization] Ability: " + Arrays.toString(abilityLine));
-                character.improveAbility(Abilities.Ability.valueOf(abilityLine[5]), Integer.parseInt(abilityLine[4]));
+                character.improveAbility(Abilities.Ability.valueOf(abilityLine[1]), Integer.parseInt(abilityLine[0]));
             }
             counter++;
         }
@@ -269,8 +271,9 @@ public class Character implements Serializable, Comparable<Character> {
         return character;
     }
 
+    //Currently only tests if they are equal or not via serialize
     @Override
     public int compareTo(Character o) {
-        return 0;
+        return serialize().compareTo(o.serialize());
     }
 }
