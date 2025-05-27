@@ -1,23 +1,16 @@
 package application.controllers;
 
-import application.characters.CharacterBase;
-import application.displays.LandingPage;
+import application.characters.Character;
 import application.utils.Abilities;
 import application.utils.characterUtils;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -45,7 +38,7 @@ public class CharacterEditorController {
 
     private Stage currentStage;
 
-    public void initialize(CharacterBase character, Stage currentStage){
+    public void initialize(Character character, Stage currentStage){
 
         //Preparing Ability Table
         List<Abilities.Ability> abilities = character.getAbilities().keySet().stream().toList();
@@ -82,7 +75,7 @@ public class CharacterEditorController {
         });
     }
 
-    public void addNewAbility(CharacterBase character){
+    public void addNewAbility(Character character){
         Logger logger = Logger.getLogger(CharacterEditorController.class.getName());
         logger.info("NOT IMPLEMENTED");
     }
