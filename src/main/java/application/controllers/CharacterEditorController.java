@@ -8,10 +8,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 import java.util.logging.Logger;
 
 public class CharacterEditorController {
@@ -39,29 +42,68 @@ public class CharacterEditorController {
     private Stage currentStage;
 
     public void initialize(Character character, Stage currentStage){
+        Logger logger = Logger.getLogger(CharacterEditorController.class.getName());
 
         //Preparing Ability Table
-        List<Abilities.Ability> abilities = character.getAbilities().keySet().stream().toList();
+        ArrayList<Abilities.Ability> abilities = new ArrayList<>(character.getAbilities().keySet().stream().toList());
         abilities.sort(null);
-
-        //Setting Formatter so that the text fields can only accept integers
-        TextFormatter<Integer> formatter = new TextFormatter<>(new IntegerStringConverter());
 
         //Populating Ability Table
         for(Abilities.Ability ability : abilities){
+            //Creating Field & Setting Formatter
+            TextField abilityField = new TextField();
+            abilityField.setTextFormatter(new TextFormatter<Integer>(new StringConverter<Integer>() {
+                @Override
+                public String toString(Integer integer) {
+                    if(integer == null){
+                        return "0";
+                    }
+                    return Integer.toString(integer);
+                }
+
+                @Override
+                public Integer fromString(String s) {
+                    if(s == null){
+                        return 0;
+                    }
+                    return Integer.parseInt(s);
+                }
+            }));
+            abilityField.setText(Integer.toString(character.getAbility(ability)));
+
             HBox item = new HBox();
             item.getChildren().add(new Label(ability.name()));
-            TextField abilityField = new TextField(Integer.toString(character.getAbility(ability)));
-            abilityField.setTextFormatter(formatter);
+            item.getChildren().add(abilityField);
+
             abilityTable.getChildren().add(item);
         }
 
         //Populating Characteristics Table
         for(characterUtils.Attribute characteristic: characterUtils.Attribute.values()){
+            //Creating Field, Setting Formatter, Setting Content
+            TextField characteristicField = new TextField();
+            characteristicField.setTextFormatter(new TextFormatter<>(new StringConverter<Integer>() {
+                @Override
+                public String toString(Integer integer) {
+                    if(integer == null){
+                        return "0";
+                    }
+                    return Integer.toString(integer);
+                }
+
+                @Override
+                public Integer fromString(String s) {
+                    if(s == null){
+                        return 0;
+                    }
+                    return Integer.parseInt(s);
+                }
+            }));
+            characteristicField.setText(Integer.toString(character.getAttribute(characteristic)));
+
             HBox item = new HBox();
             item.getChildren().add(new Label(characteristic.name()));
-            TextField characteristicField = new TextField(Integer.toString(character.getAttribute(characteristic)));
-            characteristicField.setTextFormatter(formatter);
+            item.getChildren().add(characteristicField);
             characteristicTable.getChildren().add(item);
         }
 

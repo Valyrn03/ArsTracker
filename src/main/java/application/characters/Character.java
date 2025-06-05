@@ -257,7 +257,7 @@ public class Character implements Serializable, Comparable<Character> {
         //Abilities
         counter++;
         while(counter < content.size()){
-            String[] abilityLine = content.get(counter).split(" ");
+            String[] abilityLine = content.get(counter).substring(4).split(" ");
             if(abilityLine.length == 6){
                 logger.info("[Deserialization] Ability: " + Arrays.toString(abilityLine));
                 character.improveAbility(Abilities.Ability.valueOf(abilityLine[1]), Integer.parseInt(abilityLine[0]));

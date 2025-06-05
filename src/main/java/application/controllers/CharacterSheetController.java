@@ -41,8 +41,6 @@ public class CharacterSheetController {
     @FXML
     private Button returnButton;
     @FXML
-    private Button refreshButton;
-    @FXML
     private Button editButton;
 
     /*
@@ -71,7 +69,11 @@ public class CharacterSheetController {
 //        });
 //
         editButton.setOnAction(event -> {
-            CharacterEditorDisplay.initialize(character, (Stage) refreshButton.getScene().getWindow());
+            CharacterEditorDisplay.initialize(character, (Stage) editButton.getScene().getWindow());
+        });
+        returnButton.setOnAction(event -> {
+            Stage stage = (Stage) returnButton.getScene().getWindow();
+            stage.close();
         });
     }
 

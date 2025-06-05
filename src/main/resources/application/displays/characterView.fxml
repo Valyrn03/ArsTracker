@@ -38,7 +38,6 @@
     </VBox>
   </HBox>
 
-  <Button fx:id="saveButton">Save</Button>
-  <Button fx:id="returnButton">Return</Button>
-  <Button fx:id="editButton">Edit</Button>
+  <Button fx:id="editButton">Edit Character</Button>
+  <Button fx:id="returnButton">Exit</Button>
 </VBox>

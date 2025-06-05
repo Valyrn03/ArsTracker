@@ -5,18 +5,20 @@
 
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http:javafx.com/fxml"
       fx:controller="application.controllers.CharacterEditorController">
-    <VBox fx:id="extraneousTable"></VBox>
-
-    <VBox fx:id="characteristicTable"></VBox>
-
-    <VBox fx:id="abilityTable"></VBox>
-
-    <VBox fx:id="featureTable"></VBox>
-
-    <VBox fx:id="personalityTraits"></VBox>
-
     <HBox>
         <Button fx:id="closeMenuButton">Close Editor</Button>
         <Button fx:id="saveAndCloseButton">Save And Close</Button>
     </HBox>
+
+    <ScrollPane hbarPolicy="NEVER">
+        <VBox fx:id="extraneousTable"></VBox>
+
+        <VBox fx:id="characteristicTable"></VBox>
+
+        <VBox fx:id="abilityTable"></VBox>
+
+        <VBox fx:id="featureTable"></VBox>
+
+        <VBox fx:id="personalityTraits"></VBox>
+    </ScrollPane>
 </VBox>
