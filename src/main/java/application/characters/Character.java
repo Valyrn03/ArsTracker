@@ -19,10 +19,9 @@ public class Character implements Serializable, Comparable<Character> {
     private HashMap<characterUtils.Attribute, Integer> baseAttributes;
     //Ability <-> XP
     private HashMap<Abilities.Ability, Integer> abilities;
-    private HashMap<Abilities.Ability, String> specialities;
     private HashMap<characterUtils.ExtraneousAttribute, Integer> attributes;
     //Tracking if not a grog
-    private HashMap<String, Boolean> characterType;
+    private CharacterType characterType;
     ArrayList<CharacterFeature> features;
     UUID id;
     Logger logger;
@@ -35,24 +34,16 @@ public class Character implements Serializable, Comparable<Character> {
         attributes.put(characterUtils.ExtraneousAttribute.SIZE, 0);
         setDefaultAttributes();
         abilities = new HashMap<>();
-        specialities = new HashMap<>();
         id = UUID.randomUUID();
-        characterType = new HashMap<>();
-        if(characterCategory.equals("magus")){
-            characterType.put("Magus", true);
-            characterType.put("Companion", false);
-            characterType.put("Grog", false);
-        }else if(characterCategory.equals("companion")){
-            characterType.put("Magus", false);
-            characterType.put("Companion", true);
-            characterType.put("Grog", false);
-        }else{
-            characterType.put("Magus", false);
-            characterType.put("Companion", false);
-            characterType.put("Grog", true);
-        }
+        characterType = CharacterType.valueOf(characterCategory.toUpperCase());
         features = new ArrayList<>();
         logger = Logger.getLogger(this.name);
+    }
+
+    public static enum CharacterType {
+        MAGUS,
+        COMPANION,
+        GROG
     }
 
     private void setDefaultAttributes(){
@@ -97,29 +88,9 @@ public class Character implements Serializable, Comparable<Character> {
         abilities.put(ability, score);
     }
 
-    public void addSpeciality(Abilities.Ability ability, String speciality){
-        specialities.put(ability, speciality);
-    }
-
     @Override
     public String toString(){
         return getName();
-    }
-
-    public void setMagus(){
-        characterType.put("Magus", true);
-    }
-
-    public boolean isMagus(){
-        return characterType.get("Magus");
-    }
-
-    public void setCompanion(){
-        characterType.put("Companion", true);
-    }
-
-    public boolean isCompanion(){
-        return characterType.get("Companion");
     }
 
     public HashMap<String, Integer> getAttributes(){
@@ -137,10 +108,6 @@ public class Character implements Serializable, Comparable<Character> {
         return abilities;
     }
 
-    public HashMap<Abilities.Ability, String> getSpecialities(){
-        return specialities;
-    }
-
     public int getAbilityScore(Abilities.Ability ability){
         return characterUtils.abilityExperienceToScore(getAbility(ability));
     }
@@ -153,22 +120,12 @@ public class Character implements Serializable, Comparable<Character> {
         return features;
     }
 
-    public String getSpeciality(Abilities.Ability ability){
-        return specialities.get(ability);
-    }
-
     public void addFeature(String feature, boolean isVirtue){
         features.add(new CharacterFeature(feature, "", isVirtue));
     }
 
-    public String getType(){
-        if(characterType.get("Magus")){
-            return "magus";
-        }else if(characterType.get("Companion")){
-            return "companion";
-        }else{
-            return "grog";
-        }
+    public CharacterType getType(){
+        return characterType;
     }
 
     public String serialize(){
@@ -257,7 +214,7 @@ public class Character implements Serializable, Comparable<Character> {
         //Abilities
         counter++;
         while(counter < content.size()){
-            String[] abilityLine = content.get(counter).split(" ");
+            String[] abilityLine = content.get(counter).substring(4).split(" ");
             if(abilityLine.length == 6){
                 logger.info("[Deserialization] Ability: " + Arrays.toString(abilityLine));
                 character.improveAbility(Abilities.Ability.valueOf(abilityLine[1]), Integer.parseInt(abilityLine[0]));
