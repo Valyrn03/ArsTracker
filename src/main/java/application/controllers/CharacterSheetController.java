@@ -61,7 +61,7 @@ public class CharacterSheetController {
         setCharacteristics();
         setAbilities();
         setFeatures();
-        if(character.isMagus()){
+        if(character.getType().equals(Character.CharacterType.MAGUS)){
             setArts();
         }
 
@@ -111,11 +111,6 @@ public class CharacterSheetController {
             logger.info("Adding Ability: " + entry);
             abilities.getChildren().add(new Label(entry.name()));
             scores.getChildren().add(new Label(Integer.toString(character.getAbilityScore(entry))));
-            if(character.getSpeciality(entry) == null){
-                specialities.getChildren().add(new Label("None"));
-            }else{
-                specialities.getChildren().add(new Label(character.getSpeciality(entry)));
-            }
         }
 
         if(!abilities.getChildren().isEmpty()){

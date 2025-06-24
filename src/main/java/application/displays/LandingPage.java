@@ -33,8 +33,6 @@ public class LandingPage extends Application {
     public static Scene getScene() throws IOException, SQLException {
         FXMLLoader loader = new FXMLLoader(LandingPage.class.getResource("landingPage.fxml"));
 
-        connectCharacterDatabase();
-
         Parent root = (Parent) loader.load();
         LandingPageController controller = loader.getController();
         if(characters == null || characters.isEmpty()){
@@ -50,42 +48,7 @@ public class LandingPage extends Application {
         stage.setScene(getScene());
     }
 
-    private static void connectCharacterDatabase() throws SQLException {
-        Logger logger = Logger.getLogger(LandingPage.class.getName());
-
-        String databaseURL = "jdbc:sqlite:" + LandingPage.class.getResource("arsTrackerDB").getPath();
-
-        Connection connection;
-        try{
-            connection = DriverManager.getConnection(databaseURL);
-        }catch (SQLException e){
-            logger.severe("Failed to Connect to DB");
-            return;
-        }
-
-        String createTableStatement = "CREATE TABLE IF NOT EXISTS characters (\n\tid UUID PRIMARY KEY,\n\tname STRING)";
-
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(createTableStatement);
-
-        logger.info("Table Created");
-
-        String getPlayers = "SELECT * FROM characters";
-
-        ResultSet result = statement.executeQuery(getPlayers);
-
-        while(result.next()){
-            String name = result.getString("name");
-            logger.info("Character: " + name);
-        }
-
-        logger.info("Table Queried");
-
-        statement.close();
-        connection.close();
-    }
-
-    private static Character getCharacter(String name){
+    public static Character getCharacter(String name){
         Logger logger = Logger.getLogger(LandingPage.class.getName());
         ArrayList<String> content;
         try{
@@ -101,6 +64,7 @@ public class LandingPage extends Application {
 
         logger.info("Located Character, Deserializing");
 
-        return Character.deserialize(content);
+        return Character.
+                deserialize(content);
     }
 }

@@ -19,10 +19,9 @@ public class Character implements Serializable, Comparable<Character> {
     private HashMap<characterUtils.Attribute, Integer> baseAttributes;
     //Ability <-> XP
     private HashMap<Abilities.Ability, Integer> abilities;
-    private HashMap<Abilities.Ability, String> specialities;
     private HashMap<characterUtils.ExtraneousAttribute, Integer> attributes;
     //Tracking if not a grog
-    private HashMap<String, Boolean> characterType;
+    private CharacterType characterType;
     ArrayList<CharacterFeature> features;
     UUID id;
     Logger logger;
@@ -35,24 +34,16 @@ public class Character implements Serializable, Comparable<Character> {
         attributes.put(characterUtils.ExtraneousAttribute.SIZE, 0);
         setDefaultAttributes();
         abilities = new HashMap<>();
-        specialities = new HashMap<>();
         id = UUID.randomUUID();
-        characterType = new HashMap<>();
-        if(characterCategory.equals("magus")){
-            characterType.put("Magus", true);
-            characterType.put("Companion", false);
-            characterType.put("Grog", false);
-        }else if(characterCategory.equals("companion")){
-            characterType.put("Magus", false);
-            characterType.put("Companion", true);
-            characterType.put("Grog", false);
-        }else{
-            characterType.put("Magus", false);
-            characterType.put("Companion", false);
-            characterType.put("Grog", true);
-        }
+        characterType = CharacterType.valueOf(characterCategory.toUpperCase());
         features = new ArrayList<>();
         logger = Logger.getLogger(this.name);
+    }
+
+    public static enum CharacterType {
+        MAGUS,
+        COMPANION,
+        GROG
     }
 
     private void setDefaultAttributes(){
@@ -97,29 +88,60 @@ public class Character implements Serializable, Comparable<Character> {
         abilities.put(ability, score);
     }
 
-    public void addSpeciality(Abilities.Ability ability, String speciality){
-        specialities.put(ability, speciality);
-    }
-
     @Override
     public String toString(){
-        return getName();
-    }
+        StringBuilder builder = new StringBuilder();
+        //Name, Type, Age, Characteristics, Abilities, Virtues & Flaws
+        builder.append(getName()).append("\n\n").append(characterType.toString());
+        if(baseAttributes.containsKey(characterUtils.ExtraneousAttribute.AGE)){
+            builder.append("(").append(baseAttributes.get(characterUtils.ExtraneousAttribute.AGE).toString()).append(")\n\n");
+        }
 
-    public void setMagus(){
-        characterType.put("Magus", true);
-    }
+        builder.append("CHARACTERISTICS\n");
+        for(Map.Entry<String, Integer> attribute : getAttributes().entrySet()){
+            builder.append("\t")
+                    .append(attribute.getKey())
+                    .append(": ")
+                    .append(attribute.getValue().toString())
+                    .append("\n");
+        }
 
-    public boolean isMagus(){
-        return characterType.get("Magus");
-    }
+        builder.append("\nABILITIES\n");
+        for(Map.Entry<Abilities.Ability, Integer> ability: getAbilities().entrySet()){
+            builder.append("\t")
+                    .append(ability.getKey().toString())
+                    .append(" ")
+                    .append(getAbilityScore(ability.getKey()))
+                    .append(" [")
+                    .append(ability.getValue())
+                    .append("]\n");
+        }
 
-    public void setCompanion(){
-        characterType.put("Companion", true);
-    }
+        if(features.isEmpty()){
+            return "ERROR: Character Features Not Found";
+        }
 
-    public boolean isCompanion(){
-        return characterType.get("Companion");
+        ArrayList<CharacterFeature> flaws = new ArrayList<>();
+
+        builder.append("\nVIRTUES\n");
+        for(CharacterFeature feature : features){
+            if(feature.isVirtue()){
+                builder.append("\t")
+                        .append(feature.toString())
+                        .append("\n");
+            }else{
+                flaws.add(feature);
+            }
+        }
+
+        builder.append("FLAWS\n");
+        for(CharacterFeature feature : flaws){
+            builder.append("\t")
+                    .append(feature.toString())
+                    .append("\n");
+        }
+
+        return builder.toString();
     }
 
     public HashMap<String, Integer> getAttributes(){
@@ -137,10 +159,6 @@ public class Character implements Serializable, Comparable<Character> {
         return abilities;
     }
 
-    public HashMap<Abilities.Ability, String> getSpecialities(){
-        return specialities;
-    }
-
     public int getAbilityScore(Abilities.Ability ability){
         return characterUtils.abilityExperienceToScore(getAbility(ability));
     }
@@ -153,22 +171,12 @@ public class Character implements Serializable, Comparable<Character> {
         return features;
     }
 
-    public String getSpeciality(Abilities.Ability ability){
-        return specialities.get(ability);
-    }
-
     public void addFeature(String feature, boolean isVirtue){
         features.add(new CharacterFeature(feature, "", isVirtue));
     }
 
-    public String getType(){
-        if(characterType.get("Magus")){
-            return "magus";
-        }else if(characterType.get("Companion")){
-            return "companion";
-        }else{
-            return "grog";
-        }
+    public CharacterType getType(){
+        return characterType;
     }
 
     public String serialize(){
@@ -272,8 +280,9 @@ public class Character implements Serializable, Comparable<Character> {
     }
 
     //Currently only tests if they are equal or not via serialize
+    //Character Parts: Name, BaseAttributes, Attributes, Abilities, Type, Features
     @Override
     public int compareTo(Character o) {
-        return serialize().compareTo(o.serialize());
+        return getName().compareTo(o.getName()) | getType().compareTo(o.getType());
     }
 }

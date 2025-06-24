@@ -10,6 +10,7 @@ module application {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires java.sql;
+    requires org.beryx.textio;
 
     opens application to javafx.fxml;
     exports application;
