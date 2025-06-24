@@ -48,7 +48,7 @@ public class LandingPage extends Application {
         stage.setScene(getScene());
     }
 
-    private static Character getCharacter(String name){
+    public static Character getCharacter(String name){
         Logger logger = Logger.getLogger(LandingPage.class.getName());
         ArrayList<String> content;
         try{

@@ -41,6 +41,17 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
 
     @Override
     public int compareTo(CharacterFeature o) {
-        return this.name.compareTo(o.name);
+        if(this.isVirtue){
+            if(o.isVirtue()){
+                return this.name.compareTo(o.name);
+            }else{
+                return 1;
+            }
+        }
+        if(o.isVirtue){
+            return -1;
+        }else{
+            return this.name.compareTo(o.name);
+        }
     }
 }

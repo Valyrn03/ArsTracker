@@ -90,7 +90,58 @@ public class Character implements Serializable, Comparable<Character> {
 
     @Override
     public String toString(){
-        return getName();
+        StringBuilder builder = new StringBuilder();
+        //Name, Type, Age, Characteristics, Abilities, Virtues & Flaws
+        builder.append(getName()).append("\n\n").append(characterType.toString());
+        if(baseAttributes.containsKey(characterUtils.ExtraneousAttribute.AGE)){
+            builder.append("(").append(baseAttributes.get(characterUtils.ExtraneousAttribute.AGE).toString()).append(")\n\n");
+        }
+
+        builder.append("CHARACTERISTICS\n");
+        for(Map.Entry<String, Integer> attribute : getAttributes().entrySet()){
+            builder.append("\t")
+                    .append(attribute.getKey())
+                    .append(": ")
+                    .append(attribute.getValue().toString())
+                    .append("\n");
+        }
+
+        builder.append("\nABILITIES\n");
+        for(Map.Entry<Abilities.Ability, Integer> ability: getAbilities().entrySet()){
+            builder.append("\t")
+                    .append(ability.getKey().toString())
+                    .append(" ")
+                    .append(getAbilityScore(ability.getKey()))
+                    .append(" [")
+                    .append(ability.getValue())
+                    .append("]\n");
+        }
+
+        if(features.isEmpty()){
+            return "ERROR: Character Features Not Found";
+        }
+
+        ArrayList<CharacterFeature> flaws = new ArrayList<>();
+
+        builder.append("\nVIRTUES\n");
+        for(CharacterFeature feature : features){
+            if(feature.isVirtue()){
+                builder.append("\t")
+                        .append(feature.toString())
+                        .append("\n");
+            }else{
+                flaws.add(feature);
+            }
+        }
+
+        builder.append("FLAWS\n");
+        for(CharacterFeature feature : flaws){
+            builder.append("\t")
+                    .append(feature.toString())
+                    .append("\n");
+        }
+
+        return builder.toString();
     }
 
     public HashMap<String, Integer> getAttributes(){
@@ -229,8 +280,9 @@ public class Character implements Serializable, Comparable<Character> {
     }
 
     //Currently only tests if they are equal or not via serialize
+    //Character Parts: Name, BaseAttributes, Attributes, Abilities, Type, Features
     @Override
     public int compareTo(Character o) {
-        return serialize().compareTo(o.serialize());
+        return getName().compareTo(o.getName()) | getType().compareTo(o.getType());
     }
 }
