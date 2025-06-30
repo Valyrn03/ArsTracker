@@ -1,7 +1,6 @@
-package application.utils;
+package application.terminal;
 
 import application.characters.Character;
-import application.displays.LandingPage;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,16 +14,15 @@ import java.util.logging.Logger;
  * Categorical Abilities: CharacterID(Key), Category, Actual Ability
  * Virtues & Flaws: ???
  */
-public class DatabaseFunctions {
-    public static boolean connectionCampaignDatabase(){
-        return false;
+public class DatabaseFunction {
+    private Logger logger;
+    String databaseURL;
+    public DatabaseFunction(){
+        logger = Logger.getLogger(DatabaseFunction.class.getName());
+        databaseURL = "jdbc:sqlite:" + DatabaseFunction.class.getResource("arsTrackerDB").getPath();
     }
 
-    public static ArrayList<Character> connectCharacterDatabase(){
-        Logger logger = Logger.getLogger(DatabaseFunctions.class.getName());
-
-        String databaseURL = "jdbc:sqlite:" + DatabaseFunctions.class.getResource("arsTrackerDB").getPath();
-
+    public ArrayList<Character> connectCharacterDatabase(){
         Connection connection;
         try{
             connection = DriverManager.getConnection(databaseURL);
@@ -82,7 +80,15 @@ public class DatabaseFunctions {
         return characters;
     }
 
-    public static boolean connectAbilityDatabase(){
+    public boolean connectAbilityDatabase(){
         return false;
+    }
+
+    public boolean add(Character character){
+        return false;
+    }
+
+    public ArrayList<Character> query(String s) {
+        return new ArrayList<>();
     }
 }

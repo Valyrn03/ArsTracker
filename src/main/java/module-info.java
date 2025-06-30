@@ -19,4 +19,5 @@ module application {
     exports application.displays;
     opens application.displays to javafx.fxml;
     exports application.utils;
+    exports application.terminal;
 }

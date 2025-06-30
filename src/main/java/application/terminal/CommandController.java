@@ -1,10 +1,9 @@
-package application.utils;
+package application.terminal;
 
 import application.characters.Character;
 import org.beryx.textio.TextTerminal;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import static application.displays.LandingPage.getCharacter;
 
@@ -40,5 +39,10 @@ public class CommandController {
             }
         }
         return "No Character Found by that name, please try again";
+    }
+
+    public void createCharacter(TextTerminal terminal){
+
+        
     }
 }
