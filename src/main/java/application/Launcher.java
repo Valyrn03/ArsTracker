@@ -1,6 +1,7 @@
 package application;
 
 import application.characters.Character;
+import application.characters.CharacterFeature;
 import application.displays.LandingPage;
 import application.terminal.CharacterCreator;
 import application.terminal.CommandController;
@@ -20,8 +21,8 @@ public class Launcher {
     String[] args;
     DatabaseFunction database;
     CommandController controller;
-    CharacterCreator creator;
     TextIO IOSource;
+    TextTerminal terminal;
 
     public Launcher(String[] arg){
         args = arg;
@@ -30,7 +31,7 @@ public class Launcher {
         database = new DatabaseFunction();
         ArrayList<Character> characters = database.query("");
         controller = new CommandController(characters);
-        creator = new CharacterCreator();
+        terminal = IOSource.getTextTerminal();
     }
 
     public void coreLoop(){
@@ -39,14 +40,13 @@ public class Launcher {
             if(result == 3){
                 LandingPage.launch(LandingPage.class, args);
             }else if(result == 2){
-                database.add(creator.initialize(IOSource.getTextTerminal()));
+                database.add(createCharacter());
             }
             result = controlInput();
         }
     }
 
     public int controlInput(){
-        TextTerminal terminal = IOSource.getTextTerminal();
         String command = IOSource.newStringInputReader().read("> ");
         if(command.equals("help")){
             terminal.println("COMMANDS\n\tlist: list all characters\n\tselect [character]: select character by given name\n\tcreate \n\t\tcreate character: Create new character\n\topenGUI: Open GUI");
@@ -67,5 +67,39 @@ public class Launcher {
         }
         terminal.println("Command Not Found, Please Try Again");
         return 1;
+    }
+
+    public Character createCharacter(){
+        CharacterCreator creator = new CharacterCreator();
+        String characterName = IOSource.newStringInputReader().read("Character Name >");
+        int category = IOSource.newIntInputReader().read("[" + characterName + "] Category\n\tType \"1\" for Magus\n\tType \"2\" for Companion\n\tType \"3\" for Grog\n\t\t>");
+        switch (category){
+            case 1:
+                creator.initialize(characterName, Character.CharacterType.MAGUS);
+                break;
+            case 2:
+                creator.initialize(characterName, Character.CharacterType.COMPANION);
+                break;
+            default:
+                creator.initialize(characterName, Character.CharacterType.GROG);
+        }
+
+        terminal.println("Enter Virtues, submit an empty line to show the listing is complete:");
+        String featureInput = IOSource.newStringInputReader().read("\tName >");
+        while(featureInput.length() > 1){
+            char strengthSelector = IOSource.newCharInputReader().read("\tMajor ([M]) or Minor ([m]) >");
+            String description = IOSource.newStringInputReader().read("\tDescription >");
+
+            CharacterFeature feature;
+            if(strengthSelector == 'M'){
+                feature = new CharacterFeature(featureInput, description, true, true);
+            }else{
+                feature = new CharacterFeature(featureInput, description, true, false);
+            }
+
+            creator.addNewFeature(feature);
+        }
+
+        return creator.close();
     }
 }

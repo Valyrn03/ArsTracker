@@ -1,7 +1,6 @@
 package application.characters;
 
 import application.utils.Abilities;
-import application.utils.CharacterFeature;
 import application.utils.characterUtils;
 
 import java.io.Serializable;
@@ -36,6 +35,32 @@ public class Character implements Serializable, Comparable<Character> {
         abilities = new HashMap<>();
         id = UUID.randomUUID();
         characterType = CharacterType.valueOf(characterCategory.toUpperCase());
+        features = new ArrayList<>();
+        logger = Logger.getLogger(this.name);
+    }
+
+    public Character(String name, String characterCategory){
+        this.name = name;
+        baseAttributes = new HashMap<>();
+        attributes = new HashMap<>();
+        attributes.put(characterUtils.ExtraneousAttribute.SIZE, 0);
+        setDefaultAttributes();
+        abilities = new HashMap<>();
+        id = UUID.randomUUID();
+        characterType = CharacterType.valueOf(characterCategory.toUpperCase());
+        features = new ArrayList<>();
+        logger = Logger.getLogger(this.name);
+    }
+
+    public Character(String name, CharacterType characterCategory){
+        this.name = name;
+        baseAttributes = new HashMap<>();
+        attributes = new HashMap<>();
+        attributes.put(characterUtils.ExtraneousAttribute.SIZE, 0);
+        setDefaultAttributes();
+        abilities = new HashMap<>();
+        id = UUID.randomUUID();
+        characterType = characterCategory;
         features = new ArrayList<>();
         logger = Logger.getLogger(this.name);
     }
@@ -171,8 +196,12 @@ public class Character implements Serializable, Comparable<Character> {
         return features;
     }
 
-    public void addFeature(String feature, boolean isVirtue){
-        features.add(new CharacterFeature(feature, "", isVirtue));
+    public void addFeature(String feature, boolean isVirtue, boolean isMajor){
+        features.add(new CharacterFeature(feature, "", isVirtue, isMajor));
+    }
+
+    public void addFeature(CharacterFeature feature){
+        features.add(feature);
     }
 
     public CharacterType getType(){

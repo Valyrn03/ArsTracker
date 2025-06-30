@@ -4,7 +4,7 @@ import application.characters.Character;
 import application.displays.CharacterEditorDisplay;
 import application.displays.CharacterSheetDisplay;
 import application.utils.Abilities;
-import application.utils.CharacterFeature;
+import application.characters.CharacterFeature;
 import application.utils.characterUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

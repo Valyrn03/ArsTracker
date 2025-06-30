@@ -1,4 +1,4 @@
-package application.utils;
+package application.characters;
 
 import java.util.HashMap;
 
@@ -7,12 +7,14 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
     private boolean isVirtue;
     private String name;
     private String description;
+    private boolean isMajor;
 
-    public CharacterFeature(String name, String description, boolean virtue){
+    public CharacterFeature(String name, String description, boolean virtue, boolean isMajor){
         this.name = name;
         this.description = description;
         attributes = deriveAttribute(description);
         isVirtue = virtue;
+        this.isMajor = isMajor;
     }
 
     public int getAttribute(String attribute){

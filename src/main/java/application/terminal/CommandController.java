@@ -40,9 +40,4 @@ public class CommandController {
         }
         return "No Character Found by that name, please try again";
     }
-
-    public void createCharacter(TextTerminal terminal){
-
-        
-    }
 }

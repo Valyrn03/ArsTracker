@@ -1,17 +1,25 @@
 package application.terminal;
 
 import application.characters.Character;
-import org.beryx.textio.TextTerminal;
+import application.characters.CharacterFeature;
 
 public class CharacterCreator {
-    private TextTerminal terminal;
+    private Character character;
 
     public CharacterCreator(){
 
     }
 
-    public Character initialize(TextTerminal t){
-        terminal = t;
-        return null;
+    public void initialize(String name, Character.CharacterType category){
+        character = new Character(name, category);
+    }
+
+    public boolean addNewFeature(CharacterFeature feature){
+        character.addFeature(feature);
+        return true;
+    }
+
+    public Character close(){
+        return character;
     }
 }
