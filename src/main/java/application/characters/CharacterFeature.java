@@ -41,19 +41,34 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
         return name;
     }
 
+    /*
+    Comparing Features
+
+    Major Virtue > Minor Virtue > Major Flaw > Minor Flaw
+
+    If != type
+        return
+    If != major
+        return
+    return name
+     */
     @Override
     public int compareTo(CharacterFeature o) {
-        if(this.isVirtue){
-            if(o.isVirtue()){
-                return this.name.compareTo(o.name);
-            }else{
+        if(this == o) {
+            return 0;
+        }else if(this.isVirtue != o.isVirtue){
+            if(this.isVirtue){
                 return 1;
+            }else{
+                return -1;
+            }
+        }else if(this.isMajor != o.isMajor){
+            if(this.isMajor){
+                return 1;
+            }else{
+                return -1;
             }
         }
-        if(o.isVirtue){
-            return -1;
-        }else{
-            return this.name.compareTo(o.name);
-        }
+        return this.name.compareTo(o.name);
     }
 }

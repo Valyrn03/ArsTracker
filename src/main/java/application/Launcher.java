@@ -35,38 +35,38 @@ public class Launcher {
     }
 
     public void coreLoop(){
-        int result = controlInput();
-        while(result != 0){
-            if(result == 3){
+        ControlState result = controlInput();
+        while(result != ControlState.CLOSE){
+            if(result == ControlState.GUI){
                 LandingPage.launch(LandingPage.class, args);
-            }else if(result == 2){
+            }else if(result == ControlState.CREATE_CHARACTER){
                 database.add(createCharacter());
             }
             result = controlInput();
         }
     }
 
-    public int controlInput(){
+    public ControlState controlInput(){
         String command = IOSource.newStringInputReader().read("> ");
         if(command.equals("help")){
             terminal.println("COMMANDS\n\tlist: list all characters\n\tselect [character]: select character by given name\n\tcreate \n\t\tcreate character: Create new character\n\topenGUI: Open GUI");
-            return 1;
+            return ControlState.HELP;
         }else if(command.equals("openGUI")){
-            return 2;
+            return ControlState.GUI;
         }else if(command.equals("close")){
-            return 0;
+            return ControlState.CLOSE;
         }else if(command.equals("list")){ 
             terminal.printf("%s\n", controller.loadCharacters());
-            return 1;
+            return ControlState.LIST;
         }else if(command.startsWith("select")){
             String characterName = command.substring(7);
             terminal.println(controller.selectCharacter(characterName));
-            return 1;
+            return ControlState.SELECT;
         }else if(command.equals("create character")){
-            return 2;
+            return ControlState.CREATE_CHARACTER;
         }
         terminal.println("Command Not Found, Please Try Again");
-        return 1;
+        return ControlState.CLOSE;
     }
 
     public Character createCharacter(){
@@ -101,5 +101,14 @@ public class Launcher {
         }
 
         return creator.close();
+    }
+
+    public static enum ControlState {
+        HELP,
+        LIST,
+        GUI,
+        CREATE_CHARACTER,
+        SELECT,
+        CLOSE
     }
 }
