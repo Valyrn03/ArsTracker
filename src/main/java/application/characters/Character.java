@@ -280,14 +280,14 @@ public class Character implements Serializable, Comparable<Character> {
         int counter = 4;
         while(!content.get(counter).equals("Flaws")){
             logger.info("[Deserialization] Virtue: " + content.get(counter).substring(1));
-            character.addFeature(content.get(counter).substring(1), true);
+            character.addFeature(content.get(counter).substring(1), true, true); //DEFAULTS TO MAJOR, AS IMPLEMENTATION WILL CHANGE
             counter++;
         }
 
         counter++;
         while(!content.get(counter).equals("Abilities")){
             logger.info("[Deserialization] Flaw: " + content.get(counter).substring(1));
-            character.addFeature(content.get(counter).substring(1), false);
+            character.addFeature(content.get(counter).substring(1), false, true); //DEFAULTS TO MAJOR, AS IMPLEMENTATION WILL CHANGE
             counter++;
         }
 

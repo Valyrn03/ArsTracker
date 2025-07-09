@@ -21,4 +21,5 @@ module application {
     exports application.utils;
     exports application.terminal;
     exports application.characters;
+    exports application.commands;
 }

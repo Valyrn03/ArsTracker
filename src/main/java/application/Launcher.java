@@ -4,7 +4,8 @@ import application.characters.Character;
 import application.characters.CharacterFeature;
 import application.displays.LandingPage;
 import application.terminal.CharacterCreator;
-import application.terminal.CommandController;
+import application.commands.CharacterSelector;
+import application.terminal.Command;
 import application.terminal.DatabaseFunction;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
@@ -20,18 +21,18 @@ public class Launcher {
 
     String[] args;
     DatabaseFunction database;
-    CommandController controller;
-    TextIO IOSource;
+    CharacterSelector controller;
+    TextIO source;
     TextTerminal terminal;
+    ArrayList<Character> characters;
 
     public Launcher(String[] arg){
         args = arg;
-        IOSource = TextIoFactory.getTextIO();
-        IOSource.getTextTerminal().println("Type \"help\" to get a list of commands");
+        source = TextIoFactory.getTextIO();
+        source.getTextTerminal().println("Type \"help\" to get a list of commands");
         database = new DatabaseFunction();
         ArrayList<Character> characters = database.query("");
-        controller = new CommandController(characters);
-        terminal = IOSource.getTextTerminal();
+        terminal = source.getTextTerminal();
     }
 
     public void coreLoop(){
@@ -46,61 +47,39 @@ public class Launcher {
         }
     }
 
+    private Character createCharacter() {
+        return null;
+    }
+
+    public boolean execute(Command command){
+        return command.execute();
+    }
+
     public ControlState controlInput(){
-        String command = IOSource.newStringInputReader().read("> ");
-        if(command.equals("help")){
+        String command = source.newStringInputReader().read("> ");
+        String[] userInput = command.split(" ");
+        if(userInput.length == 0){
+            return ControlState.CLOSE;
+        }else if("help".equals(userInput[0])){
             terminal.println("COMMANDS\n\tlist: list all characters\n\tselect [character]: select character by given name\n\tcreate \n\t\tcreate character: Create new character\n\topenGUI: Open GUI");
             return ControlState.HELP;
-        }else if(command.equals("openGUI")){
+        }else if(userInput[0].equals("openGUI")){
             return ControlState.GUI;
-        }else if(command.equals("close")){
+        }else if(userInput[0].equals("close")){
             return ControlState.CLOSE;
-        }else if(command.equals("list")){ 
-            terminal.printf("%s\n", controller.loadCharacters());
+        }else if(userInput[0].equals("list")){
+            characters = database.query("");
+            terminal.printf("Characters Loaded!\n");
             return ControlState.LIST;
-        }else if(command.startsWith("select")){
+        }else if(userInput[0].equals("select")){
             String characterName = command.substring(7);
-            terminal.println(controller.selectCharacter(characterName));
+            execute(new CharacterSelector(source, characterName, characters));
             return ControlState.SELECT;
-        }else if(command.equals("create character")){
+        }else if(userInput[0].equals("create character")){
             return ControlState.CREATE_CHARACTER;
         }
         terminal.println("Command Not Found, Please Try Again");
         return ControlState.CLOSE;
-    }
-
-    public Character createCharacter(){
-        CharacterCreator creator = new CharacterCreator();
-        String characterName = IOSource.newStringInputReader().read("Character Name >");
-        int category = IOSource.newIntInputReader().read("[" + characterName + "] Category\n\tType \"1\" for Magus\n\tType \"2\" for Companion\n\tType \"3\" for Grog\n\t\t>");
-        switch (category){
-            case 1:
-                creator.initialize(characterName, Character.CharacterType.MAGUS);
-                break;
-            case 2:
-                creator.initialize(characterName, Character.CharacterType.COMPANION);
-                break;
-            default:
-                creator.initialize(characterName, Character.CharacterType.GROG);
-        }
-
-        terminal.println("Enter Virtues, submit an empty line to show the listing is complete:");
-        String featureInput = IOSource.newStringInputReader().read("\tName >");
-        while(featureInput.length() > 1){
-            char strengthSelector = IOSource.newCharInputReader().read("\tMajor ([M]) or Minor ([m]) >");
-            String description = IOSource.newStringInputReader().read("\tDescription >");
-
-            CharacterFeature feature;
-            if(strengthSelector == 'M'){
-                feature = new CharacterFeature(featureInput, description, true, true);
-            }else{
-                feature = new CharacterFeature(featureInput, description, true, false);
-            }
-
-            creator.addNewFeature(feature);
-        }
-
-        return creator.close();
     }
 
     public static enum ControlState {
