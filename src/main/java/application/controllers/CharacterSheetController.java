@@ -1,11 +1,9 @@
 package application.controllers;
 
+import application.characters.*;
 import application.characters.Character;
 import application.displays.CharacterEditorDisplay;
 import application.displays.CharacterSheetDisplay;
-import application.utils.Abilities;
-import application.characters.CharacterFeature;
-import application.utils.characterUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -51,8 +49,8 @@ public class CharacterSheetController {
     public void loadCharacter() {
         logger.info("[Character Sheet] Loading Character " + character.toString());
         characterName.setText(character.getName());
-        if(!Integer.valueOf((character.getAttribute(characterUtils.ExtraneousAttribute.AGE))).equals(Integer.MAX_VALUE)){
-            characterAge.setText(Integer.toString(character.getAttribute(characterUtils.ExtraneousAttribute.AGE)));
+        if(!Integer.valueOf((character.getAttribute(ExtraneousAttribute.AGE))).equals(Integer.MAX_VALUE)){
+            characterAge.setText(Integer.toString(character.getAttribute(ExtraneousAttribute.AGE)));
         }else{
             characterAge.setText("ERROR: Age Not Set");
         }
@@ -87,7 +85,7 @@ public class CharacterSheetController {
         VBox statValues = new VBox(4);
 
         ArrayList<String> entries = new ArrayList<>();
-        for(characterUtils.Attribute attribute : characterUtils.Attribute.values()){
+        for(Attribute attribute : Attribute.values()){
             statNames.getChildren().add(new Label(attribute.toString()));
             statValues.getChildren().add(new Label(Integer.toString(character.getAttribute(attribute))));
             entries.add(String.format("\nAttribute: %s, Value: %s", attribute.toString(), character.getAttribute(attribute)));
@@ -107,7 +105,7 @@ public class CharacterSheetController {
         VBox specialities = new VBox(4);
         VBox scores = new VBox(4);
 
-        for(Abilities.Ability entry : character.getAbilities().keySet()){
+        for(Ability entry : character.getAbilities().keySet()){
             logger.info("Adding Ability: " + entry);
             abilities.getChildren().add(new Label(entry.name()));
             scores.getChildren().add(new Label(Integer.toString(character.getAbilityScore(entry))));
