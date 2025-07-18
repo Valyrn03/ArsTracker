@@ -45,7 +45,7 @@ public class Launcher {
         commands.put("openGUI", ControlState.GUI);
         commands.put("list", ControlState.LIST);
         commands.put("select", ControlState.SELECT);
-        commands.put("create character", ControlState.CREATE_CHARACTER);
+        commands.put("create", ControlState.CREATE);
         commands.put("close", ControlState.CLOSE);
     }
 
@@ -75,30 +75,23 @@ public class Launcher {
         if(userInput.length == 0){
             return ControlState.CLOSE;
         }
-
-        if("help".equals(userInput[0])){
+        ControlState state = commands.get(userInput[0]);
+        if(state == null){
+            terminal.println("Command Not Found, Please Try Again");
+        }else if(state == ControlState.HELP){
             terminal.println("COMMANDS\n\tlist: list all characters\n\tselect [character]: select character by given name\n\tcreate \n\t\tcreate character: Create new character\n\topenGUI: Open GUI");
-            return ControlState.HELP;
-        }else if("openGUI".equals(userInput[0])){
-            return ControlState.GUI;
-        }else if("close".equals(userInput[0])){
-            return ControlState.CLOSE;
-        }else if("list".equals(userInput[0])){
+        }else if(state == ControlState.LIST){
             characters = database.query("");
             terminal.printf("Characters Loaded!\n");
-            return ControlState.LIST;
-        }else if("select".equals(userInput[0])){
+        }else if(state == ControlState.SELECT){
             String characterName = String.join(" ", Arrays.copyOfRange(userInput, 1, userInput.length));
             execute(new CharacterSelector(source, characterName, characters));
-            return ControlState.SELECT;
-        }else if("create".equals(userInput[0])){
+        }else if(state == ControlState.CREATE){
             if("character".equals(userInput[1])){
                 execute(new CharacterCreator(source, characters));
-                return ControlState.CREATE_CHARACTER;
             }
         }
-        terminal.println("Command Not Found, Please Try Again");
-        return ControlState.CLOSE;
+        return state;
     }
 
     public static enum ControlState {
@@ -107,6 +100,7 @@ public class Launcher {
         GUI,
         CREATE_CHARACTER,
         SELECT,
-        CLOSE
+        CLOSE,
+        CREATE
     }
 }
