@@ -11,6 +11,9 @@ import org.beryx.textio.TextIoFactory;
 import org.beryx.textio.TextTerminal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Launcher {
     public static void main(String[] args){
@@ -23,6 +26,7 @@ public class Launcher {
     TextIO source;
     TextTerminal terminal;
     ArrayList<Character> characters;
+    Map<String, ControlState> commands;
 
     public Launcher(String[] arg){
         args = arg;
@@ -31,6 +35,18 @@ public class Launcher {
         database = new DatabaseFunction();
         ArrayList<Character> characters = database.query("");
         terminal = source.getTextTerminal();
+
+        commands = new HashMap<>();
+        addLauncherCommands();
+    }
+
+    private void addLauncherCommands() {
+        commands.put("help", ControlState.HELP);
+        commands.put("openGUI", ControlState.GUI);
+        commands.put("list", ControlState.LIST);
+        commands.put("select", ControlState.SELECT);
+        commands.put("create character", ControlState.CREATE_CHARACTER);
+        commands.put("close", ControlState.CLOSE);
     }
 
     public void coreLoop(){
@@ -58,7 +74,9 @@ public class Launcher {
         String[] userInput = command.split(" ");
         if(userInput.length == 0){
             return ControlState.CLOSE;
-        }else if("help".equals(userInput[0])){
+        }
+
+        if("help".equals(userInput[0])){
             terminal.println("COMMANDS\n\tlist: list all characters\n\tselect [character]: select character by given name\n\tcreate \n\t\tcreate character: Create new character\n\topenGUI: Open GUI");
             return ControlState.HELP;
         }else if("openGUI".equals(userInput[0])){
@@ -70,7 +88,7 @@ public class Launcher {
             terminal.printf("Characters Loaded!\n");
             return ControlState.LIST;
         }else if("select".equals(userInput[0])){
-            String characterName = command.substring(7);
+            String characterName = String.join(" ", Arrays.copyOfRange(userInput, 1, userInput.length));
             execute(new CharacterSelector(source, characterName, characters));
             return ControlState.SELECT;
         }else if("create".equals(userInput[0])){
