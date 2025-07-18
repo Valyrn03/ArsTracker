@@ -1,8 +1,8 @@
 package application.controllers;
 
+import application.characters.Ability;
+import application.characters.Attribute;
 import application.characters.Character;
-import application.utils.Abilities;
-import application.utils.characterUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -41,14 +41,14 @@ public class CharacterEditorController {
     public void initialize(Character character, Stage currentStage){
 
         //Preparing Ability Table
-        List<Abilities.Ability> abilities = character.getAbilities().keySet().stream().toList();
+        List<Ability> abilities = character.getAbilities().keySet().stream().toList();
         abilities.sort(null);
 
         //Setting Formatter so that the text fields can only accept integers
         TextFormatter<Integer> formatter = new TextFormatter<>(new IntegerStringConverter());
 
         //Populating Ability Table
-        for(Abilities.Ability ability : abilities){
+        for(Ability ability : abilities){
             HBox item = new HBox();
             item.getChildren().add(new Label(ability.name()));
             TextField abilityField = new TextField(Integer.toString(character.getAbility(ability)));
@@ -57,7 +57,7 @@ public class CharacterEditorController {
         }
 
         //Populating Characteristics Table
-        for(characterUtils.Attribute characteristic: characterUtils.Attribute.values()){
+        for(Attribute characteristic: Attribute.values()){
             HBox item = new HBox();
             item.getChildren().add(new Label(characteristic.name()));
             TextField characteristicField = new TextField(Integer.toString(character.getAttribute(characteristic)));

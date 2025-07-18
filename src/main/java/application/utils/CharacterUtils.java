@@ -2,17 +2,9 @@ package application.utils;
 
 import java.util.logging.Logger;
 
-public class characterUtils {
-    public enum Attribute {
-        INTELLIGENCE, PERCEPTION, STRENGTH, STAMINA, PRESENCE, COMMUNICATION, DEXTERITY, QUICKNESS;
-    }
-
-    public enum ExtraneousAttribute {
-        AGE, SIZE, CONFIDENCE_SCORE, CONFIDENCE_POINTS, DECREPITUDE, WARPING
-    }
-    
+public class CharacterUtils {
     public static int abilityExperienceToScore(int experience){
-        Logger logger = Logger.getLogger(characterUtils.class.getName());
+        Logger logger = Logger.getLogger(CharacterUtils.class.getName());
         logger.info("Experience: " + experience);
         int score = 0;
 
