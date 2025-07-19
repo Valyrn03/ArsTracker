@@ -1,4 +1,4 @@
-package application.utils;
+package application.characters;
 
 import java.util.HashMap;
 
@@ -7,12 +7,14 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
     private boolean isVirtue;
     private String name;
     private String description;
+    private boolean isMajor;
 
-    public CharacterFeature(String name, String description, boolean virtue){
+    public CharacterFeature(String name, String description, boolean virtue, boolean isMajor){
         this.name = name;
         this.description = description;
         attributes = deriveAttribute(description);
         isVirtue = virtue;
+        this.isMajor = isMajor;
     }
 
     public int getAttribute(String attribute){
@@ -39,19 +41,34 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
         return name;
     }
 
+    /*
+    Comparing Features
+
+    Major Virtue > Minor Virtue > Major Flaw > Minor Flaw
+
+    If != type
+        return
+    If != major
+        return
+    return name
+     */
     @Override
     public int compareTo(CharacterFeature o) {
-        if(this.isVirtue){
-            if(o.isVirtue()){
-                return this.name.compareTo(o.name);
-            }else{
+        if(this == o) {
+            return 0;
+        }else if(this.isVirtue != o.isVirtue){
+            if(this.isVirtue){
                 return 1;
+            }else{
+                return -1;
+            }
+        }else if(this.isMajor != o.isMajor){
+            if(this.isMajor){
+                return 1;
+            }else{
+                return -1;
             }
         }
-        if(o.isVirtue){
-            return -1;
-        }else{
-            return this.name.compareTo(o.name);
-        }
+        return this.name.compareTo(o.name);
     }
 }

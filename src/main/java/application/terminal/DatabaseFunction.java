@@ -1,9 +1,15 @@
 package application.terminal;
 
+import application.Launcher;
 import application.characters.Character;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
@@ -17,9 +23,20 @@ import java.util.logging.Logger;
 public class DatabaseFunction {
     private Logger logger;
     String databaseURL;
+
     public DatabaseFunction(){
         logger = Logger.getLogger(DatabaseFunction.class.getName());
-        databaseURL = "jdbc:sqlite:" + DatabaseFunction.class.getResource("arsTrackerDB").getPath();
+        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
+            Properties properties = new Properties();
+            properties.load(stream);
+            if("test".equals(properties.getProperty("type"))){
+                databaseURL = "jdbc:sqlite:" + properties.getProperty("testDBPath");
+            }else{
+                databaseURL = "jdbc:sqlite:" + properties.getProperty("prodDBPath");
+            }
+        }catch (IOException exp){
+            logger.info("Failed to Find Properties File");
+        }
     }
 
     public ArrayList<Character> connectCharacterDatabase(){
@@ -31,12 +48,12 @@ public class DatabaseFunction {
             return null;
         }
 
-        String createTableStatement = "CREATE TABLE IF NOT EXISTS characters (id BLOB PRIMARY KEY," +
+        String createTableStatement = "CREATE TABLE IF NOT EXISTS characters (id TEXT PRIMARY KEY," +
                 "name TEXT," +
-                "campaignID BLOB," +
-                "characteristicsID BLOB," +
+                "campaignID TEXT," + //UUID for Campaign Table
+                "characteristicsID TEXT," + //UUID for Characteristics Table
                 "type TINYINT," +
-                "abilityID BLOB," +
+                "abilityID TEXT," + //UUID for Abilities Table
                 "birthSeason INT," +
                 "virtues TEXT," +
                 "flaws TEXT)";
@@ -89,6 +106,6 @@ public class DatabaseFunction {
     }
 
     public ArrayList<Character> query(String s) {
-        return new ArrayList<>();
+        return connectCharacterDatabase();
     }
 }
