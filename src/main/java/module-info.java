@@ -11,6 +11,7 @@ module application {
     requires eu.hansolo.tilesfx;
     requires java.sql;
     requires org.beryx.textio;
+    requires org.xerial.sqlitejdbc;
 
     opens application to javafx.fxml;
     exports application;
