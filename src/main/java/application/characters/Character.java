@@ -2,17 +2,19 @@ package application.characters;
 
 import application.utils.Abilities;
 import application.utils.CharacterUtils;
+import org.sqlite.util.Logger;
+import org.sqlite.util.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static java.util.Collections.sort;
 
 //Random comment
 
 public class Character implements Serializable, Comparable<Character> {
+    final Logger logger = LoggerFactory.getLogger(Character.class);
+
     private String name;
     private Map<Attribute, Integer> baseAttributes;
     //Ability <-> XP
@@ -21,7 +23,6 @@ public class Character implements Serializable, Comparable<Character> {
     private CharacterType characterType;
     ArrayList<CharacterFeature> features;
     UUID id;
-    Logger logger;
 
     public Character(String name, int age, String characterCategory){
         this.name = name;
@@ -34,7 +35,6 @@ public class Character implements Serializable, Comparable<Character> {
         id = UUID.randomUUID();
         characterType = CharacterType.valueOf(characterCategory.toUpperCase());
         features = new ArrayList<>();
-        logger = Logger.getLogger(this.name);
     }
 
     public Character(String name, String characterCategory){
@@ -47,7 +47,6 @@ public class Character implements Serializable, Comparable<Character> {
         id = UUID.randomUUID();
         characterType = CharacterType.valueOf(characterCategory.toUpperCase());
         features = new ArrayList<>();
-        logger = Logger.getLogger(this.name);
     }
 
     public Character(String name, CharacterType characterCategory){
@@ -60,7 +59,6 @@ public class Character implements Serializable, Comparable<Character> {
         id = UUID.randomUUID();
         characterType = characterCategory;
         features = new ArrayList<>();
-        logger = Logger.getLogger(this.name);
     }
 
     public static enum CharacterType {
@@ -71,10 +69,6 @@ public class Character implements Serializable, Comparable<Character> {
 
     private void setDefaultAttributes(){
         for(Attribute attribute : Attribute.values()){
-            if(logger == null){
-                logger = Logger.getLogger(this.name);
-                logger.info("Logger was null");
-            }
             baseAttributes.put(attribute, 0);
         }
     }
@@ -91,14 +85,10 @@ public class Character implements Serializable, Comparable<Character> {
     }
 
     public int getAttribute(Attribute attribute){
-        Logger logger = Logger.getLogger("Characters");
-        logger.log(Level.FINER, baseAttributes.toString());
         return baseAttributes.getOrDefault(attribute, Integer.MAX_VALUE);
     }
 
     public int getAttribute(ExtraneousAttribute attribute){
-        Logger logger = Logger.getLogger("Characters");
-        logger.log(Level.FINER, baseAttributes.toString());
         return attributes.getOrDefault(attribute, Integer.MAX_VALUE);
     }
 
@@ -267,7 +257,7 @@ public class Character implements Serializable, Comparable<Character> {
 
         //HANDLING CHARACTERISTICS
         String[] characteristicStrings = content.get(2).split(" ");
-        logger.info("[Deserialization] Loaded Characteristics: " + Arrays.toString(characteristicStrings));
+        logger.info(() -> "[Deserialization] Loaded Characteristics: " + Arrays.toString(characteristicStrings));
         ArrayList<Integer> characteristics = new ArrayList<>();
         for(int i = 1; i < characteristicStrings.length; i += 2){
             characteristics.add(Integer.parseInt(characteristicStrings[i]));
@@ -277,14 +267,16 @@ public class Character implements Serializable, Comparable<Character> {
         //Virtues & Flaws
         int counter = 4;
         while(!content.get(counter).equals("Flaws")){
-            logger.info("[Deserialization] Virtue: " + content.get(counter).substring(1));
+            int finalCounter = counter;
+            logger.info(() -> "[Deserialization] Virtue: " + content.get(finalCounter).substring(1));
             character.addFeature(content.get(counter).substring(1), true, true); //DEFAULTS TO MAJOR, AS IMPLEMENTATION WILL CHANGE
             counter++;
         }
 
         counter++;
         while(!content.get(counter).equals("Abilities")){
-            logger.info("[Deserialization] Flaw: " + content.get(counter).substring(1));
+            int finalCounter1 = counter;
+            logger.info(() -> "[Deserialization] Flaw: " + content.get(finalCounter1).substring(1));
             character.addFeature(content.get(counter).substring(1), false, true); //DEFAULTS TO MAJOR, AS IMPLEMENTATION WILL CHANGE
             counter++;
         }
@@ -294,10 +286,10 @@ public class Character implements Serializable, Comparable<Character> {
         while(counter < content.size()){
             String[] abilityLine = content.get(counter).substring(4).split(" ");
             if(abilityLine.length == 6){
-                logger.info("[Deserialization] Ability: " + Arrays.toString(abilityLine));
+                logger.info(() -> "[Deserialization] Ability: " + Arrays.toString(abilityLine));
                 character.improveAbility(Ability.valueOf(abilityLine[1]), Integer.parseInt(abilityLine[0]));
             }else{
-                logger.info("[Deserialization] Ability: " + Arrays.toString(abilityLine));
+                logger.info(() -> "[Deserialization] Ability: " + Arrays.toString(abilityLine));
                 character.improveAbility(Ability.valueOf(abilityLine[1]), Integer.parseInt(abilityLine[0]));
             }
             counter++;
