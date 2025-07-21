@@ -14,3 +14,9 @@ CREATE TABLE ability_category (name VARCHAR(32), overarchingType INT, PRIMARY KE
 
 -- changeset liquibase:5
 CREATE TABLE campaign (id VARCHAR(36), name VARCHAR(512), current_season INT, PRIMARY KEY (id))
+
+-- changeset liquibase:ability_category_drop_int_type
+ALTER TABLE ability_category DROP overarchingType
+
+-- changeset liquibase:ability_category_add_string_type
+ALTER TABLE ability_category ADD overarchingType VARCHAR(16)
