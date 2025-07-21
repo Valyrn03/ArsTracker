@@ -1,8 +1,5 @@
 package application;
 
-import org.sqlite.util.Logger;
-import org.sqlite.util.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -13,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class Scripts {
+public class AbilityCategoryScript {
     public static void main(String[] args) {
         if(resetGeneral()){
             System.out.println("General Abilities Set");
