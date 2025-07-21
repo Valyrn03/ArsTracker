@@ -27,6 +27,125 @@ public class AbilityCategoryScript {
         if(resetMartial()){
             System.out.println("Martial Abilities Set");
         }
+        if(resetTechniques()){
+            System.out.println("Techniques Set");
+        }
+        if(resetForms()){
+            System.out.println("Forms Set");
+        }
+    }
+
+    private static boolean resetTechniques() {
+        List<String> arts = new ArrayList<>();
+
+        arts.add("Creo");
+        arts.add("Intellego");
+        arts.add("Muto");
+        arts.add("Perdo");
+        arts.add("Rego");
+
+        String databaseURL;
+        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
+            Properties properties = new Properties();
+            properties.load(stream);
+            if("test".equals(properties.getProperty("type"))){
+                databaseURL = "jdbc:sqlite:" + properties.getProperty("testDBPath");
+            }else{
+                databaseURL = "jdbc:sqlite:" + properties.getProperty("prodDBPath");
+            }
+        }catch (IOException exp){
+            System.out.println("Failed to Find Database Path");
+            return false;
+        }
+        Connection connection;
+        try {
+            connection = DriverManager.getConnection(databaseURL);
+        }catch (SQLException exp){
+            System.out.println("Failed to Connect to Database");
+            return false;
+        }
+
+        String standardInsertionCall = "INSERT OR IGNORE  INTO ability_category (name, overarchingType) VALUES ('%s', '%s');";
+
+        try{
+            Statement statement = connection.createStatement();
+
+            for(String ability : arts){
+                statement.executeUpdate(String.format(standardInsertionCall, ability, "technique"));
+            }
+
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println(String.format("Failed to Update Table, Exception: %s", e.getMessage()));
+            return false;
+        }
+
+        try{
+            connection.close();
+            return true;
+        }catch (SQLException exp){
+            System.out.println("Failed to Close Connection");
+            return true;
+        }
+    }
+
+    private static boolean resetForms(){
+        List<String> arts = new ArrayList<>();
+
+        arts.add("Animal");
+        arts.add("Aquam");
+        arts.add("Aurum");
+        arts.add("Corpus");
+        arts.add("Herbam");
+        arts.add("Ignem");
+        arts.add("Imaginem");
+        arts.add("Mentem");
+        arts.add("Terram");
+        arts.add("Vim");
+
+        String databaseURL;
+        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
+            Properties properties = new Properties();
+            properties.load(stream);
+            if("test".equals(properties.getProperty("type"))){
+                databaseURL = "jdbc:sqlite:" + properties.getProperty("testDBPath");
+            }else{
+                databaseURL = "jdbc:sqlite:" + properties.getProperty("prodDBPath");
+            }
+        }catch (IOException exp){
+            System.out.println("Failed to Find Database Path");
+            return false;
+        }
+        Connection connection;
+        try {
+            connection = DriverManager.getConnection(databaseURL);
+        }catch (SQLException exp){
+            System.out.println("Failed to Connect to Database");
+            return false;
+        }
+
+        String standardInsertionCall = "INSERT OR IGNORE  INTO ability_category (name, overarchingType) VALUES ('%s', '%s');";
+
+        try{
+            Statement statement = connection.createStatement();
+
+            for(String ability : arts){
+                statement.executeUpdate(String.format(standardInsertionCall, ability, "form"));
+            }
+
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println(String.format("Failed to Update Table, Exception: %s", e.getMessage()));
+            return false;
+        }
+
+        try{
+            connection.close();
+            return true;
+        }catch (SQLException exp){
+            System.out.println("Failed to Close Connection");
+            return true;
+        }
     }
 
     private static boolean resetMartial(){
