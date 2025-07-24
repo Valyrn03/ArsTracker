@@ -16,11 +16,11 @@ public abstract class Command {
 
     public abstract boolean execute();
 
-    private int getInt(String prompt){
+    int getInt(String prompt){
         return source.newIntInputReader().read(prompt + " >");
     }
 
-    private int getOptions(ArrayList<String> options){
+    int getOptions(ArrayList<String> options){
         terminal.println("Choose one of the following options:");
         for(int i = 0; i < options.size(); i++){
             terminal.printf("\t%d: %s\n", i, options.get(i));

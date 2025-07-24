@@ -17,4 +17,8 @@ public abstract class CharacterController extends Command{
         characters.add(character);
         return true;
     }
+
+    public int getInt(String prompt){
+        return super.getInt(prompt);
+    }
 }
