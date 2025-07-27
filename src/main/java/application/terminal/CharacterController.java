@@ -21,4 +21,8 @@ public abstract class CharacterController extends Command{
     public int getInt(String prompt){
         return super.getInt(prompt);
     }
+
+    public void print(String prompt){
+        super.source.getTextTerminal().println(prompt);
+    }
 }
