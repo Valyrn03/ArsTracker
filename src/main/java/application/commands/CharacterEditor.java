@@ -45,12 +45,16 @@ public class CharacterEditor extends CharacterController {
             //Print Options + Costs
             Attribute[] attributeList = Attribute.values();
 
+            super.print("This array is not valid. Try again");
             for(int i = 0; i < attributeList.length; i++){
                 super.print(String.format("%d. %s: %d", i, attributeList[i], characteristics.get(i)));
             }
             //Call getCharacteristics() again, but with a "do better" as the string prompt
                 //Add a "if prompt is not null, then print, else continue"
+            return getCharacteristics("\n");
         }
+
+        return characteristics;
     }
 
     /**
