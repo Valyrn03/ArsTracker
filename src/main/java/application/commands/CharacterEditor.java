@@ -53,8 +53,6 @@ public class CharacterEditor extends CharacterController {
                 //Add a "if prompt is not null, then print, else continue"
             return getCharacteristics("\n");
         }
-
-        return characteristics;
     }
 
     /**
@@ -66,7 +64,7 @@ public class CharacterEditor extends CharacterController {
 
      @return list of respective costs if a mistake was made, or null if it goes through correctly
      */
-    public List<Integer> verifyCharacteristics(List<Integer> characteristics){
+    public static List<Integer> verifyCharacteristics(List<Integer> characteristics){
         int points = 7;
         List<Integer> costs = new ArrayList<>();
 
