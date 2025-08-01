@@ -15,13 +15,15 @@ import java.util.Map;
 Steps in Character Creation:
 
 1. Virtues & Flaws
-2. Characteristics
+2. Characteristics X
 3. Early Childhood
 4. Later Life / Apprenticeship
-4.5 Spells
+    4.5 Spells
 5. Personality
 
 Arts & Characteristics Formula: n(n+1)/2
+Abilities Formula: 5n(n+1)/2 OR 5*arts
+    Cost to raise to tier: 5*n
  */
 public class CharacterEditor extends CharacterController {
     static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
@@ -35,6 +37,13 @@ public class CharacterEditor extends CharacterController {
         return false;
     }
 
+    /**
+     * Handles user input & repeating if there is an issue
+     *
+     * @param prompt is the message that should be passed to the user, in order to use recursive calls with different messages
+     *
+     * @return a list of valid characteristics
+     */
     public List<Integer> getCharacteristics(String prompt){
         List<Integer> characteristics = new ArrayList<>();
 
@@ -73,8 +82,7 @@ public class CharacterEditor extends CharacterController {
 
         for(int characteristicValue : characteristics){
             //Do with the absolute value in order to preserve the sign, if the given characteristic is negative
-            int absValue = Math.abs(characteristicValue);
-            int pointsValue = (absValue * (absValue + 1)) / 2;
+            int pointsValue = calculateCost(characteristicValue);
             if(characteristicValue > 0){
                 pointsValue = pointsValue * -1;
             }
