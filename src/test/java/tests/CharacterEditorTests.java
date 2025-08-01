@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class CharacterEditorTests {
@@ -17,9 +18,47 @@ public class CharacterEditorTests {
     In order for the array to be valid, the point value of all characteristics must sum up to 7 or less
      */
     @Test
-    void testCharacteristicVerifier(){
-        List<Integer> defaultCharacteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{0, 0, 0, 0, 0, 0, 0, 0}));
+    void testValidCharacteristicVerifier(){
+        //Total Remaining: 7
+        List<Integer> characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{0, 0, 0, 0, 0, 0, 0, 0}));
+        assertNull(CharacterEditor.verifyCharacteristics(characteristicArray));
 
-        assertNull(CharacterEditor.verifyCharacteristics(defaultCharacteristicArray));
+        //Total Remaining: 6
+        characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-3, 2, -2, 0, -1, 3, 1, 1}));
+        assertNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+
+        //Total Remaining: 0
+        characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{0, 2, -2, 0, -1, 3, 1, 1}));
+        assertNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+
+        //Total Remaining: 1
+        characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-3, 2, -2, 0, -1, 3, 3, 1}));
+        assertNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+
+        //Total Remaining: 0
+        characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-3, 2, -2, 1, -1, 3, 3, 1}));
+        assertNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+
+        //Total Remaining:
+        characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-3, 2, -2, 1, -1, 3, 3, 1}));
+        assertNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+    }
+
+    /*
+    Tests characteristic configurations that are invalid due to attempting to take too high of values
+     */
+    @Test
+    void testInvalidCharacteristicVerifier(){
+        //Total Remaining: -17
+        List<Integer> characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{2, 2, 2, 2, 2, 2, 2, 2}));
+        assertNotNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+
+        //Total Remaining: -2
+        characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-1, 2, 1, -3, 3, 2, 2, 0}));
+        assertNotNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+
+        //Total Remaining: -1
+        characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-3, 2, -2, 1, 1, 3, 2, 2}));
+        assertNotNull(CharacterEditor.verifyCharacteristics(characteristicArray));
     }
 }

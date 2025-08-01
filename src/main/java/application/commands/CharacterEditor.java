@@ -4,6 +4,8 @@ import application.characters.Attribute;
 import application.characters.Character;
 import application.terminal.CharacterController;
 import org.beryx.textio.TextIO;
+import org.sqlite.util.Logger;
+import org.sqlite.util.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ Steps in Character Creation:
 Arts & Characteristics Formula: n(n+1)/2
  */
 public class CharacterEditor extends CharacterController {
+    static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
 
     public CharacterEditor(TextIO source, ArrayList<Character> arr) {
         super(source, arr);
@@ -70,11 +73,17 @@ public class CharacterEditor extends CharacterController {
 
         for(int characteristicValue : characteristics){
             //Do with the absolute value in order to preserve the sign, if the given characteristic is negative
-            int pointsValue = (Math.abs(characteristicValue) * (characteristicValue + 1)) / 2;
+            int absValue = Math.abs(characteristicValue);
+            int pointsValue = (absValue * (absValue + 1)) / 2;
+            if(characteristicValue > 0){
+                pointsValue = pointsValue * -1;
+            }
             costs.add(pointsValue);
             points += pointsValue;
         }
 
+        int finalPoints = points;
+        logger.info(() -> "Array: " + characteristics.toString() + "\nCosts: " + costs.toString() + "\nPoints:" + finalPoints);
         if(points >= 0){
             return null;
         }
