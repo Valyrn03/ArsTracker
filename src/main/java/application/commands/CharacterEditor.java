@@ -1,5 +1,6 @@
 package application.commands;
 
+import application.characters.Ability;
 import application.characters.Attribute;
 import application.characters.Character;
 import application.terminal.CharacterController;
@@ -27,8 +28,9 @@ Abilities Formula: 5n(n+1)/2 OR 5*arts
  */
 public class CharacterEditor extends CharacterController {
     static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
+    private Character character;
 
-    public CharacterEditor(TextIO source, ArrayList<Character> arr) {
+    public CharacterEditor(TextIO source, ArrayList<Character> arr, Character character) {
         super(source, arr);
     }
 
@@ -38,6 +40,8 @@ public class CharacterEditor extends CharacterController {
     }
 
     /**
+     * CHARACTERISTICS
+     *
      * Handles user input & repeating if there is an issue
      *
      * @param prompt is the message that should be passed to the user, in order to use recursive calls with different messages
@@ -96,5 +100,30 @@ public class CharacterEditor extends CharacterController {
             return null;
         }
         return costs;
+    }
+
+    /**
+     * Method to handle the creation of a new ability.
+     *
+     * Will need to get the category, then if it's a categorical ability the exact kind. Then the XP value
+     *
+     * Requirements:
+     *     1. Get Category
+     *     2. Get subtype, if applicable
+     *     3. Get XP value
+     *     4. Add to applicable character
+     *     5. Execute queries to add abilities
+     */
+    public Ability createAbility(){
+        return null;
+    }
+
+    /**
+     * Will handle the actual database access resulting from calling createAbility()
+     *
+     * @return
+     */
+    public boolean addAbility(){
+        return false;
     }
 }
