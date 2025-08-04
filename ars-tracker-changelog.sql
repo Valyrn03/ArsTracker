@@ -23,3 +23,6 @@ ALTER TABLE ability_category ADD overarchingType VARCHAR(16)
 
 -- changeset liquibase:ability_category_add_if_categorical
 ALTER TABLE ability_category ADD isCategorical INT
+
+-- changeset liquibase:ability_add_specialities
+ALTER TABLE ability ADD speciality VARCHAR(36)

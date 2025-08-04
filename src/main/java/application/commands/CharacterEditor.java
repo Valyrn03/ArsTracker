@@ -10,7 +10,6 @@ import org.sqlite.util.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /*
 Steps in Character Creation:

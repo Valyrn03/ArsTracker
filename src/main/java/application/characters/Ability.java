@@ -1,83 +1,64 @@
 package application.characters;
 
-public enum Ability{
-    ANIMAL_HANDLING,
-    ANIMAL_KEN,
-    AREA_LORE,
-    ART_OF_MEMORY,
-    ARTES_LIBERALES,
-    ATHLETICS,
-    AWARENESS,
-    BARGAIN,
-    BRAWL,
-    BOWS,
-    CAROUSE,
-    CHARM,
-    CHIRURGY,
-    CIVIL_AND_COMMON_LAW,
-    CODE_OF_HERMES,
-    CONCENTRATION,
-    CORPSE_MAGIC,
-    COMMON_LAW,
-    CRAFT,
-    CRAFTERS_HEALING,
-    CURSE_THROWING,
-    DEAD_LANGUAGE,
-    DOMINION_LORE,
-    DOWSING,
-    EMBITTERMENT,
-    ENCHANTING,
-    ENTRANCEMENT,
-    ENIGMATIC_WISDOM,
-    ETIQUETTE,
-    FAERIE_LORE,
-    FAERIE_MAGIC,
-    FINESSE,
-    FOLK_KEN,
-    FONT_OF_KNOWLEDGE,
-    GREAT_WEAPON,
-    GUILE,
-    HEARTBEAST,
-    HEX,
-    HUNT,
-    INDUCTION,
-    INFERNAL_LORE,
-    INTRIGUE,
-    ISLAMIC_LAW,
-    JUDAIC_LORE,
-    LEADERSHIP,
-    LEGERDEMAIN,
-    LIVING_LANGUAGE,
-    MAGIC_LORE,
-    MAGIC_THEORY,
-    MAGIC_SENSITIVITY,
-    MEDICINE,
-    MUSIC,
-    MYSTERY_CULT_LORE,
-    NATIVE_LANGUAGE,
-    ORGANIZATION_LORE,
-    PARMA_MAGICA,
-    PENETRATION,
-    PERSONA,
-    PHILOSOPHIAE,
-    PREMONITIONS,
-    PROFESSION,
-    RABBINIC_LAW,
-    RIDE,
-    SINGLE_WEAPON,
-    SECOND_SIGHT,
-    SENSE_HOLINESS_AND_UNHOLINESS,
-    SENSE_PASSIONS,
-    SHAPESHIFTER,
-    SUMMON_ANIMALS,
-    STEALTH,
-    SURVIVAL,
-    SWIM,
-    TEACHING,
-    THROWN_WEAPON,
-    THEOLOGY_CHRISTIAN,
-    THEOLOGY_ISLAM,
-    THEOLOGY_JUDAISM,
-    WHISTLE_UP_THE_WIND,
-    WILDERNESS_SENSE
+import application.utils.CharacterUtils;
+
+public class Ability implements Comparable<Ability>{
+    private AbilityCategory category;
+    private String subtype;
+    private String speciality;
+    private int experience;
+
+    public Ability(AbilityCategory category, String speciality, int experience){
+        this.category = category;
+        this.speciality = speciality;
+        this.experience = experience;
+    }
+
+    public Ability(AbilityCategory category, String type, String speciality, int experience){
+        this.category = category;
+        this.subtype = type;
+        this.speciality = speciality;
+        this.experience = experience;
+    }
+
+    public int increment(int increment){
+        experience += increment;
+        return experience;
+    }
+
+    public int getExperience(){
+        return experience;
+    }
+
+    public String getAbility(){
+        if(subtype == null){
+            return category.name();
+        }
+        return subtype.toUpperCase();
+    }
+
+    @Override
+    public int compareTo(Ability o) {
+        if(this.getExperience() >= o.getExperience()){
+            return 1;
+        }else if(this.getExperience() <= o.getExperience()){
+            return -1;
+        }else{
+            return this.getAbility().compareTo(o.getAbility());
+        }
+    }
+
+    public String toString(){
+        StringBuilder builder = new StringBuilder();
+
+        if(subtype == null){
+            builder.append(category.name());
+        }else{
+            builder.append(subtype.toUpperCase()).append(" (").append(category.name()).append(")");
+        }
+
+        builder.append(" ").append(CharacterUtils.abilityExperienceToScore(experience)).append(" (").append(experience).append(")");
+
+        return builder.toString();
+    }
 }

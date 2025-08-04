@@ -23,4 +23,5 @@ module application {
     exports application.terminal;
     exports application.characters;
     exports application.commands;
+    exports application.characters.Ability;
 }
