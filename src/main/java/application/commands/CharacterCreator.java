@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class CharacterCreator extends CharacterEditor{
 
     public CharacterCreator(TextIO source, ArrayList<Character> arr) {
-        super(source, arr);
+        super(source, arr, null);
     }
 
     @Override

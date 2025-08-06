@@ -38,6 +38,10 @@ public class CharacterEditor extends CharacterController {
         return false;
     }
 
+    public void changeCharacter(Character newCharacter){
+        character = newCharacter;
+    }
+
     /**
      * CHARACTERISTICS
      *
