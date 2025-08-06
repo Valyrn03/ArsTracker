@@ -61,4 +61,15 @@ public class Ability implements Comparable<Ability>{
 
         return builder.toString();
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(!o.getClass().equals(this.getClass())){
+            return false;
+        }
+
+        Ability other = (Ability) o;
+
+        return this.getAbility().equals(other.getAbility());
+    }
 }
