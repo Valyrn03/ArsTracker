@@ -144,7 +144,7 @@ public class CharacterEditor extends CharacterController {
     }
 
     private boolean isCategorical(String selectedAbility) {
-
+        return false;
     }
 
     /**
@@ -154,7 +154,7 @@ public class CharacterEditor extends CharacterController {
      * @return list of ability names
      */
     private ArrayList<String> getAbilityOptions() {
-
+        return null;
     }
 
     /**
@@ -171,6 +171,6 @@ public class CharacterEditor extends CharacterController {
      * @return
      */
     public Ability editAbility(){
-
+        return null;
     }
 }
