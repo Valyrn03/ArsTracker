@@ -8,17 +8,27 @@ public class Ability implements Comparable<Ability>{
     private String speciality;
     private int experience;
 
-    public Ability(AbilityCategory category, String speciality, int experience){
+    private Ability(AbilityCategory category, String speciality, int experience){
         this.category = category;
         this.speciality = speciality;
         this.experience = experience;
     }
 
-    public Ability(AbilityCategory category, String type, String speciality, int experience){
+    private Ability(AbilityCategory category, String type, String speciality, int experience){
         this.category = category;
         this.subtype = type;
         this.speciality = speciality;
         this.experience = experience;
+    }
+
+    public static Ability createAbility(String abilityCategory, String type, String speciality, int experience){
+        try{
+            AbilityCategory category = AbilityCategory.valueOf(abilityCategory);
+
+            return new Ability(category, type, speciality, experience);
+        }catch (IllegalArgumentException exp){
+            return null;
+        }
     }
 
     public int increment(int increment){

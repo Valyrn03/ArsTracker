@@ -111,14 +111,50 @@ public class CharacterEditor extends CharacterController {
      * Will need to get the category, then if it's a categorical ability the exact kind. Then the XP value
      *
      * Requirements:
-     *     1. Get Category
-     *     2. Get subtype, if applicable
-     *     3. Get XP value
-     *     4. Add to applicable character
-     *     5. Execute queries to add abilities
+     *     1. Get Overarching Category
+     *     2. List all abilities, and allow a selection from those
+     *     3. Get subtype, if applicable
+     *     4. Get XP value
+     *     5. Add to applicable character
+     *     6. Call addAbilityToDatabase() in order to add the newly created Ability
      */
     public Ability createAbility(){
-        return null;
+        ArrayList<String> abilityOptions = getAbilityOptions();
+
+        String selectedAbility = abilityOptions.get(super.getOptions(abilityOptions));
+        String subtype = null;
+
+        //Need to figure out a good way to check if an ability needs a subtype or not
+        if(isCategorical(selectedAbility)){
+            //Prompt for an exact subtype
+        }
+
+        int xpValue = super.getInt("Initial Experience > ");
+
+        String speciality = super.getString("Speciality > ");
+
+        Ability ability = Ability.createAbility(selectedAbility, subtype, speciality, xpValue);
+
+        if(ability == null){
+            super.print("Error in Creating Ability");
+            return null;
+        }
+
+        return ability;
+    }
+
+    private boolean isCategorical(String selectedAbility) {
+
+    }
+
+    /**
+     * Gets the category of ability required, and returns a list of those
+     *     The names of each ability, to be precise
+     *
+     * @return list of ability names
+     */
+    private ArrayList<String> getAbilityOptions() {
+
     }
 
     /**
@@ -126,7 +162,15 @@ public class CharacterEditor extends CharacterController {
      *
      * @return
      */
-    public boolean addAbility(){
+    public boolean addAbilityToDatabase(){
         return false;
+    }
+
+    /**
+     * In the case of the ability already existing, this method will handle the increase in that ability
+     * @return
+     */
+    public Ability editAbility(){
+
     }
 }

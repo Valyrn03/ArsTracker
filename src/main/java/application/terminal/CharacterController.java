@@ -30,4 +30,13 @@ public abstract class CharacterController extends Command{
         int absValue = Math.abs(value);
         return (absValue * (absValue + 1))/2;
     }
+
+    public int getOptions(ArrayList<String> options){
+        return super.getOptions(options);
+    }
+
+    public String getString(String prompt){
+        super.source.getTextTerminal().println(prompt);
+        return super.source.newStringInputReader().toString();
+    }
 }
