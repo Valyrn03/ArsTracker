@@ -21,4 +21,22 @@ public abstract class CharacterController extends Command{
     public int getInt(String prompt){
         return super.getInt(prompt);
     }
+
+    public void print(String prompt){
+        super.source.getTextTerminal().println(prompt);
+    }
+
+    public static int calculateCost(int value){
+        int absValue = Math.abs(value);
+        return (absValue * (absValue + 1))/2;
+    }
+
+    public int getOptions(ArrayList<String> options){
+        return super.getOptions(options);
+    }
+
+    public String getString(String prompt){
+        super.source.getTextTerminal().println(prompt);
+        return super.source.newStringInputReader().toString();
+    }
 }
