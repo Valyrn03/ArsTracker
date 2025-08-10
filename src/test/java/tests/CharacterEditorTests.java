@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CharacterEditorTests {
 
@@ -60,5 +59,26 @@ public class CharacterEditorTests {
         //Total Remaining: -1
         characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-3, 2, -2, 1, 1, 3, 2, 2}));
         assertNotNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+    }
+
+    /*
+    Should be easy, but rather be safe than sorry
+     */
+    @Test
+    void testIsCategorical(){
+        fail();
+    }
+
+    /*
+    Create arraylists of random objects, and make sure that the return is correct
+     */
+    @Test
+    void testListToSql(){
+        fail();
+    }
+
+    @Test
+    void testGetCharacterCategories(){
+        fail();
     }
 }

@@ -211,6 +211,14 @@ public class CharacterEditor extends CharacterController {
     }
 
     /**
+     * Gets the categories of abilities the character is able to choose from
+     * @return
+     */
+    private ArrayList<String> getCharacterCategories() {
+        return null;
+    }
+
+    /**
      * Simply meant to remove the opening and closing brackets, so that the line this is in is more readable.
      * @param abilityType
      * @return
