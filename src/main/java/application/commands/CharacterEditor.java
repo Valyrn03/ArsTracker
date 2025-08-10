@@ -1,5 +1,6 @@
 package application.commands;
 
+import application.Launcher;
 import application.characters.Ability;
 import application.characters.Attribute;
 import application.characters.Character;
@@ -8,8 +9,12 @@ import org.beryx.textio.TextIO;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /*
 Steps in Character Creation:
@@ -121,17 +126,18 @@ public class CharacterEditor extends CharacterController {
     public Ability createAbility(){
         ArrayList<String> abilityOptions = getAbilityOptions();
 
+        assert abilityOptions != null;
         String selectedAbility = abilityOptions.get(super.getOptions(abilityOptions));
         String subtype = null;
 
         //Need to figure out a good way to check if an ability needs a subtype or not
         if(isCategorical(selectedAbility)){
-            //Prompt for an exact subtype
+            subtype = super.getString("\tName of Ability");
         }
 
-        int xpValue = super.getInt("Initial Experience > ");
+        int xpValue = super.getInt("Initial Experience");
 
-        String speciality = super.getString("Speciality > ");
+        String speciality = super.getString("Speciality");
 
         Ability ability = Ability.createAbility(selectedAbility, subtype, speciality, xpValue);
 
@@ -151,10 +157,67 @@ public class CharacterEditor extends CharacterController {
      * Gets the category of ability required, and returns a list of those
      *     The names of each ability, to be precise
      *
+     * Will use the character selected to determine which abilities are allowed
+     *
+     * For now, will allow for only General & Academic abilities
+     *
      * @return list of ability names
      */
     private ArrayList<String> getAbilityOptions() {
-        return null;
+        ArrayList<String> abilityType = getCharacterCategories();
+
+        String databaseURL = null;
+
+        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
+            Properties properties = new Properties();
+            properties.load(stream);
+            if("test".equals(properties.getProperty("type"))){
+                databaseURL = "jdbc:sqlite:" + properties.getProperty("testDBPath");
+            }else{
+                databaseURL = "jdbc:sqlite:" + properties.getProperty("prodDBPath");
+            }
+        }catch (IOException exp){
+            logger.info(() -> "Failed to Find Properties File");
+        }
+
+        Connection connection;
+        try{
+            connection = DriverManager.getConnection(databaseURL);
+        }catch (SQLException exp){
+            logger.info(() -> "Database Failed to Open");
+            return null;
+        }
+
+        String query = String.format("SELECT name FROM ability_category WHERE ability_type IN (%s);", listToSql(abilityType));
+
+        Statement statement;
+        ArrayList<String> abilities = new ArrayList<>();
+        try{
+            statement = connection.createStatement();
+            ResultSet abilityResultSet = statement.executeQuery(query);
+
+            //There needs to be a better way to do this, but I do not know what it is
+            int counter = 0;
+            while(!abilityResultSet.isAfterLast()){
+                abilities.add(abilityResultSet.getString(counter));
+                counter++;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        logger.info(() -> "Ability Options:" + abilities.toString());
+        return abilities;
+    }
+
+    /**
+     * Simply meant to remove the opening and closing brackets, so that the line this is in is more readable.
+     * @param abilityType
+     * @return
+     */
+    public String listToSql(ArrayList<String> abilityType) {
+        String listRepr = abilityType.toString();
+        return listRepr.substring(1, listRepr.length() - 1);
     }
 
     /**

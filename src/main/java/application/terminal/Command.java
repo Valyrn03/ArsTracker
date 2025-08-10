@@ -27,4 +27,8 @@ public abstract class Command {
         }
         return source.newIntInputReader().read(" >");
     }
+
+    String getString(String prompt){
+        return source.newStringInputReader().read(prompt + " >");
+    }
 }

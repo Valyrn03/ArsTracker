@@ -36,7 +36,6 @@ public abstract class CharacterController extends Command{
     }
 
     public String getString(String prompt){
-        super.source.getTextTerminal().println(prompt);
-        return super.source.newStringInputReader().toString();
+        return super.getString(prompt);
     }
 }
