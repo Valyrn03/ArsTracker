@@ -2,6 +2,7 @@ package application.commands;
 
 import application.Launcher;
 import application.characters.Ability;
+import application.characters.AbilityCategory;
 import application.characters.Attribute;
 import application.characters.Character;
 import application.terminal.CharacterController;
@@ -35,6 +36,19 @@ public class CharacterEditor extends CharacterController {
     static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
     private Character character;
     private DatabaseFunction databaseConnection;
+    //Thank you stack overflow, I did not know it was a thing
+    static final ArrayList<AbilityCategory> categoricalIDs = new ArrayList<>() {
+        {
+            add(AbilityCategory.AREA_LORE);
+            add(AbilityCategory.CRAFT);
+            add(AbilityCategory.LIVING_LANGUAGE);
+            add(AbilityCategory.MYSTERY_CULT_LORE);
+            add(AbilityCategory.ORGANIZATION_LORE);
+            add(AbilityCategory.PROFESSION);
+            add(AbilityCategory.DEAD_LANGUAGE);
+            add(AbilityCategory.ENCHANTING);
+        }
+    };
 
     public CharacterEditor(TextIO source, ArrayList<Character> arr, Character character) {
         super(source, arr);
@@ -233,8 +247,10 @@ public class CharacterEditor extends CharacterController {
      *
      * @return
      */
-    public boolean addAbilityToDatabase(){
-        return false;
+    public boolean addAbilityToDatabase(Ability ability){
+        String query = String.format("INSERT INTO ability_tracker(name, player_id, ability_id, category_id, experience) VALUES (%s, %s, %s, %s, %d);", character.getName(), character.getID(), 0, ability.getCategory(), ability.getExperience());
+
+        return databaseConnection.post(query);
     }
 
     /**

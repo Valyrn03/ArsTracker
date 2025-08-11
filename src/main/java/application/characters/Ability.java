@@ -82,4 +82,8 @@ public class Ability implements Comparable<Ability>{
 
         return this.getAbility().equals(other.getAbility());
     }
+
+    public AbilityCategory getCategory() {
+        return category;
+    }
 }

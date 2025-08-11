@@ -60,6 +60,10 @@ public class Character implements Serializable, Comparable<Character> {
         features = new ArrayList<>();
     }
 
+    public UUID getID() {
+        return id;
+    }
+
     public static enum CharacterType {
         MAGUS,
         COMPANION,

@@ -121,4 +121,23 @@ public class DatabaseFunction {
             return null;
         }
     }
+
+    public boolean post(String query){
+        Connection connection;
+        try{
+            connection = DriverManager.getConnection(databaseURL);
+        }catch (SQLException exp){
+            logger.info(() -> "Database Failed to Open");
+            return false;
+        }
+
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+        } catch (SQLException e) {
+            return false;
+        }
+
+        return true;
+    }
 }
