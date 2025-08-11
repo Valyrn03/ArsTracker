@@ -5,6 +5,7 @@ import application.characters.Ability;
 import application.characters.Attribute;
 import application.characters.Character;
 import application.terminal.CharacterController;
+import application.terminal.DatabaseFunction;
 import org.beryx.textio.TextIO;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
@@ -33,9 +34,11 @@ Abilities Formula: 5n(n+1)/2 OR 5*arts
 public class CharacterEditor extends CharacterController {
     static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
     private Character character;
+    private DatabaseFunction databaseConnection;
 
     public CharacterEditor(TextIO source, ArrayList<Character> arr, Character character) {
         super(source, arr);
+        databaseConnection = new DatabaseFunction();
     }
 
     @Override
@@ -150,43 +153,21 @@ public class CharacterEditor extends CharacterController {
     }
 
     private boolean isCategorical(String selectedAbility) {
-        String databaseURL = null;
-
-        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
-            Properties properties = new Properties();
-            properties.load(stream);
-            if("test".equals(properties.getProperty("type"))){
-                databaseURL = "jdbc:sqlite:" + properties.getProperty("testDBPath");
-            }else{
-                databaseURL = "jdbc:sqlite:" + properties.getProperty("prodDBPath");
-            }
-        }catch (IOException exp){
-            logger.info(() -> "Failed to Find Properties File");
-        }
-
-        Connection connection;
-        try{
-            connection = DriverManager.getConnection(databaseURL);
-        }catch (SQLException exp){
-            logger.info(() -> "Database Failed to Open");
-            throw new RuntimeException(exp);
-        }
-
         String query = String.format("SELECT isCategorical FROM ability_category WHERE name = %s", selectedAbility);
 
+        ResultSet resultSet = databaseConnection.query(query);
+        if(resultSet == null){
+            return false;
+        }
+
         try{
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
             if(resultSet.getInt(0) == 1){
-                resultSet.close();
                 return true;
             }else{
-                resultSet.close();
                 return false;
             }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        }catch (SQLException exp){
+            return false;
         }
     }
 
@@ -203,35 +184,11 @@ public class CharacterEditor extends CharacterController {
     private ArrayList<String> getAbilityOptions() {
         ArrayList<String> abilityType = getCharacterCategories();
 
-        String databaseURL = null;
-
-        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
-            Properties properties = new Properties();
-            properties.load(stream);
-            if("test".equals(properties.getProperty("type"))){
-                databaseURL = "jdbc:sqlite:" + properties.getProperty("testDBPath");
-            }else{
-                databaseURL = "jdbc:sqlite:" + properties.getProperty("prodDBPath");
-            }
-        }catch (IOException exp){
-            logger.info(() -> "Failed to Find Properties File");
-        }
-
-        Connection connection;
-        try{
-            connection = DriverManager.getConnection(databaseURL);
-        }catch (SQLException exp){
-            logger.info(() -> "Database Failed to Open");
-            return null;
-        }
-
         String query = String.format("SELECT name FROM ability_category WHERE ability_type IN (%s);", listToSql(abilityType));
 
-        Statement statement;
         ArrayList<String> abilities = new ArrayList<>();
         try{
-            statement = connection.createStatement();
-            ResultSet abilityResultSet = statement.executeQuery(query);
+            ResultSet abilityResultSet = databaseConnection.query(query);
 
             //There needs to be a better way to do this, but I do not know what it is
             while(!abilityResultSet.isAfterLast()){
