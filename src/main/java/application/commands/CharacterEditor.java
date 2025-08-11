@@ -253,7 +253,12 @@ public class CharacterEditor extends CharacterController {
      * @return
      */
     private ArrayList<String> getCharacterCategories() {
-        return null;
+        ArrayList<String> list = new ArrayList<>();
+
+        list.add("General");
+        list.add("Academic");
+
+        return list;
     }
 
     /**
