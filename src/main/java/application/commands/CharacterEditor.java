@@ -35,18 +35,6 @@ public class CharacterEditor extends CharacterController {
     static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
     private Character character;
     private DatabaseFunction databaseConnection;
-    //Thank you stack overflow, I did not know it was a thing
-    static final ArrayList<Integer> categoricalIDs = new ArrayList<Integer>() {
-        {
-            add(3);
-            add(11);
-            add(20);
-            add(22);
-            add(23);
-            add(24);
-            add(35);
-        }
-    };
 
     public CharacterEditor(TextIO source, ArrayList<Character> arr, Character character) {
         super(source, arr);
@@ -154,7 +142,7 @@ public class CharacterEditor extends CharacterController {
 
         String speciality = super.getString("Speciality");
 
-        Ability ability = new Ability(getAbilityID(selectedAbility), subtype, speciality, xpValue);
+        Ability ability = Ability.createAbility(selectedAbility, subtype, speciality, xpValue);
 
         if(ability == null){
             super.print("Error in Creating Ability");
@@ -162,10 +150,6 @@ public class CharacterEditor extends CharacterController {
         }
 
         return ability;
-    }
-
-    private int getAbilityID(String selectedAbility) {
-        return -1;
     }
 
     private boolean isCategorical(String selectedAbility) {
@@ -249,8 +233,8 @@ public class CharacterEditor extends CharacterController {
      *
      * @return
      */
-    public boolean addAbilityToDatabase(Ability ability){
-        String query = String.format("INSERT INTO ability_tracker(name, player_id, ability_id, category_id, experience) VALUES (%s, %s, %s, %s, %d);", character.getName(), character.getID(), 0, ability.getCategory(), ability.getExperience());
+    public boolean addAbilityToDatabase(){
+        return false;
     }
 
     /**

@@ -3,22 +3,32 @@ package application.characters;
 import application.utils.CharacterUtils;
 
 public class Ability implements Comparable<Ability>{
-    private int category;
+    private AbilityCategory category;
     private String subtype;
     private String speciality;
     private int experience;
 
-    private Ability(int category, String speciality, int experience){
+    private Ability(AbilityCategory category, String speciality, int experience){
         this.category = category;
         this.speciality = speciality;
         this.experience = experience;
     }
 
-    public Ability(int category, String type, String speciality, int experience){
+    private Ability(AbilityCategory category, String type, String speciality, int experience){
         this.category = category;
         this.subtype = type;
         this.speciality = speciality;
         this.experience = experience;
+    }
+
+    public static Ability createAbility(String abilityCategory, String type, String speciality, int experience){
+        try{
+            AbilityCategory category = AbilityCategory.valueOf(abilityCategory);
+
+            return new Ability(category, type, speciality, experience);
+        }catch (IllegalArgumentException exp){
+            return null;
+        }
     }
 
     public int increment(int increment){
@@ -30,13 +40,11 @@ public class Ability implements Comparable<Ability>{
         return experience;
     }
 
-    //TODO
     public String getAbility(){
-        return "";
-    }
-
-    public int getCategory() {
-        return category;
+        if(subtype == null){
+            return category.name();
+        }
+        return subtype.toUpperCase();
     }
 
     @Override
@@ -54,9 +62,9 @@ public class Ability implements Comparable<Ability>{
         StringBuilder builder = new StringBuilder();
 
         if(subtype == null){
-            builder.append(getCategory());
+            builder.append(category.name());
         }else{
-            builder.append(subtype.toUpperCase()).append(" (").append(getCategory()).append(")");
+            builder.append(subtype.toUpperCase()).append(" (").append(category.name()).append(")");
         }
 
         builder.append(" ").append(CharacterUtils.abilityExperienceToScore(experience)).append(" (").append(experience).append(")");
