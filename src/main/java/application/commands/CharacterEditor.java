@@ -150,7 +150,44 @@ public class CharacterEditor extends CharacterController {
     }
 
     private boolean isCategorical(String selectedAbility) {
-        return false;
+        String databaseURL = null;
+
+        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
+            Properties properties = new Properties();
+            properties.load(stream);
+            if("test".equals(properties.getProperty("type"))){
+                databaseURL = "jdbc:sqlite:" + properties.getProperty("testDBPath");
+            }else{
+                databaseURL = "jdbc:sqlite:" + properties.getProperty("prodDBPath");
+            }
+        }catch (IOException exp){
+            logger.info(() -> "Failed to Find Properties File");
+        }
+
+        Connection connection;
+        try{
+            connection = DriverManager.getConnection(databaseURL);
+        }catch (SQLException exp){
+            logger.info(() -> "Database Failed to Open");
+            throw new RuntimeException(exp);
+        }
+
+        String query = String.format("SELECT isCategorical FROM ability_category WHERE name = %s", selectedAbility);
+
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            if(resultSet.getInt(0) == 1){
+                resultSet.close();
+                return true;
+            }else{
+                resultSet.close();
+                return false;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -197,11 +234,12 @@ public class CharacterEditor extends CharacterController {
             ResultSet abilityResultSet = statement.executeQuery(query);
 
             //There needs to be a better way to do this, but I do not know what it is
-            int counter = 0;
             while(!abilityResultSet.isAfterLast()){
-                abilities.add(abilityResultSet.getString(counter));
-                counter++;
+                abilities.add(abilityResultSet.getString(0));
+                abilityResultSet.next();
             }
+
+            abilityResultSet.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
