@@ -221,7 +221,8 @@ public class CharacterEditor extends CharacterController {
 
     /**
      * Gets the categories of abilities the character is able to choose from
-     * @return
+     *
+     * @return a list of categories
      */
     private ArrayList<String> getCharacterCategories() {
         ArrayList<String> list = new ArrayList<>();
@@ -234,8 +235,9 @@ public class CharacterEditor extends CharacterController {
 
     /**
      * Simply meant to remove the opening and closing brackets, so that the line this is in is more readable.
-     * @param abilityType
-     * @return
+     *
+     * @param abilityType is the list that requires being pruned
+     * @return the toString of the given list, minus the brackets
      */
     public String listToSql(ArrayList<String> abilityType) {
         String listRepr = abilityType.toString();
@@ -245,7 +247,7 @@ public class CharacterEditor extends CharacterController {
     /**
      * Will handle the actual database access resulting from calling createAbility()
      *
-     * @return
+     * @return whether the query succeeds
      */
     public boolean addAbilityToDatabase(Ability ability){
         String query = String.format("INSERT INTO ability_tracker(name, player_id, ability_id, category_id, experience) VALUES (%s, %s, %s, %s, %d);", character.getName(), character.getID(), 0, ability.getCategory(), ability.getExperience());
@@ -255,7 +257,8 @@ public class CharacterEditor extends CharacterController {
 
     /**
      * In the case of the ability already existing, this method will handle the increase in that ability
-     * @return
+     *
+     * @return the new form of the given ability
      */
     public Ability editAbility(){
         return null;
