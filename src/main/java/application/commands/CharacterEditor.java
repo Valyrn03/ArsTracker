@@ -37,7 +37,7 @@ public class CharacterEditor extends CharacterController {
     private Character character;
     private DatabaseFunction databaseConnection;
     //Thank you stack overflow, I did not know it was a thing
-    static final ArrayList<AbilityCategory> categoricalIDs = new ArrayList<>() {
+    static final List<AbilityCategory> categoricalIDs = new ArrayList<>() {
         {
             add(AbilityCategory.AREA_LORE);
             add(AbilityCategory.CRAFT);
@@ -141,7 +141,7 @@ public class CharacterEditor extends CharacterController {
      *     6. Call addAbilityToDatabase() in order to add the newly created Ability
      */
     public Ability createAbility(){
-        ArrayList<String> abilityOptions = getAbilityOptions();
+        List<String> abilityOptions = getAbilityOptions();
 
         assert abilityOptions != null;
         String selectedAbility = abilityOptions.get(super.getOptions(abilityOptions));
@@ -195,12 +195,12 @@ public class CharacterEditor extends CharacterController {
      *
      * @return list of ability names
      */
-    private ArrayList<String> getAbilityOptions() {
-        ArrayList<String> abilityType = getCharacterCategories();
+    private List<String> getAbilityOptions() {
+        List<String> abilityType = getCharacterCategories();
 
         String query = String.format("SELECT name FROM ability_category WHERE ability_type IN (%s);", listToSql(abilityType));
 
-        ArrayList<String> abilities = new ArrayList<>();
+        List<String> abilities = new ArrayList<>();
         try{
             ResultSet abilityResultSet = databaseConnection.query(query);
 
@@ -224,8 +224,8 @@ public class CharacterEditor extends CharacterController {
      *
      * @return a list of categories
      */
-    private ArrayList<String> getCharacterCategories() {
-        ArrayList<String> list = new ArrayList<>();
+    private List<String> getCharacterCategories() {
+        List<String> list = new ArrayList<>();
 
         list.add("General");
         list.add("Academic");
@@ -239,7 +239,7 @@ public class CharacterEditor extends CharacterController {
      * @param abilityType is the list that requires being pruned
      * @return the toString of the given list, minus the brackets
      */
-    public String listToSql(ArrayList<String> abilityType) {
+    public String listToSql(List<String> abilityType) {
         String listRepr = abilityType.toString();
         return listRepr.substring(1, listRepr.length() - 1);
     }

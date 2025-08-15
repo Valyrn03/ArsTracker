@@ -4,6 +4,7 @@ import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Command {
     public TextIO source;
@@ -20,7 +21,7 @@ public abstract class Command {
         return source.newIntInputReader().read(prompt + " >");
     }
 
-    int getOptions(ArrayList<String> options){
+    int getOptions(List<String> options){
         terminal.println("Choose one of the following options:");
         for(int i = 0; i < options.size(); i++){
             terminal.printf("\t%d: %s\n", i, options.get(i));
