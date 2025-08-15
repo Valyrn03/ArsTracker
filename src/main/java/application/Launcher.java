@@ -33,7 +33,7 @@ public class Launcher {
         source = TextIoFactory.getTextIO();
         source.getTextTerminal().println("Type \"help\" to get a list of commands");
         database = new DatabaseFunction();
-        ArrayList<Character> characters = database.query("");
+        ArrayList<Character> characters = new ArrayList<>();
         terminal = source.getTextTerminal();
 
         commands = new HashMap<>();
@@ -81,7 +81,8 @@ public class Launcher {
         }else if(state == ControlState.HELP){
             terminal.println("COMMANDS\n\tlist: list all characters\n\tselect [character]: select character by given name\n\tcreate \n\t\tcreate character: Create new character\n\topenGUI: Open GUI");
         }else if(state == ControlState.LIST){
-            characters = database.query("");
+            //todo
+            characters = new ArrayList<>();
             terminal.printf("Characters Loaded!\n");
         }else if(state == ControlState.SELECT){
             String characterName = String.join(" ", Arrays.copyOfRange(userInput, 1, userInput.length));

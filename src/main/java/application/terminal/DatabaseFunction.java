@@ -105,7 +105,39 @@ public class DatabaseFunction {
         return false;
     }
 
-    public ArrayList<Character> query(String s) {
-        return connectCharacterDatabase();
+    public ResultSet query(String query){
+        Connection connection;
+        try{
+            connection = DriverManager.getConnection(databaseURL);
+        }catch (SQLException exp){
+            logger.info(() -> "Database Failed to Open");
+            return null;
+        }
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            return resultSet;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public boolean post(String query){
+        Connection connection;
+        try{
+            connection = DriverManager.getConnection(databaseURL);
+        }catch (SQLException exp){
+            logger.info(() -> "Database Failed to Open");
+            return false;
+        }
+
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+        } catch (SQLException e) {
+            return false;
+        }
+
+        return true;
     }
 }

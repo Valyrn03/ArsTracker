@@ -1,6 +1,7 @@
 package application.controllers;
 
 import application.characters.*;
+import application.characters.Ability;
 import application.characters.Character;
 import application.displays.CharacterEditorDisplay;
 import application.displays.CharacterSheetDisplay;
@@ -105,10 +106,10 @@ public class CharacterSheetController {
         VBox specialities = new VBox(4);
         VBox scores = new VBox(4);
 
-        for(Ability entry : character.getAbilities().keySet()){
+        for(Ability entry : character.getAbilities()){
             logger.info("Adding Ability: " + entry);
-            abilities.getChildren().add(new Label(entry.name()));
-            scores.getChildren().add(new Label(Integer.toString(character.getAbilityScore(entry))));
+            abilities.getChildren().add(new Label(entry.getAbility()));
+            scores.getChildren().add(new Label(Integer.toString(entry.getExperience())));
         }
 
         if(!abilities.getChildren().isEmpty()){
