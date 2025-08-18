@@ -86,9 +86,9 @@ public class CharacterEditor extends CharacterController {
             //Print Options + Costs
             Attribute[] attributeList = Attribute.values();
 
-            super.print("This array is not valid. Try again");
+            super.printToTerminal("This array is not valid. Try again");
             for(int i = 0; i < attributeList.length; i++){
-                super.print(String.format("%d. %s: %d", i, attributeList[i], characteristics.get(i)));
+                super.printToTerminal(String.format("%d. %s: %d", i, attributeList[i], characteristics.get(i)));
             }
             //Call getCharacteristics() again, but with a "do better" as the string prompt
                 //Add a "if prompt is not null, then print, else continue"
@@ -159,7 +159,7 @@ public class CharacterEditor extends CharacterController {
         Ability ability = Ability.createAbility(selectedAbility, subtype, speciality, xpValue);
 
         if(ability == null){
-            super.print("Error in Creating Ability");
+            super.printToTerminal("Error in Creating Ability");
             return null;
         }
 
@@ -175,11 +175,7 @@ public class CharacterEditor extends CharacterController {
         }
 
         try{
-            if(resultSet.getInt(0) == 1){
-                return true;
-            }else{
-                return false;
-            }
+            return resultSet.getInt(0) == 1;
         }catch (SQLException exp){
             return false;
         }

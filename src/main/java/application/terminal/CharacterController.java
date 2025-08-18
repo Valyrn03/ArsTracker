@@ -23,7 +23,7 @@ public abstract class CharacterController extends Command{
         return super.getInt(prompt);
     }
 
-    public void print(String prompt){
+    public void printToTerminal(String prompt){
         super.source.getTextTerminal().println(prompt);
     }
 

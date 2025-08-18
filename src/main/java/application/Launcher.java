@@ -1,9 +1,8 @@
 package application;
 
 import application.characters.Character;
-import application.commands.CharacterCreator;
+import application.commands.*;
 import application.displays.LandingPage;
-import application.commands.CharacterSelector;
 import application.terminal.Command;
 import application.terminal.DatabaseFunction;
 import org.beryx.textio.TextIO;
@@ -26,7 +25,7 @@ public class Launcher {
     TextIO source;
     TextTerminal terminal;
     ArrayList<Character> characters;
-    Map<String, ControlState> commands;
+    Map<String, Command> commands;
 
     public Launcher(String[] arg){
         args = arg;
@@ -41,24 +40,19 @@ public class Launcher {
     }
 
     private void addLauncherCommands() {
-        commands.put("help", ControlState.HELP);
-        commands.put("openGUI", ControlState.GUI);
-        commands.put("list", ControlState.LIST);
-        commands.put("select", ControlState.SELECT);
-        commands.put("create", ControlState.CREATE);
-        commands.put("close", ControlState.CLOSE);
+        commands.put("help", new HelpCommand(source));
+        commands.put("openGUI", new LaunchGUICommand(source));
+        commands.put("list", new CharacterQueryCommand(source));
+        commands.put("select", new CharacterSelector(source, characters));
+        commands.put("create", new CharacterCreator(source, characters));
+        commands.put("close", new CloseCommand(source));
     }
 
     public void coreLoop(){
-        ControlState result = controlInput();
-        while(result != ControlState.CLOSE){
-            if(result == ControlState.GUI){
-                LandingPage.launch(LandingPage.class, args);
-            }else if(result == ControlState.CREATE_CHARACTER){
-                database.add(createCharacter());
-            }
+        boolean result = false;
+        do{
             result = controlInput();
-        }
+        }while (result);
     }
 
     private Character createCharacter() {
@@ -69,39 +63,14 @@ public class Launcher {
         return command.execute();
     }
 
-    public ControlState controlInput(){
-        String command = source.newStringInputReader().read("> ");
-        String[] userInput = command.split(" ");
+    public boolean controlInput(){
+        String commandInput = source.newStringInputReader().read("> ");
+        String[] userInput = commandInput.split(" ");
         if(userInput.length == 0){
-            return ControlState.CLOSE;
+            Command command = commands.get("close");
+            return command.execute();
         }
-        ControlState state = commands.get(userInput[0]);
-        if(state == null){
-            terminal.println("Command Not Found, Please Try Again");
-        }else if(state == ControlState.HELP){
-            terminal.println("COMMANDS\n\tlist: list all characters\n\tselect [character]: select character by given name\n\tcreate \n\t\tcreate character: Create new character\n\topenGUI: Open GUI");
-        }else if(state == ControlState.LIST){
-            //todo
-            characters = new ArrayList<>();
-            terminal.printf("Characters Loaded!\n");
-        }else if(state == ControlState.SELECT){
-            String characterName = String.join(" ", Arrays.copyOfRange(userInput, 1, userInput.length));
-            execute(new CharacterSelector(source, characterName, characters));
-        }else if(state == ControlState.CREATE){
-            if("character".equals(userInput[1])){
-                execute(new CharacterCreator(source, characters));
-            }
-        }
-        return state;
-    }
-
-    public static enum ControlState {
-        HELP,
-        LIST,
-        GUI,
-        CREATE_CHARACTER,
-        SELECT,
-        CLOSE,
-        CREATE
+        Command command = commands.get(userInput[0]);
+        return command.execute();
     }
 }
