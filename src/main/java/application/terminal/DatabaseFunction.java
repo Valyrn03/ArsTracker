@@ -2,15 +2,14 @@ package application.terminal;
 
 import application.Launcher;
 import application.characters.Character;
-
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
+import application.commands.CharacterEditor;
+import org.sqlite.util.Logger;
+import org.sqlite.util.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 /**
  * Tables:
@@ -21,11 +20,11 @@ import java.util.logging.Logger;
  * Virtues & Flaws: ???
  */
 public class DatabaseFunction {
-    private Logger logger;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DatabaseFunction.class);
     String databaseURL;
+    static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
 
     public DatabaseFunction(){
-        logger = Logger.getLogger(DatabaseFunction.class.getName());
         try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
             Properties properties = new Properties();
             properties.load(stream);
@@ -35,7 +34,7 @@ public class DatabaseFunction {
                 databaseURL = "jdbc:sqlite:" + properties.getProperty("prodDBPath");
             }
         }catch (IOException exp){
-            logger.info("Failed to Find Properties File");
+            logger.info(() -> "Failed to Find Properties File");
         }
     }
 
@@ -44,7 +43,7 @@ public class DatabaseFunction {
         try{
             connection = DriverManager.getConnection(databaseURL);
         }catch (SQLException e){
-            logger.severe("Failed to Connect to DB");
+            logger.warn(() -> "Failed to Connect to DB");
             return null;
         }
 
@@ -63,11 +62,11 @@ public class DatabaseFunction {
             statement = connection.createStatement();
             statement.executeUpdate(createTableStatement);
         }catch (SQLException exp){
-            logger.info("Failed to Connect to Character DB");
+            logger.info(() -> "Failed to Connect to Character DB");
             return null;
         }
 
-        logger.info("Connected to Character Table");
+        logger.info(() -> "Connected to Character Table");
 
         String getPlayers = "SELECT * FROM characters";
 
@@ -81,10 +80,10 @@ public class DatabaseFunction {
                 int ageMonths = result.getInt("birthSeason");
                 String type = result.getString("type");
                 characters.add(new Character(name, ageMonths, type));
-                logger.info("Character: " + name);
+                logger.info(() -> "Character: " + name);
             }
         } catch (SQLException e) {
-            logger.info("Failed to Get Characters");
+            logger.info(() -> "Failed to Get Characters");
             return null;
         }
 
@@ -116,8 +115,17 @@ public class DatabaseFunction {
         try{
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
+            connection.close();
+            statement.close();
             return resultSet;
         } catch (SQLException e) {
+            try{
+                connection.close();
+            } catch (SQLException ex) {
+                logger.warn(() -> "Failed to close connection in query");
+            }finally {
+                logger.warn(() -> "Query has Failed");
+            }
             return null;
         }
     }
@@ -134,8 +142,11 @@ public class DatabaseFunction {
         try{
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
+            statement.close();
+            resultSet.close();
         } catch (SQLException e) {
-            return false;
+            logger.warn(() -> "Update has Failed");
+            throw new RuntimeException();
         }
 
         return true;

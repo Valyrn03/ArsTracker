@@ -171,12 +171,19 @@ public class CharacterEditor extends CharacterController {
 
         ResultSet resultSet = databaseConnection.query(query);
         if(resultSet == null){
-            return false;
+            try{
+                resultSet.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } finally {
+                logger.warn(() -> "Selecting Categorical Query has Failed");
+            }
         }
 
         try{
             return resultSet.getInt(0) == 1;
         }catch (SQLException exp){
+            logger.warn(() -> "Categorical Query has failed to determine whether given ability is categorical");
             return false;
         }
     }
@@ -197,8 +204,9 @@ public class CharacterEditor extends CharacterController {
         String query = String.format("SELECT name FROM ability_category WHERE ability_type IN (%s);", listToSql(abilityType));
 
         List<String> abilities = new ArrayList<>();
+        ResultSet abilityResultSet = null;
         try{
-            ResultSet abilityResultSet = databaseConnection.query(query);
+            abilityResultSet = databaseConnection.query(query);
 
             //There needs to be a better way to do this, but I do not know what it is
             while(!abilityResultSet.isAfterLast()){
@@ -208,6 +216,16 @@ public class CharacterEditor extends CharacterController {
 
             abilityResultSet.close();
         } catch (SQLException e) {
+            try{
+                try {
+                    abilityResultSet.close();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }finally{
+                logger.warn(() -> "Get Ability Options Query has failed");
+            }
+            abilityResultSet = null;
             throw new RuntimeException(e);
         }
 
@@ -248,7 +266,11 @@ public class CharacterEditor extends CharacterController {
     public boolean addAbilityToDatabase(Ability ability){
         String query = String.format("INSERT INTO ability_tracker(name, player_id, ability_id, category_id, experience) VALUES (%s, %s, %s, %s, %d);", character.getName(), character.getID(), 0, ability.getCategory(), ability.getExperience());
 
-        return databaseConnection.post(query);
+        try{
+            return databaseConnection.post(query);
+        }catch (RuntimeException exp){
+            return false;
+        }
     }
 
     /**

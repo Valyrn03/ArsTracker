@@ -12,6 +12,7 @@ module application {
     requires java.sql;
     requires org.beryx.textio;
     requires org.xerial.sqlitejdbc;
+    requires org.slf4j;
 
     opens application to javafx.fxml;
     exports application;
