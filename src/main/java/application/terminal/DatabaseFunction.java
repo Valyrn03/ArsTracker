@@ -39,13 +39,7 @@ public class DatabaseFunction {
     }
 
     public ArrayList<Character> connectCharacterDatabase(){
-        Connection connection;
-        try{
-            connection = DriverManager.getConnection(databaseURL);
-        }catch (SQLException e){
-            logger.warn(() -> "Failed to Connect to DB");
-            return null;
-        }
+        Connection connection = DataSource.getConnection();
 
         String createTableStatement = "CREATE TABLE IF NOT EXISTS characters (id TEXT PRIMARY KEY," +
                 "name TEXT," +
