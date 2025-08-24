@@ -12,6 +12,8 @@ module application {
     requires java.sql;
     requires org.beryx.textio;
     requires org.xerial.sqlitejdbc;
+    requires org.slf4j;
+    requires com.zaxxer.hikari;
 
     opens application to javafx.fxml;
     exports application;

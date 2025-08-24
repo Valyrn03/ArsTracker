@@ -55,6 +55,9 @@ dependencies {
 
   implementation("org.slf4j:slf4j-api:2.0.17")
   testImplementation("org.slf4j:slf4j-jdk14:2.0.17")
+
+  // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+  implementation("com.zaxxer:HikariCP:7.0.2")
 }
 
 test {useJUnitPlatform()}

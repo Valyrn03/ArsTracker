@@ -4,6 +4,7 @@ import application.characters.Character;
 import org.beryx.textio.TextIO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class CharacterController extends Command{
     public ArrayList<Character> characters;
@@ -20,5 +21,22 @@ public abstract class CharacterController extends Command{
 
     public int getInt(String prompt){
         return super.getInt(prompt);
+    }
+
+    public void printToTerminal(String prompt){
+        super.source.getTextTerminal().println(prompt);
+    }
+
+    public static int calculateCost(int value){
+        int absValue = Math.abs(value);
+        return (absValue * (absValue + 1))/2;
+    }
+
+    public int getOptions(List<String> options){
+        return super.getOptions(options);
+    }
+
+    public String getString(String prompt){
+        return super.getString(prompt);
     }
 }

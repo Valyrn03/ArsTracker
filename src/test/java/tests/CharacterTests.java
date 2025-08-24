@@ -1,12 +1,5 @@
 package tests;
 
-import application.characters.Character;
-import application.utils.Abilities;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
