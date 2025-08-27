@@ -22,7 +22,7 @@ public class DataSource {
             return source.getConnection();
         }catch (SQLException exp){
             logger.warn(() -> "Failed to pull connection from pool: " + exp.toString());
-            System.exit(0);
+            System.exit(1);
             return null;
         }
     }

@@ -99,13 +99,7 @@ public class DatabaseFunction {
     }
 
     public ResultSet query(String query){
-        Connection connection;
-        try{
-            connection = DriverManager.getConnection(databaseURL);
-        }catch (SQLException exp){
-            logger.info(() -> "Database Failed to Open");
-            return null;
-        }
+        Connection connection = DataSource.getConnection();
         try{
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -125,13 +119,7 @@ public class DatabaseFunction {
     }
 
     public boolean post(String query){
-        Connection connection;
-        try{
-            connection = DriverManager.getConnection(databaseURL);
-        }catch (SQLException exp){
-            logger.info(() -> "Database Failed to Open");
-            return false;
-        }
+        Connection connection = DataSource.getConnection();
 
         try{
             Statement statement = connection.createStatement();
