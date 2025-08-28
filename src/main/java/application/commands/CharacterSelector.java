@@ -20,6 +20,10 @@ public class CharacterSelector extends CharacterController {
         add(getCharacter("Elvira_Seoane"));
     }
 
+    public CharacterSelector(TextIO source, ArrayList<Character> arr){
+        super(source, arr);
+    }
+
     @Override
     public boolean execute() {
         int index = 0;

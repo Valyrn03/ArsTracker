@@ -41,7 +41,7 @@ public class CharacterEditorController {
     public void initialize(Character character, Stage currentStage){
 
         //Preparing Ability Table
-        List<Ability> abilities = character.getAbilities().keySet().stream().toList();
+        List<Ability> abilities = character.getAbilities();
         abilities.sort(null);
 
         //Setting Formatter so that the text fields can only accept integers
@@ -50,8 +50,8 @@ public class CharacterEditorController {
         //Populating Ability Table
         for(Ability ability : abilities){
             HBox item = new HBox();
-            item.getChildren().add(new Label(ability.name()));
-            TextField abilityField = new TextField(Integer.toString(character.getAbility(ability)));
+            item.getChildren().add(new Label(ability.getAbility()));
+            TextField abilityField = new TextField(Integer.toString(ability.getExperience()));
             abilityField.setTextFormatter(formatter);
             abilityTable.getChildren().add(item);
         }
