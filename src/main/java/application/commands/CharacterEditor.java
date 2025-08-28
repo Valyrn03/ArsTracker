@@ -5,6 +5,7 @@ import application.characters.Ability;
 import application.characters.AbilityCategory;
 import application.characters.Attribute;
 import application.characters.Character;
+import application.commands.characterEditor.AbilityEditor;
 import application.terminal.CharacterController;
 import application.terminal.DatabaseFunction;
 import org.beryx.textio.TextIO;
@@ -37,6 +38,7 @@ public class CharacterEditor extends CharacterController {
     static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
     private Character character;
     private DatabaseFunction databaseConnection;
+    AbilityEditor abilityEditor;
     //Thank you stack overflow, I did not know it was a thing
     static final List<AbilityCategory> categoricalIDs = new ArrayList<>() {
         {
@@ -53,6 +55,7 @@ public class CharacterEditor extends CharacterController {
 
     public CharacterEditor(TextIO source, ArrayList<Character> arr, Character character) {
         super(source, arr);
+        abilityEditor = new AbilityEditor(character);
         databaseConnection = new DatabaseFunction();
     }
 
@@ -142,14 +145,14 @@ public class CharacterEditor extends CharacterController {
      *     6. Call addAbilityToDatabase() in order to add the newly created Ability
      */
     public Ability createAbility(){
-        List<String> abilityOptions = getAbilityOptions();
+        List<String> abilityOptions = abilityEditor.getAbilityOptions();
 
         assert abilityOptions != null;
         String selectedAbility = abilityOptions.get(super.getOptions(abilityOptions));
         String subtype = null;
 
         //Need to figure out a good way to check if an ability needs a subtype or not
-        if(isCategorical(selectedAbility)){
+        if(abilityEditor.isCategorical(selectedAbility)){
             subtype = super.getString("\tName of Ability");
         }
 
@@ -165,121 +168,5 @@ public class CharacterEditor extends CharacterController {
         }
 
         return ability;
-    }
-
-    private boolean isCategorical(String selectedAbility) {
-        String query = String.format("SELECT isCategorical FROM ability_category WHERE name = %s", selectedAbility);
-
-        ResultSet resultSet = databaseConnection.query(query);
-        if(resultSet == null){
-            try{
-                resultSet.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                logger.warn(() -> "Selecting Categorical Query has Failed");
-            }
-        }
-
-        try{
-            return resultSet.getInt(0) == 1;
-        }catch (SQLException exp){
-            logger.warn(() -> "Categorical Query has failed to determine whether given ability is categorical");
-            return false;
-        }
-    }
-
-    /**
-     * Gets the category of ability required, and returns a list of those
-     *     The names of each ability, to be precise
-     *
-     * Will use the character selected to determine which abilities are allowed
-     *
-     * For now, will allow for only General & Academic abilities
-     *
-     * @return list of ability names
-     */
-    private List<String> getAbilityOptions() {
-        List<String> abilityType = getCharacterCategories();
-
-        String query = String.format("SELECT name FROM ability_category WHERE ability_type IN (%s);", listToSql(abilityType));
-
-        List<String> abilities = new ArrayList<>();
-        ResultSet abilityResultSet = null;
-        try{
-            abilityResultSet = databaseConnection.query(query);
-
-            //There needs to be a better way to do this, but I do not know what it is
-            while(!abilityResultSet.isAfterLast()){
-                abilities.add(abilityResultSet.getString(0));
-                abilityResultSet.next();
-            }
-
-            abilityResultSet.close();
-        } catch (SQLException e) {
-            try{
-                try {
-                    abilityResultSet.close();
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }finally{
-                logger.warn(() -> "Get Ability Options Query has failed");
-            }
-            abilityResultSet = null;
-            throw new RuntimeException(e);
-        }
-
-        logger.info(() -> "Ability Options:" + abilities.toString());
-        return abilities;
-    }
-
-    /**
-     * Gets the categories of abilities the character is able to choose from
-     *
-     * @return a list of categories
-     */
-    private List<String> getCharacterCategories() {
-        List<String> list = new ArrayList<>();
-
-        list.add("General");
-        list.add("Academic");
-
-        return list;
-    }
-
-    /**
-     * Simply meant to remove the opening and closing brackets, so that the line this is in is more readable.
-     *
-     * @param abilityType is the list that requires being pruned
-     * @return the toString of the given list, minus the brackets
-     */
-    public String listToSql(List<String> abilityType) {
-        String listRepr = abilityType.toString();
-        return listRepr.substring(1, listRepr.length() - 1);
-    }
-
-    /**
-     * Will handle the actual database access resulting from calling createAbility()
-     *
-     * @return whether the query succeeds
-     */
-    public boolean addAbilityToDatabase(Ability ability){
-        String query = String.format("INSERT INTO ability_tracker(name, player_id, ability_id, category_id, experience) VALUES (%s, %s, %s, %s, %d);", character.getName(), character.getID(), 0, ability.getCategory(), ability.getExperience());
-
-        try{
-            return databaseConnection.post(query);
-        }catch (RuntimeException exp){
-            return false;
-        }
-    }
-
-    /**
-     * In the case of the ability already existing, this method will handle the increase in that ability
-     *
-     * @return the new form of the given ability
-     */
-    public Ability editAbility(){
-        return null;
     }
 }
