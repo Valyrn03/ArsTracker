@@ -14,6 +14,7 @@ module application {
     requires org.xerial.sqlitejdbc;
     requires org.slf4j;
     requires com.zaxxer.hikari;
+    requires org.apache.commons.lang3;
 
     opens application to javafx.fxml;
     exports application;

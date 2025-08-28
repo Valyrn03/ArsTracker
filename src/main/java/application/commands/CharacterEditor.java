@@ -10,6 +10,7 @@ import application.terminal.DatabaseFunction;
 import org.beryx.textio.TextIO;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
+import org.apache.commons.lang3.Strings;
 
 import java.io.IOException;
 import java.io.InputStream;

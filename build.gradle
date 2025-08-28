@@ -52,6 +52,7 @@ dependencies {
   testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 
   implementation("commons-io:commons-io:2.19.0")
+  implementation("org.apache.commons:commons-lang3:3.18.0")
 
   implementation("org.slf4j:slf4j-api:2.0.17")
   testImplementation("org.slf4j:slf4j-jdk14:2.0.17")
