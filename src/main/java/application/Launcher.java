@@ -2,15 +2,12 @@ package application;
 
 import application.characters.Character;
 import application.commands.*;
-import application.displays.LandingPage;
 import application.terminal.Command;
-import application.terminal.DatabaseFunction;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 import org.beryx.textio.TextTerminal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +18,6 @@ public class Launcher {
     }
 
     String[] args;
-    DatabaseFunction database;
     TextIO source;
     TextTerminal terminal;
     ArrayList<Character> characters;
@@ -31,7 +27,6 @@ public class Launcher {
         args = arg;
         source = TextIoFactory.getTextIO();
         source.getTextTerminal().println("Type \"help\" to get a list of commands");
-        database = new DatabaseFunction();
         ArrayList<Character> characters = new ArrayList<>();
         terminal = source.getTextTerminal();
 

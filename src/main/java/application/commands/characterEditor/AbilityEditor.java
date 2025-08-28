@@ -3,7 +3,7 @@ package application.commands.characterEditor;
 import application.characters.Ability;
 import application.characters.Character;
 import application.commands.CharacterEditor;
-import application.terminal.DatabaseFunction;
+import application.terminal.DataSource;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
 
@@ -14,17 +14,15 @@ import java.util.List;
 
 public class AbilityEditor {
     static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
-    private DatabaseFunction databaseConnection;
     Character character;
     public AbilityEditor(Character input){
         character = input;
-        databaseConnection = new DatabaseFunction();
     }
 
     public boolean isCategorical(String selectedAbility) {
         String query = String.format("SELECT isCategorical FROM ability_category WHERE name = %s", selectedAbility);
 
-        ResultSet resultSet = databaseConnection.query(query);
+        ResultSet resultSet = DataSource.query(query);
         if(resultSet == null){
             try{
                 resultSet.close();
@@ -61,7 +59,7 @@ public class AbilityEditor {
         List<String> abilities = new ArrayList<>();
         ResultSet abilityResultSet = null;
         try{
-            abilityResultSet = databaseConnection.query(query);
+            abilityResultSet = DataSource.query(query);
 
             //There needs to be a better way to do this, but I do not know what it is
             while(!abilityResultSet.isAfterLast()){
@@ -122,7 +120,7 @@ public class AbilityEditor {
         String query = String.format("INSERT INTO ability_tracker(name, player_id, ability_id, category_id, experience) VALUES (%s, %s, %s, %s, %d);", character.getName(), character.getID(), 0, ability.getCategory(), ability.getExperience());
 
         try{
-            return databaseConnection.post(query);
+            return DataSource.post(query);
         }catch (RuntimeException exp){
             return false;
         }

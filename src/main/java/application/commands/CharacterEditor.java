@@ -1,24 +1,17 @@
 package application.commands;
 
-import application.Launcher;
 import application.characters.Ability;
 import application.characters.AbilityCategory;
 import application.characters.Attribute;
 import application.characters.Character;
 import application.commands.characterEditor.AbilityEditor;
 import application.terminal.CharacterController;
-import application.terminal.DatabaseFunction;
 import org.beryx.textio.TextIO;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
-import org.apache.commons.lang3.Strings;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /*
 Steps in Character Creation:
@@ -37,7 +30,6 @@ Abilities Formula: 5n(n+1)/2 OR 5*arts
 public class CharacterEditor extends CharacterController {
     static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
     private Character character;
-    private DatabaseFunction databaseConnection;
     AbilityEditor abilityEditor;
     //Thank you stack overflow, I did not know it was a thing
     static final List<AbilityCategory> categoricalIDs = new ArrayList<>() {
@@ -56,7 +48,6 @@ public class CharacterEditor extends CharacterController {
     public CharacterEditor(TextIO source, ArrayList<Character> arr, Character character) {
         super(source, arr);
         abilityEditor = new AbilityEditor(character);
-        databaseConnection = new DatabaseFunction();
     }
 
     @Override
