@@ -3,6 +3,7 @@ package application.commands;
 import application.characters.Character;
 import application.terminal.CharacterController;
 import application.terminal.Command;
+import application.terminal.CommandFramework;
 import org.beryx.textio.TextIO;
 
 import java.util.ArrayList;
@@ -13,15 +14,14 @@ public class CharacterSelector extends CharacterController {
     Character selectedCharacter;
     String characterName;
 
-
-    public CharacterSelector(TextIO source, String name, ArrayList<Character> arr){
-        super(source, arr);
+    public CharacterSelector(CommandFramework framework, String name, ArrayList<Character> arr){
+        super(framework, arr);
         characterName = name;
         add(getCharacter("Elvira_Seoane"));
     }
 
-    public CharacterSelector(TextIO source, ArrayList<Character> arr){
-        super(source, arr);
+    public CharacterSelector(CommandFramework framework, ArrayList<Character> arr){
+        super(framework, arr);
     }
 
     @Override
