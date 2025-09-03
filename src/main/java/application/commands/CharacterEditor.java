@@ -6,6 +6,7 @@ import application.characters.Attribute;
 import application.characters.Character;
 import application.commands.characterEditor.AbilityEditor;
 import application.terminal.CharacterController;
+import application.terminal.CommandFramework;
 import org.beryx.textio.TextIO;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
@@ -31,6 +32,7 @@ public class CharacterEditor extends CharacterController {
     static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
     private Character character;
     AbilityEditor abilityEditor;
+    CommandFramework framework;
     //Thank you stack overflow, I did not know it was a thing
     static final List<AbilityCategory> categoricalIDs = new ArrayList<>() {
         {
@@ -45,8 +47,8 @@ public class CharacterEditor extends CharacterController {
         }
     };
 
-    public CharacterEditor(TextIO source, ArrayList<Character> arr, Character character) {
-        super(source, arr);
+    public CharacterEditor(CommandFramework framework, ArrayList<Character> arr, Character character) {
+        super(framework, arr);
         abilityEditor = new AbilityEditor(character);
     }
 
