@@ -2,7 +2,6 @@ package application.commands.characterEditor;
 
 import application.characters.Ability;
 import application.characters.Character;
-import application.commands.CharacterEditor;
 import application.terminal.DataSource;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AbilityEditor {
-    static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
+    static final Logger logger = LoggerFactory.getLogger(AbilityEditor.class);
     Character character;
     public AbilityEditor(Character input){
         character = input;

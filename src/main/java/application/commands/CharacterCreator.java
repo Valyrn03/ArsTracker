@@ -2,7 +2,6 @@ package application.commands;
 
 import application.characters.Character;
 import application.terminal.CommandFramework;
-import org.beryx.textio.TextIO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +19,11 @@ import java.util.List;
         character_type
         characteristics*
  */
-public class CharacterCreator extends CharacterEditor{
+public class CharacterCreator extends CharacterEditorCommand {
     Character character;
 
-    public CharacterCreator(CommandFramework framework, ArrayList<Character> arr) {
-        super(framework, arr, null);
+    public CharacterCreator(CommandFramework framework) {
+        super(framework, null);
     }
 
     @Override
@@ -38,7 +37,12 @@ public class CharacterCreator extends CharacterEditor{
 
         character = new Character(name, birthSeason, type);
 
-        //Call Editor's Characteristics, Ability, and Feature creation methods
+        CharacterEditorCommand editor = new CharacterEditorCommand(framework, character);
+        List<Integer> characteristics = editor.getCharacteristics("Characteristics >");
+
+        //Add Abilities
+
+        //Add Features
 
         return addCharacter();
     }

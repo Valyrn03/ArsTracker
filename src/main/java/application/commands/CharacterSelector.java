@@ -7,21 +7,24 @@ import application.terminal.CommandFramework;
 import org.beryx.textio.TextIO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static application.displays.LandingPage.getCharacter;
 
 public class CharacterSelector extends CharacterController {
     Character selectedCharacter;
+    List<Character> characters;
     String characterName;
 
     public CharacterSelector(CommandFramework framework, String name, ArrayList<Character> arr){
-        super(framework, arr);
+        super(framework);
         characterName = name;
+        characters = arr;
         add(getCharacter("Elvira_Seoane"));
     }
 
     public CharacterSelector(CommandFramework framework, ArrayList<Character> arr){
-        super(framework, arr);
+        super(framework);
     }
 
     @Override

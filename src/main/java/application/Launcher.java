@@ -41,7 +41,7 @@ public class Launcher {
         commands.put("openGUI", new LaunchGUICommand(framework));
         commands.put("list", new CharacterQueryCommand(framework));
         commands.put("select", new CharacterSelector(framework, characters));
-        commands.put("create", new CharacterCreator(framework, characters));
+        commands.put("create", new CharacterCreator(framework));
         commands.put("close", new CloseCommand(framework));
     }
 

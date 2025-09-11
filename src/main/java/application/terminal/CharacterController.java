@@ -7,17 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CharacterController implements Command{
-    public ArrayList<Character> characters;
     private CommandFramework framework;
+    List<Character> characters;
 
-    public CharacterController(CommandFramework source, ArrayList<Character> arr){
+    public CharacterController(CommandFramework source){
         framework = source;
-        characters = arr;
-    }
-
-    public boolean add(Character character){
-        characters.add(character);
-        return true;
+        characters = new ArrayList<>();
     }
 
     public int getInt(String prompt){
@@ -39,5 +34,13 @@ public abstract class CharacterController implements Command{
 
     public String getString(String prompt){
         return framework.getString(prompt);
+    }
+
+    public boolean add(Character character){
+        if(characters.contains(character)){
+            return false;
+        }
+        characters.add(character);
+        return true;
     }
 }
