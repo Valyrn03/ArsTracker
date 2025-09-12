@@ -13,12 +13,8 @@ import java.util.List;
 
 public class AbilityEditor {
     static final Logger logger = LoggerFactory.getLogger(AbilityEditor.class);
-    Character character;
-    public AbilityEditor(Character input){
-        character = input;
-    }
 
-    public boolean isCategorical(String selectedAbility) {
+    public static boolean isCategorical(String selectedAbility) {
         String query = String.format("SELECT isCategorical FROM ability_category WHERE name = %s", selectedAbility);
 
         ResultSet resultSet = DataSource.query(query);
@@ -50,8 +46,8 @@ public class AbilityEditor {
      *
      * @return list of ability names
      */
-    public List<String> getAbilityOptions() {
-        List<String> abilityType = getCharacterCategories();
+    public static List<String> getAbilityOptions(Character character) {
+        List<String> abilityType = getCharacterCategories(character);
 
         String query = String.format("SELECT name FROM ability_category WHERE ability_type IN (%s);", listToSql(abilityType));
 
@@ -90,7 +86,7 @@ public class AbilityEditor {
      *
      * @return a list of categories
      */
-    private List<String> getCharacterCategories() {
+    private static List<String> getCharacterCategories(Character character) {
         List<String> list = new ArrayList<>();
 
         list.add("General");
@@ -105,7 +101,7 @@ public class AbilityEditor {
      * @param abilityType is the list that requires being pruned
      * @return the toString of the given list, minus the brackets
      */
-    public String listToSql(List<String> abilityType) {
+    public static String listToSql(List<String> abilityType) {
         String listRepr = abilityType.toString();
         return listRepr.substring(1, listRepr.length() - 1);
     }
@@ -115,7 +111,7 @@ public class AbilityEditor {
      *
      * @return whether the query succeeds
      */
-    public boolean addAbilityToDatabase(Ability ability){
+    public static boolean addAbilityToDatabase(Character character, Ability ability){
         String query = String.format("INSERT INTO ability_tracker(name, player_id, ability_id, category_id, experience) VALUES (%s, %s, %s, %s, %d);", character.getName(), character.getID(), 0, ability.getCategory(), ability.getExperience());
 
         try{
@@ -130,7 +126,14 @@ public class AbilityEditor {
      *
      * @return the new form of the given ability
      */
-    public Ability editAbility(){
+    public static Ability editAbility(Ability ability){
         return null;
+    }
+
+    /**
+     * Verifies if a given character can take a given Ability (ie no duplicates), as well as inserting it if so
+     */
+    public static boolean verifyAbility(Character character, Ability ability){
+        return true;
     }
 }

@@ -1,6 +1,8 @@
 package application.commands;
 
+import application.characters.Ability;
 import application.characters.Character;
+import application.commands.characterEditor.AbilityEditor;
 import application.terminal.CommandFramework;
 
 import java.util.ArrayList;
@@ -40,7 +42,17 @@ public class CharacterCreator extends CharacterEditorCommand {
         CharacterEditorCommand editor = new CharacterEditorCommand(framework, character);
         List<Integer> characteristics = editor.getCharacteristics("Characteristics >");
 
+        List<String> continueOptions = new ArrayList<>();
+        continueOptions.add("Add Another?");
+        continueOptions.add("Confirm");
         //Add Abilities
+        do {
+            Ability ability = editor.createAbility();
+            if(!AbilityEditor.verifyAbility(character, ability)){
+                //Find a way to see why it's invalid
+                super.printToTerminal("Ability Not Valid");
+            }
+        }while(super.getOptions(continueOptions) == 0);
 
         //Add Features
 

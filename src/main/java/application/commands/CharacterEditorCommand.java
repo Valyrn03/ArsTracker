@@ -33,7 +33,6 @@ This class will only hold the methods that require user input. All verification 
 public class CharacterEditorCommand extends CharacterController {
     static final Logger logger = LoggerFactory.getLogger(CharacterEditorCommand.class);
     private Character character;
-    AbilityEditor abilityEditor;
     CommandFramework framework;
     //Thank you stack overflow, I did not know it was a thing
     static final List<AbilityCategory> categoricalIDs = new ArrayList<>() {
@@ -52,7 +51,6 @@ public class CharacterEditorCommand extends CharacterController {
     public CharacterEditorCommand(CommandFramework framework, Character character) {
         super(framework);
         this.character = character;
-        abilityEditor = new AbilityEditor(character);
     }
 
     @Override
@@ -110,14 +108,13 @@ public class CharacterEditorCommand extends CharacterController {
      *     6. Call addAbilityToDatabase() in order to add the newly created Ability
      */
     public Ability createAbility(){
-        List<String> abilityOptions = abilityEditor.getAbilityOptions();
+        List<String> abilityOptions = AbilityEditor.getAbilityOptions(character);
 
-        assert abilityOptions != null;
         String selectedAbility = abilityOptions.get(super.getOptions(abilityOptions));
         String subtype = null;
 
         //Need to figure out a good way to check if an ability needs a subtype or not
-        if(abilityEditor.isCategorical(selectedAbility)){
+        if(AbilityEditor.isCategorical(selectedAbility)){
             subtype = super.getString("\tName of Ability");
         }
 
