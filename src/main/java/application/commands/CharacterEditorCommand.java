@@ -5,8 +5,9 @@ import application.characters.AbilityCategory;
 import application.characters.Attribute;
 import application.characters.Character;
 import application.commands.characterEditor.AbilityEditor;
+import application.commands.characterEditor.CharacteristicEditor;
 import application.terminal.CharacterController;
-import org.beryx.textio.TextIO;
+import application.terminal.CommandFramework;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
 
@@ -26,11 +27,13 @@ Steps in Character Creation:
 Arts & Characteristics Formula: n(n+1)/2
 Abilities Formula: 5n(n+1)/2 OR 5*arts
     Cost to raise to tier: 5*n
+
+This class will only hold the methods that require user input. All verification methods will be put in their respective editor in the characterEditor directory
  */
-public class CharacterEditor extends CharacterController {
-    static final Logger logger = LoggerFactory.getLogger(CharacterEditor.class);
+public class CharacterEditorCommand extends CharacterController {
+    static final Logger logger = LoggerFactory.getLogger(CharacterEditorCommand.class);
     private Character character;
-    AbilityEditor abilityEditor;
+    CommandFramework framework;
     //Thank you stack overflow, I did not know it was a thing
     static final List<AbilityCategory> categoricalIDs = new ArrayList<>() {
         {
@@ -45,9 +48,9 @@ public class CharacterEditor extends CharacterController {
         }
     };
 
-    public CharacterEditor(TextIO source, ArrayList<Character> arr, Character character) {
-        super(source, arr);
-        abilityEditor = new AbilityEditor(character);
+    public CharacterEditorCommand(CommandFramework framework, Character character) {
+        super(framework);
+        this.character = character;
     }
 
     @Override
@@ -75,7 +78,7 @@ public class CharacterEditor extends CharacterController {
             characteristics.add(super.getInt(String.format("%s: ", attribute)));
         }
 
-        if(verifyCharacteristics(characteristics) == null){
+        if(CharacteristicEditor.verifyCharacteristics(characteristics) == null){
             return characteristics;
         }else{
             //Print Options + Costs
@@ -92,37 +95,6 @@ public class CharacterEditor extends CharacterController {
     }
 
     /**
-    Method to verify if the given set of characteristics fits the requirements. As per RoP:I, the point values of
-     characteristics are equivalent to that of arts. According to the base book the progression is that of arithmetic
-     summation. Therefore, in order to calculate the cost, I will be using the summation formula
-
-     @param characteristics is the list of characteristics that need to be checked
-
-     @return list of respective costs if a mistake was made, or null if it goes through correctly
-     */
-    public static List<Integer> verifyCharacteristics(List<Integer> characteristics){
-        int points = 7;
-        List<Integer> costs = new ArrayList<>();
-
-        for(int characteristicValue : characteristics){
-            //Do with the absolute value in order to preserve the sign, if the given characteristic is negative
-            int pointsValue = calculateCost(characteristicValue);
-            if(characteristicValue > 0){
-                pointsValue = pointsValue * -1;
-            }
-            costs.add(pointsValue);
-            points += pointsValue;
-        }
-
-        int finalPoints = points;
-        logger.info(() -> "Array: " + characteristics.toString() + "\nCosts: " + costs.toString() + "\nPoints:" + finalPoints);
-        if(points >= 0){
-            return null;
-        }
-        return costs;
-    }
-
-    /**
      * Method to handle the creation of a new ability.
      *
      * Will need to get the category, then if it's a categorical ability the exact kind. Then the XP value
@@ -136,14 +108,13 @@ public class CharacterEditor extends CharacterController {
      *     6. Call addAbilityToDatabase() in order to add the newly created Ability
      */
     public Ability createAbility(){
-        List<String> abilityOptions = abilityEditor.getAbilityOptions();
+        List<String> abilityOptions = AbilityEditor.getAbilityOptions(character);
 
-        assert abilityOptions != null;
         String selectedAbility = abilityOptions.get(super.getOptions(abilityOptions));
         String subtype = null;
 
         //Need to figure out a good way to check if an ability needs a subtype or not
-        if(abilityEditor.isCategorical(selectedAbility)){
+        if(AbilityEditor.isCategorical(selectedAbility)){
             subtype = super.getString("\tName of Ability");
         }
 
