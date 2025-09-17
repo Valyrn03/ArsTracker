@@ -84,9 +84,9 @@ public class CharacterEditorCommand extends CharacterController {
             //Print Options + Costs
             Attribute[] attributeList = Attribute.values();
 
-            super.printToTerminal("This array is not valid. Try again");
+            framework.printToTerminal("This array is not valid. Try again");
             for(int i = 0; i < attributeList.length; i++){
-                super.printToTerminal(String.format("%d. %s: %d", i, attributeList[i], characteristics.get(i)));
+                framework.printToTerminal(String.format("%d. %s: %d", i, attributeList[i], characteristics.get(i)));
             }
             //Call getCharacteristics() again, but with a "do better" as the string prompt
                 //Add a "if prompt is not null, then print, else continue"
@@ -125,7 +125,7 @@ public class CharacterEditorCommand extends CharacterController {
         Ability ability = Ability.createAbility(selectedAbility, subtype, speciality, xpValue);
 
         if(ability == null){
-            super.printToTerminal("Error in Creating Ability");
+            framework.printToTerminal("Error in Creating Ability");
             return null;
         }
 

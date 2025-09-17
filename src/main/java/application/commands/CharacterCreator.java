@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class CharacterCreator extends CharacterEditorCommand {
     Character character;
+    private static final int seasonsPerYear = 4;
 
     public CharacterCreator(CommandFramework framework) {
         super(framework, null);
@@ -34,7 +35,7 @@ public class CharacterCreator extends CharacterEditorCommand {
         int age = super.getInt("Current Age >");
         int birthSeason = getSeason(age);
 
-        ArrayList<String> characterTypes = new ArrayList<>(List.of(new String[]{"MAGUS", "COMPANION", "GROG"}));
+        List<String> characterTypes = new ArrayList<>(List.of(new String[]{"MAGUS", "COMPANION", "GROG"}));
         String type = characterTypes.get(super.getOptions(characterTypes));
 
         character = new Character(name, birthSeason, type);
@@ -46,13 +47,13 @@ public class CharacterCreator extends CharacterEditorCommand {
         continueOptions.add("Add Another?");
         continueOptions.add("Confirm");
         //Add Abilities
-        do {
+        while(super.getOptions(continueOptions) == 0){
             Ability ability = editor.createAbility();
             if(!AbilityEditor.verifyAbility(character, ability)){
                 //Find a way to see why it's invalid
-                super.printToTerminal("Ability Not Valid");
+                framework.printToTerminal("Ability Not Valid");
             }
-        }while(super.getOptions(continueOptions) == 0);
+        }
 
         //Add Features
 
@@ -72,6 +73,6 @@ public class CharacterCreator extends CharacterEditorCommand {
     Will need to implement with different campaigns / birth seasons in mind later
      */
     public static int getSeason(int age){
-        return 1220 - age * 4;
+        return 1220 - age * seasonsPerYear;
     }
 }

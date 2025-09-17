@@ -29,4 +29,8 @@ public class CommandFramework {
     public String getString(String prompt){
         return source.newStringInputReader().read(prompt + " >");
     }
+
+    public void printToTerminal(String prompt, Object... args){
+        source.getTextTerminal().println(String.format(prompt, args));
+    }
 }
