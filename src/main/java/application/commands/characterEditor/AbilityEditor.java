@@ -111,7 +111,7 @@ public class AbilityEditor {
      *
      * @return whether the query succeeds
      */
-    public static boolean addAbilityToDatabase(Character character, Ability ability){
+    public static boolean insertAbility(Character character, Ability ability){
         String query = String.format("INSERT INTO ability_tracker(name, player_id, ability_id, category_id, experience) VALUES (%s, %s, %s, %s, %d);", character.getName(), character.getID(), 0, ability.getCategory(), ability.getExperience());
 
         try{
@@ -126,7 +126,7 @@ public class AbilityEditor {
      *
      * @return the new form of the given ability
      */
-    public static Ability editAbility(Ability ability){
+    public static Ability updateAbility(Ability ability){
         return null;
     }
 

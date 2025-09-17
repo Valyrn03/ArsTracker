@@ -20,7 +20,6 @@ public class CharacterSelector extends CharacterController {
         super(framework);
         characterName = name;
         characters = arr;
-        add(getCharacter("Elvira_Seoane"));
     }
 
     public CharacterSelector(CommandFramework framework, ArrayList<Character> arr){
