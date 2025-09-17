@@ -1,9 +1,10 @@
 package application.commands;
 
+import application.terminal.Command;
 import application.terminal.CommandFramework;
 import org.beryx.textio.TextIO;
 
-public class HelpCommand implements application.terminal.Command {
+public class HelpCommand implements Command {
     CommandFramework framework;
 
     public HelpCommand(CommandFramework framework) {
