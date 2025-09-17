@@ -6,25 +6,21 @@ import org.beryx.textio.TextIO;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CharacterController extends Command{
-    public ArrayList<Character> characters;
+public abstract class CharacterController implements Command{
+    private CommandFramework framework;
+    List<Character> characters;
 
-    public CharacterController(TextIO source, ArrayList<Character> arr){
-        super(source);
-        characters = arr;
-    }
-
-    public boolean add(Character character){
-        characters.add(character);
-        return true;
+    public CharacterController(CommandFramework source){
+        framework = source;
+        characters = new ArrayList<>();
     }
 
     public int getInt(String prompt){
-        return super.getInt(prompt);
+        return framework.getInt(prompt);
     }
 
     public void printToTerminal(String prompt){
-        super.source.getTextTerminal().println(prompt);
+        framework.source.getTextTerminal().println(prompt);
     }
 
     public static int calculateCost(int value){
@@ -33,10 +29,18 @@ public abstract class CharacterController extends Command{
     }
 
     public int getOptions(List<String> options){
-        return super.getOptions(options);
+        return framework.getOptions(options);
     }
 
     public String getString(String prompt){
-        return super.getString(prompt);
+        return framework.getString(prompt);
+    }
+
+    public boolean add(Character character){
+        if(characters.contains(character)){
+            return false;
+        }
+        characters.add(character);
+        return true;
     }
 }

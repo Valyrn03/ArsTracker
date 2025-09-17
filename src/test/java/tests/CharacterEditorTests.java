@@ -1,6 +1,6 @@
 package tests;
 
-import application.commands.CharacterEditor;
+import application.commands.characterEditor.CharacteristicEditor;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -20,27 +20,27 @@ public class CharacterEditorTests {
     void testValidCharacteristicVerifier(){
         //Total Remaining: 7
         List<Integer> characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{0, 0, 0, 0, 0, 0, 0, 0}));
-        assertNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+        assertNull(CharacteristicEditor.verifyCharacteristics(characteristicArray));
 
         //Total Remaining: 6
         characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-3, 2, -2, 0, -1, 3, 1, 1}));
-        assertNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+        assertNull(CharacteristicEditor.verifyCharacteristics(characteristicArray));
 
         //Total Remaining: 0
         characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{0, 2, -2, 0, -1, 3, 1, 1}));
-        assertNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+        assertNull(CharacteristicEditor.verifyCharacteristics(characteristicArray));
 
         //Total Remaining: 1
         characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-3, 2, -2, 0, -1, 3, 3, 1}));
-        assertNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+        assertNull(CharacteristicEditor.verifyCharacteristics(characteristicArray));
 
         //Total Remaining: 0
         characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-3, 2, -2, 1, -1, 3, 3, 1}));
-        assertNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+        assertNull(CharacteristicEditor.verifyCharacteristics(characteristicArray));
 
         //Total Remaining:
         characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-3, 2, -2, 1, -1, 3, 3, 1}));
-        assertNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+        assertNull(CharacteristicEditor.verifyCharacteristics(characteristicArray));
     }
 
     /*
@@ -50,15 +50,15 @@ public class CharacterEditorTests {
     void testInvalidCharacteristicVerifier(){
         //Total Remaining: -17
         List<Integer> characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{2, 2, 2, 2, 2, 2, 2, 2}));
-        assertNotNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+        assertNotNull(CharacteristicEditor.verifyCharacteristics(characteristicArray));
 
         //Total Remaining: -2
         characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-1, 2, 1, -3, 3, 2, 2, 0}));
-        assertNotNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+        assertNotNull(CharacteristicEditor.verifyCharacteristics(characteristicArray));
 
         //Total Remaining: -1
         characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-3, 2, -2, 1, 1, 3, 2, 2}));
-        assertNotNull(CharacterEditor.verifyCharacteristics(characteristicArray));
+        assertNotNull(CharacteristicEditor.verifyCharacteristics(characteristicArray));
     }
 
     /*
