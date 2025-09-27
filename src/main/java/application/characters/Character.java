@@ -12,7 +12,6 @@ import static java.util.Collections.sort;
 //Random comment
 
 public class Character implements Serializable, Comparable<Character> {
-    final Logger logger = LoggerFactory.getLogger(Character.class);
 
     private String name;
     private Map<Attribute, Integer> baseAttributes;

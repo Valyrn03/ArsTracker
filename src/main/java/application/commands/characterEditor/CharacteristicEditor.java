@@ -2,6 +2,7 @@ package application.commands.characterEditor;
 
 import application.characters.Character;
 import application.terminal.Command;
+import lombok.extern.slf4j.Slf4j;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
 
@@ -10,9 +11,8 @@ import java.util.List;
 
 import static application.terminal.CharacterController.calculateCost;
 
+@Slf4j
 public class CharacteristicEditor{
-    static final Logger logger = LoggerFactory.getLogger(CharacteristicEditor.class);
-
     /**
      Method to verify if the given set of characteristics fits the requirements. As per RoP:I, the point values of
      characteristics are equivalent to that of arts. According to the base book the progression is that of arithmetic

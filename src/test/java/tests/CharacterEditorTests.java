@@ -41,10 +41,24 @@ public class CharacterEditorTests {
         //Total Remaining:
         characteristicArray = new ArrayList<>(Arrays.asList(new Integer[]{-3, 2, -2, 1, -1, 3, 3, 1}));
         assertNull(CharacteristicEditor.verifyCharacteristics(characteristicArray));
+
+        /*
+        0 - 0
+        1 - 1
+        2 - 3
+        3 - 6
+        -1 - +1
+        -2 - +3
+        -3 - +6
+        7
+         */
     }
 
     /*
     Tests characteristic configurations that are invalid due to attempting to take too high of values
+
+    testCharacteristicVerifierShouldReturnInvalid
+    shouldReturn(Invalid/Null)If...
      */
     @Test
     void testInvalidCharacteristicVerifier(){

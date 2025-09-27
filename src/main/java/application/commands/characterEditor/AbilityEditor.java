@@ -3,35 +3,25 @@ package application.commands.characterEditor;
 import application.characters.Ability;
 import application.characters.Character;
 import application.terminal.DataSource;
-import org.sqlite.util.Logger;
-import org.sqlite.util.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import lombok.extern.java.Log;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class AbilityEditor {
-    static final Logger logger = LoggerFactory.getLogger(AbilityEditor.class);
 
     public static boolean isCategorical(String selectedAbility) {
         String query = String.format("SELECT isCategorical FROM ability_category WHERE name = %s", selectedAbility);
 
-        ResultSet resultSet = DataSource.query(query);
-        if(resultSet == null){
-            try{
-                resultSet.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                logger.warn(() -> "Selecting Categorical Query has Failed");
-            }
-        }
-
         try{
+            ResultSet resultSet = DataSource.query(query);
             return resultSet.getInt(0) == 1;
         }catch (SQLException exp){
-            logger.warn(() -> "Categorical Query has failed to determine whether given ability is categorical");
+            log.warn("Categorical Query has failed to determine whether given ability is categorical. {}", query, exp);
             return false;
         }
     }
@@ -71,13 +61,13 @@ public class AbilityEditor {
                     throw new RuntimeException(ex);
                 }
             }finally{
-                logger.warn(() -> "Get Ability Options Query has failed");
+                log.warn("Get Ability Options Query has failed, \n\tQuery: {}", query);
+                abilityResultSet = null;
             }
-            abilityResultSet = null;
             throw new RuntimeException(e);
         }
 
-        logger.info(() -> "Ability Options:" + abilities.toString());
+        log.info("Ability Options:" + abilities.toString());
         return abilities;
     }
 

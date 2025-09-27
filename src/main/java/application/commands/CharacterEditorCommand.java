@@ -10,6 +10,7 @@ import application.terminal.CharacterController;
 import application.terminal.CommandFramework;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,8 @@ Abilities Formula: 5n(n+1)/2 OR 5*arts
 
 This class will only hold the methods that require user input. All verification methods will be put in their respective editor in the characterEditor directory
  */
+@Slf4j
 public class CharacterEditorCommand extends CharacterController {
-    static final Logger logger = LoggerFactory.getLogger(CharacterEditorCommand.class);
     private Character character;
     CommandFramework framework;
     //Thank you stack overflow, I did not know it was a thing
