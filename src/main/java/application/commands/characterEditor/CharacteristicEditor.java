@@ -37,7 +37,7 @@ public class CharacteristicEditor{
         }
 
         int finalPoints = points;
-        logger.info(() -> "Array: " + characteristics.toString() + "\nCosts: " + costs.toString() + "\nPoints:" + finalPoints);
+        log.info("Array: {}\nCosts: {}\nPoints:{}", characteristics.toString(), costs.toString(), finalPoints);
         if(points >= 0){
             return null;
         }

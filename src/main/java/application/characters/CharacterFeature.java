@@ -1,9 +1,12 @@
 package application.characters;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 
 public class CharacterFeature implements Comparable<CharacterFeature> {
     private HashMap<String, Integer> attributes;
+    @Getter
     private boolean isVirtue;
     private String name;
     private String description;
@@ -22,10 +25,6 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
             return Integer.MAX_VALUE;
         }
         return attributes.get(attribute);
-    }
-
-    public boolean isVirtue(){
-        return isVirtue;
     }
 
     public boolean isFlaw(){

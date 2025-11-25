@@ -51,7 +51,7 @@ public class CharacterCreator extends CharacterEditorCommand {
             Ability ability = editor.createAbility();
             if(!AbilityEditor.verifyAbility(character, ability)){
                 //Find a way to see why it's invalid
-                framework.printToTerminal("Ability Not Valid");
+                framework.put("Ability Not Valid");
             }
         }
 

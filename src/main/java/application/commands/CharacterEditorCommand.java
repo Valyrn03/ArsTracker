@@ -8,8 +8,6 @@ import application.commands.characterEditor.AbilityEditor;
 import application.commands.characterEditor.CharacteristicEditor;
 import application.terminal.CharacterController;
 import application.terminal.CommandFramework;
-import org.sqlite.util.Logger;
-import org.sqlite.util.LoggerFactory;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -85,9 +83,9 @@ public class CharacterEditorCommand extends CharacterController {
             //Print Options + Costs
             Attribute[] attributeList = Attribute.values();
 
-            framework.printToTerminal("This array is not valid. Try again");
+            framework.put("This array is not valid. Try again");
             for(int i = 0; i < attributeList.length; i++){
-                framework.printToTerminal(String.format("%d. %s: %d", i, attributeList[i], characteristics.get(i)));
+                framework.put(String.format("%d. %s: %d", i, attributeList[i], characteristics.get(i)));
             }
             //Call getCharacteristics() again, but with a "do better" as the string prompt
                 //Add a "if prompt is not null, then print, else continue"
@@ -126,7 +124,7 @@ public class CharacterEditorCommand extends CharacterController {
         Ability ability = Ability.createAbility(selectedAbility, subtype, speciality, xpValue);
 
         if(ability == null){
-            framework.printToTerminal("Error in Creating Ability");
+            framework.put("Error in Creating Ability");
             return null;
         }
 

@@ -30,7 +30,7 @@ public class CommandFramework {
         return source.newStringInputReader().read(prompt + " >");
     }
 
-    public void printToTerminal(String prompt, Object... args){
+    public void put(String prompt, Object... args){
         source.getTextTerminal().println(String.format(prompt, args));
     }
 }

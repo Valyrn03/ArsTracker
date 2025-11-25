@@ -19,10 +19,6 @@ public abstract class CharacterController implements Command{
         return framework.getInt(prompt);
     }
 
-    public void printToTerminal(String prompt){
-        framework.source.getTextTerminal().println(prompt);
-    }
-
     public static int calculateCost(int value){
         int absValue = Math.abs(value);
         return (absValue * (absValue + 1))/2;

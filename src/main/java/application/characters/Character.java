@@ -1,6 +1,7 @@
 package application.characters;
 
 import application.utils.CharacterUtils;
+import lombok.Getter;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
 
@@ -13,12 +14,16 @@ import static java.util.Collections.sort;
 
 public class Character implements Serializable, Comparable<Character> {
 
+    @Getter
     private String name;
     private Map<Attribute, Integer> baseAttributes;
     //Ability <-> XP
+    @Getter
     private List<Ability> abilities;
     private Map<ExtraneousAttribute, Integer> attributes;
+    @Getter
     private CharacterType characterType;
+    @Getter
     ArrayList<CharacterFeature> features;
     UUID id;
 
@@ -80,10 +85,6 @@ public class Character implements Serializable, Comparable<Character> {
         for(int i = 0; i < characteristics.size(); i++){
             baseAttributes.put(attributes[i], characteristics.get(i));
         }
-    }
-
-    public String getName(){
-        return name;
     }
 
     public int getAttribute(Attribute attribute){
@@ -155,24 +156,12 @@ public class Character implements Serializable, Comparable<Character> {
         return map;
     }
 
-    public List<Ability> getAbilities(){
-        return abilities;
-    }
-
-    public ArrayList<CharacterFeature> getFeatures(){
-        return features;
-    }
-
     public void addFeature(String feature, boolean isVirtue, boolean isMajor){
         features.add(new CharacterFeature(feature, "", isVirtue, isMajor));
     }
 
     public void addFeature(CharacterFeature feature){
         features.add(feature);
-    }
-
-    public CharacterType getType(){
-        return characterType;
     }
 
     public String serialize(){
@@ -199,6 +188,6 @@ public class Character implements Serializable, Comparable<Character> {
     //Character Parts: Name, BaseAttributes, Attributes, Abilities, Type, Features
     @Override
     public int compareTo(Character o) {
-        return getName().compareTo(o.getName()) | getType().compareTo(o.getType());
+        return getName().compareTo(o.getName()) | getCharacterType().compareTo(o.getCharacterType());
     }
 }
