@@ -1,5 +1,6 @@
 package application.commands;
 
+import application.ArsTrackerLauncher;
 import application.characters.Character;
 import application.terminal.CharacterController;
 import application.terminal.Command;
@@ -13,13 +14,11 @@ import static application.displays.LandingPage.getCharacter;
 
 public class CharacterSelector extends CharacterController {
     Character selectedCharacter;
-    List<Character> characters;
     String characterName;
 
-    public CharacterSelector(CommandFramework framework, String name, ArrayList<Character> arr){
+    public CharacterSelector(CommandFramework framework, String name){
         super(framework);
         characterName = name;
-        characters = arr;
     }
 
     public CharacterSelector(CommandFramework framework, ArrayList<Character> arr){
@@ -29,9 +28,9 @@ public class CharacterSelector extends CharacterController {
     @Override
     public boolean execute() {
         int index = 0;
-        while(index < characters.size()){
-            if(characters.get(index).getName().equals(characterName)){
-                selectedCharacter = characters.get(index);
+        while(index < ArsTrackerLauncher.characters.size()){
+            if(ArsTrackerLauncher.characters.get(index).getName().equals(characterName)){
+                selectedCharacter = ArsTrackerLauncher.characters.get(index);
                 return true;
             }else{
                 index++;

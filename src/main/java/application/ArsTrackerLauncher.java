@@ -12,19 +12,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Launcher {
+public class ArsTrackerLauncher {
     public static void main(String[] args){
-        Launcher launcher = new Launcher(args);
+        ArsTrackerLauncher launcher = new ArsTrackerLauncher(args);
         launcher.coreLoop();
     }
 
     String[] args;
     CommandFramework framework;
     TextTerminal terminal;
-    ArrayList<Character> characters;
+    public static ArrayList<Character> characters;
     Map<String, Command> commands;
+    Character selectedCharacter;
 
-    public Launcher(String[] arg){
+    public ArsTrackerLauncher(String[] arg){
         args = arg;
         TextIO source = TextIoFactory.getTextIO();
         source.getTextTerminal().println("Type \"help\" to get a list of commands");
@@ -34,6 +35,8 @@ public class Launcher {
 
         commands = new HashMap<>();
         addLauncherCommands();
+
+        selectedCharacter = null;
     }
 
     private void addLauncherCommands() {
@@ -43,6 +46,10 @@ public class Launcher {
         commands.put("select", new CharacterSelector(framework, characters));
         commands.put("create", new CharacterCreator(framework));
         commands.put("close", new CloseCommand(framework));
+
+        if(selectedCharacter != null){
+            commands.put("print", new CharacterOutputCommand(framework, selectedCharacter));
+        }
     }
 
     public void coreLoop(){

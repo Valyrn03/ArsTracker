@@ -25,5 +25,4 @@ The user should be able to get a list of characters, and select one to either se
 4. The user can update the abilities and characteristics of the character
 5. The user should be able to see the virtues and flaws of a given character
 6. The user should be able to check the description of virtues and flaws
-7. The user should be able to create new virtues and flaws
-8. The user should be able to create new characters, which consist of ()
+7. The user should be able to create new characters, which consist of ()

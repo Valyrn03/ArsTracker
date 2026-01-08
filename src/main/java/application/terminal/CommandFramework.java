@@ -14,11 +14,11 @@ public class CommandFramework {
         terminal = source.getTextTerminal();
     }
 
-    int getInt(String prompt){
+    public int getInt(String prompt){
         return source.newIntInputReader().read(prompt + " >");
     }
 
-    int getOptions(List<String> options){
+    public int getOptions(List<String> options){
         terminal.println("Choose one of the following options:");
         for(int i = 0; i < options.size(); i++){
             terminal.printf("\t%d: %s\n", i, options.get(i));

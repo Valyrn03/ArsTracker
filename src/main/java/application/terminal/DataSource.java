@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 @Slf4j
 public class DataSource {
