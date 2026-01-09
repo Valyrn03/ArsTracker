@@ -1,5 +1,6 @@
 package application.commands;
 
+import application.ArsTrackerLauncher;
 import application.characters.Character;
 import application.terminal.Command;
 import application.terminal.CommandFramework;
@@ -19,11 +20,11 @@ Command to list characters from the currently active campaign for usage by Chara
 Should be called by default if there is an active campaign and the user is selecting a new character
  */
 @Slf4j
-public class CharacterQueryCommand implements Command {
+public class LoadCampaignCommand implements Command {
     CommandFramework framework;
     int campaignID;
 
-    public CharacterQueryCommand(CommandFramework source, int campaign_id) {
+    public LoadCampaignCommand(CommandFramework source, int campaign_id) {
         framework = source;
         campaignID = campaign_id;
     }
@@ -31,6 +32,7 @@ public class CharacterQueryCommand implements Command {
     @Override
     public boolean execute() {
         Connection connection = DataSource.getConnection();
+        List<String> characters = getAvailableCharacterNames();
 
         try(PreparedStatement statement = connection.prepareStatement("SELECT name WHERE campaign_id = ?")){
             statement.setInt(0, campaignID);
@@ -38,18 +40,29 @@ public class CharacterQueryCommand implements Command {
             ResultSet resultSet = statement.executeQuery();
 
             while(!resultSet.isAfterLast()){
-                //If name not in getAvailableCharacterNames(), then add it
-                    //Or should calling this override the list of character names?
+                String name = resultSet.getString("name");
+                if(!characters.contains(name)){
+                    ArsTrackerLauncher.characters.add(constructCharacter(resultSet, resultSet.getRow()));
+                }
             }
         }catch (SQLException exp){
             log.warn("Selecting Characters from Campaign {} has failed, with the error of {}", campaignID, exp.getMessage());
         }
     }
 
+    private Character constructCharacter(ResultSet resultSet, int row) {
+
+    }
+
     /*
     From the list of characters loaded in ArsTrackerLauncher, get all of the names, for the sake of an existence check
      */
     private List<String> getAvailableCharacterNames(){
-        return null;
+        List<String> names = new ArrayList<>();
+        for(Character character : ArsTrackerLauncher.characters){
+            names.add(character.getName());
+        }
+
+        return names;
     }
 }

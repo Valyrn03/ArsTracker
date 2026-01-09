@@ -4,7 +4,7 @@ The purpose of this program is to allow for the tracking of characters from the 
 
 # Structure
 ## File Structure
-All actions that a user can take are implemented in the directory "commands", each of which implement Command, which is an interface that requires only the method execute() so that the Command Design Pattern can be utilized.
+All actions that a user can take are implemented in the directory "commands", each of which implement Command, which is an interface that requires only the method execute() so that the Command Design Pattern can be utilized. For each file in that directory, if it ends with "Commmand", then it is not dependent on user input, and vice versa. So for example, CharacterEditor utilizes user input and LoadCampaignCommand does not.
 
 Launcher is what controls the initialization of the program, and where the program returns to after a command is called, similar to a shell.
 
@@ -20,9 +20,9 @@ Or, when this project will be considered complete enough.
 The user should be able to get a list of characters, and select one to either see the information of or change it. They should also be able to see the description of any virtue or flaw the character holds.
 
 1. There should exist a list of campaigns
-2. The user can get a list of characters from a selected campaign and select one
-3. The user can see the information about that character
-4. The user can update the abilities and characteristics of the character
+2. The user can get a list of characters from a selected campaign and select one (LoadCampaignCommand)
+3. The user can see the information about that character (CharacterOutputCommand)
+4. The user can update the abilities and characteristics of the character (CharacterEditor)
 5. The user should be able to see the virtues and flaws of a given character
 6. The user should be able to check the description of virtues and flaws
-7. The user should be able to create new characters, which consist of ()
+7. The user should be able to create new characters (CharacterCreator)

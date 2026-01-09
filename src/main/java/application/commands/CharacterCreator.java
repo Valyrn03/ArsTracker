@@ -21,7 +21,7 @@ import java.util.List;
         character_type
         characteristics*
  */
-public class CharacterCreator extends CharacterEditorCommand {
+public class CharacterCreator extends CharacterEditor {
     Character character;
     private static final int seasonsPerYear = 4;
 
@@ -40,7 +40,7 @@ public class CharacterCreator extends CharacterEditorCommand {
 
         character = new Character(name, birthSeason, type);
 
-        CharacterEditorCommand editor = new CharacterEditorCommand(framework, character);
+        CharacterEditor editor = new CharacterEditor(framework, character);
         List<Integer> characteristics = editor.getCharacteristics("Characteristics >");
 
         List<String> continueOptions = new ArrayList<>();
