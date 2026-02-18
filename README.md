@@ -3,7 +3,6 @@
 The purpose of this program is to allow for the tracking of characters from the Ars Magica roleplaying game, and later on to automate some of the calculations.
 
 # Structure
-## File Structure
 All actions that a user can take are implemented in the directory "commands", each of which implement Command, which is an interface that requires only the method execute() so that the Command Design Pattern can be utilized. For each file in that directory, if it ends with "Commmand", then it is not dependent on user input, and vice versa. So for example, CharacterEditor utilizes user input and LoadCampaignCommand does not.
 
 Launcher is what controls the initialization of the program, and where the program returns to after a command is called, similar to a shell.
