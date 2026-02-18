@@ -3,6 +3,7 @@ package application;
 import application.characters.Character;
 import application.commands.*;
 import application.terminal.Command;
+import application.terminal.CommandFramework;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 import org.beryx.textio.TextTerminal;
@@ -11,36 +12,44 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Launcher {
+public class ArsTrackerLauncher {
     public static void main(String[] args){
-        Launcher launcher = new Launcher(args);
+        ArsTrackerLauncher launcher = new ArsTrackerLauncher(args);
         launcher.coreLoop();
     }
 
     String[] args;
-    TextIO source;
+    CommandFramework framework;
     TextTerminal terminal;
-    ArrayList<Character> characters;
+    public static ArrayList<Character> characters;
     Map<String, Command> commands;
+    Character selectedCharacter;
 
-    public Launcher(String[] arg){
+    public ArsTrackerLauncher(String[] arg){
         args = arg;
-        source = TextIoFactory.getTextIO();
+        TextIO source = TextIoFactory.getTextIO();
         source.getTextTerminal().println("Type \"help\" to get a list of commands");
+        framework = new CommandFramework(source);
         ArrayList<Character> characters = new ArrayList<>();
         terminal = source.getTextTerminal();
 
         commands = new HashMap<>();
         addLauncherCommands();
+
+        selectedCharacter = null;
     }
 
     private void addLauncherCommands() {
-        commands.put("help", new HelpCommand(source));
-        commands.put("openGUI", new LaunchGUICommand(source));
-        commands.put("list", new CharacterQueryCommand(source));
-        commands.put("select", new CharacterSelector(source, characters));
-        commands.put("create", new CharacterCreator(source, characters));
-        commands.put("close", new CloseCommand(source));
+        commands.put("help", new HelpCommand(framework));
+        commands.put("openGUI", new LaunchGUICommand(framework));
+        commands.put("list", new LoadCampaignCommand(framework));
+        commands.put("select", new CharacterSelector(framework, characters));
+        commands.put("create", new CharacterCreator(framework));
+        commands.put("close", new CloseCommand(framework));
+
+        if(selectedCharacter != null){
+            commands.put("print", new CharacterOutputCommand(framework, selectedCharacter));
+        }
     }
 
     public void coreLoop(){
@@ -59,7 +68,7 @@ public class Launcher {
     }
 
     public boolean controlInput(){
-        String commandInput = source.newStringInputReader().read("> ");
+        String commandInput = framework.getString(" >");
         String[] userInput = commandInput.split(" ");
         if(userInput.length == 0){
             Command command = commands.get("close");

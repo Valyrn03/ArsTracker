@@ -15,6 +15,7 @@ module application {
     requires org.slf4j;
     requires com.zaxxer.hikari;
     requires org.apache.commons.lang3;
+    requires static lombok;
 
     opens application to javafx.fxml;
     exports application;

@@ -60,7 +60,7 @@ public class CharacterSheetController {
         setCharacteristics();
         setAbilities();
         setFeatures();
-        if(character.getType().equals(Character.CharacterType.MAGUS)){
+        if(character.getCharacterType().equals(Character.CharacterType.MAGUS)){
             setArts();
         }
 

@@ -45,7 +45,7 @@ public class AbilityCategoryScript {
         arts.add("Rego");
 
         String databaseURL;
-        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
+        try(InputStream stream = ArsTrackerLauncher.class.getResourceAsStream(".properties")){
             Properties properties = new Properties();
             properties.load(stream);
             if("test".equals(properties.getProperty("type"))){
@@ -104,7 +104,7 @@ public class AbilityCategoryScript {
         arts.add("Vim");
 
         String databaseURL;
-        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
+        try(InputStream stream = ArsTrackerLauncher.class.getResourceAsStream(".properties")){
             Properties properties = new Properties();
             properties.load(stream);
             if("test".equals(properties.getProperty("type"))){
@@ -150,7 +150,7 @@ public class AbilityCategoryScript {
 
     private static boolean resetMartial(){
         String databaseURL;
-        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
+        try(InputStream stream = ArsTrackerLauncher.class.getResourceAsStream(".properties")){
             Properties properties = new Properties();
             properties.load(stream);
             if("test".equals(properties.getProperty("type"))){
@@ -196,7 +196,7 @@ public class AbilityCategoryScript {
 
     private static boolean resetGeneral(){
         String databaseURL;
-        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
+        try(InputStream stream = ArsTrackerLauncher.class.getResourceAsStream(".properties")){
             Properties properties = new Properties();
             properties.load(stream);
             if("test".equals(properties.getProperty("type"))){
@@ -242,7 +242,7 @@ public class AbilityCategoryScript {
 
     private static boolean resetAcademic(){
         String databaseURL;
-        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
+        try(InputStream stream = ArsTrackerLauncher.class.getResourceAsStream(".properties")){
             Properties properties = new Properties();
             properties.load(stream);
             if("test".equals(properties.getProperty("type"))){
@@ -288,7 +288,7 @@ public class AbilityCategoryScript {
 
     private static boolean resetArcane(){
         String databaseURL;
-        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
+        try(InputStream stream = ArsTrackerLauncher.class.getResourceAsStream(".properties")){
             Properties properties = new Properties();
             properties.load(stream);
             if("test".equals(properties.getProperty("type"))){
@@ -334,7 +334,7 @@ public class AbilityCategoryScript {
 
     private static boolean resetSupernatural(){
         String databaseURL;
-        try(InputStream stream = Launcher.class.getResourceAsStream(".properties")){
+        try(InputStream stream = ArsTrackerLauncher.class.getResourceAsStream(".properties")){
             Properties properties = new Properties();
             properties.load(stream);
             if("test".equals(properties.getProperty("type"))){

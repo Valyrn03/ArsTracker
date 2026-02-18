@@ -3,28 +3,24 @@ package application.terminal;
 import application.characters.Character;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.sqlite.util.Logger;
 import org.sqlite.util.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
+@Slf4j
 public class DataSource {
-    final static Logger logger = LoggerFactory.getLogger(DataSource.class);
     private static HikariConfig config = new HikariConfig(DataSource.class.getResource(".properties").toString());
     private static HikariDataSource source = new HikariDataSource(config);
 
-    private DataSource(){
-
-    }
+    private DataSource(){}
 
     public static Connection getConnection(){
         try{
             return source.getConnection();
         }catch (SQLException exp){
-            logger.warn(() -> "Failed to pull connection from pool: " + exp.toString());
+            log.warn("Failed to pull connection from pool: {}", exp.getMessage());
             System.exit(1);
             return null;
         }
@@ -36,22 +32,33 @@ public class DataSource {
 
     public static ResultSet query(String query){
         Connection connection = DataSource.getConnection();
+        Statement statement = null;
+        ResultSet resultSet = null;
         try{
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
             connection.close();
             statement.close();
             return resultSet;
         } catch (SQLException e) {
             try{
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if(statement != null){
+                    statement.close();
+                }
                 connection.close();
-            } catch (SQLException ex) {
-                logger.warn(() -> "Failed to close connection in query");
+            } catch (SQLException exp) {
+                log.warn("Failed to close connection: {}", exp.getMessage());
             }finally {
-                logger.warn(() -> "Query has Failed");
+                log.warn("Query ({}) has Failed", query);
+                resultSet = null;
+                statement = null;
+                connection = null;
             }
-            return null;
         }
+        return null;
     }
 
     public static boolean post(String query){
@@ -62,8 +69,8 @@ public class DataSource {
             ResultSet resultSet = statement.executeQuery(query);
             statement.close();
             resultSet.close();
-        } catch (SQLException e) {
-            logger.warn(() -> "Update has Failed");
+        } catch (SQLException exp) {
+            log.warn("Update has Failed: {}", exp.getMessage());
             throw new RuntimeException();
         }
 
