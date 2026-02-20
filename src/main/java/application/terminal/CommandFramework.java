@@ -33,4 +33,10 @@ public class CommandFramework {
     public void put(String prompt, Object... args){
         terminal.println(String.format(prompt, args));
     }
+
+    public void put(List<Object> list){
+        for(Object obj : list){
+            terminal.println(obj.toString());
+        }
+    }
 }

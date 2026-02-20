@@ -43,7 +43,7 @@ public class ArsTrackerLauncher {
 
     public int addLauncherCommands() {
         commands.put("openGUI", new LaunchGUICommand(framework));
-        commands.put("list", new LoadCampaignCommand(framework, 0));
+        commands.put("list", new LoadCampaignCommand(framework));
         commands.put("select", new CharacterSelector(framework, characters));
         commands.put("close", new CloseCommand(framework));
 
