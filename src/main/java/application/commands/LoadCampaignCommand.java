@@ -47,11 +47,14 @@ public class LoadCampaignCommand implements Command {
             }
         }catch (SQLException exp){
             log.warn("Selecting Characters from Campaign {} has failed, with the error of {}", campaignID, exp.getMessage());
+            return false;
         }
+
+        return true;
     }
 
     private Character constructCharacter(ResultSet resultSet, int row) {
-
+        return null;
     }
 
     /*

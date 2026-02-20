@@ -31,6 +31,6 @@ public class CommandFramework {
     }
 
     public void put(String prompt, Object... args){
-        source.getTextTerminal().println(String.format(prompt, args));
+        terminal.println(String.format(prompt, args));
     }
 }
