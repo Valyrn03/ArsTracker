@@ -25,3 +25,6 @@ The user should be able to get a list of characters, and select one to either se
 5. The user should be able to see the virtues and flaws of a given character
 6. The user should be able to check the description of virtues and flaws
 7. The user should be able to create new characters (CharacterCreator)
+
+## Theoretical Changes
+1. Combine commands and non-commands (execute as the only human interaction)

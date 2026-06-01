@@ -14,17 +14,13 @@ import static java.util.Collections.sort;
 
 public class Character implements Serializable, Comparable<Character> {
 
-    @Getter
-    private String name;
+    @Getter private String name;
     private Map<Attribute, Integer> baseAttributes;
     //Ability <-> XP
-    @Getter
-    private List<Ability> abilities;
+    @Getter private List<Ability> abilities;
     private Map<ExtraneousAttribute, Integer> attributes;
-    @Getter
-    private CharacterType characterType;
-    @Getter
-    ArrayList<CharacterFeature> features;
+    @Getter private CharacterType characterType;
+    @Getter ArrayList<CharacterFeature> features;
     UUID id;
 
     public Character(String name, int age, String characterCategory){
@@ -99,7 +95,7 @@ public class Character implements Serializable, Comparable<Character> {
     public String toString(){
         StringBuilder builder = new StringBuilder();
         //Name, Type, Age, Characteristics, Abilities, Virtues & Flaws
-        builder.append(getName()).append("\n\n").append(characterType.toString());
+        builder.append(name).append("\n\n").append(characterType.toString());
         if(baseAttributes.containsKey(ExtraneousAttribute.AGE)){
             builder.append("(").append(baseAttributes.get(ExtraneousAttribute.AGE).toString()).append(")\n\n");
         }
@@ -114,7 +110,7 @@ public class Character implements Serializable, Comparable<Character> {
         }
 
         builder.append("\nABILITIES\n");
-        for(Ability ability: getAbilities()){
+        for(Ability ability: abilities){
             builder.append("\t").append(ability.toString());
         }
 

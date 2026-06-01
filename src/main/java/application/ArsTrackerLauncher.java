@@ -4,6 +4,7 @@ import application.characters.Character;
 import application.commands.*;
 import application.terminal.Command;
 import application.terminal.CommandFramework;
+import lombok.extern.slf4j.Slf4j;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 import org.beryx.textio.TextTerminal;
@@ -12,9 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class ArsTrackerLauncher {
     public static void main(String[] args){
         ArsTrackerLauncher launcher = new ArsTrackerLauncher(args);
+        log.info("{} Commands Loaded", launcher.addLauncherCommands());
         launcher.coreLoop();
     }
 
@@ -34,22 +37,25 @@ public class ArsTrackerLauncher {
         terminal = source.getTextTerminal();
 
         commands = new HashMap<>();
-        addLauncherCommands();
 
         selectedCharacter = null;
     }
 
-    private void addLauncherCommands() {
-        commands.put("help", new HelpCommand(framework));
+    public int addLauncherCommands() {
         commands.put("openGUI", new LaunchGUICommand(framework));
         commands.put("list", new LoadCampaignCommand(framework));
         commands.put("select", new CharacterSelector(framework, characters));
-        commands.put("create", new CharacterCreator(framework));
         commands.put("close", new CloseCommand(framework));
+
+        commands.put("campaign", new CreateCampaign(framework));
+        commands.put("character", new CharacterCreator(framework));
 
         if(selectedCharacter != null){
             commands.put("print", new CharacterOutputCommand(framework, selectedCharacter));
         }
+
+        commands.put("help", new HelpCommand(framework));
+        return commands.size();
     }
 
     public void coreLoop(){
@@ -57,6 +63,8 @@ public class ArsTrackerLauncher {
         do{
             result = controlInput();
         }while (result);
+
+        framework.put("Exiting...");
     }
 
     private Character createCharacter() {
@@ -68,13 +76,28 @@ public class ArsTrackerLauncher {
     }
 
     public boolean controlInput(){
-        String commandInput = framework.getString(" >");
+        String commandInput = framework.getString("");
         String[] userInput = commandInput.split(" ");
         if(userInput.length == 0){
+            log.info("Incorrect Command {}", commandInput);
             Command command = commands.get("close");
             return command.execute();
         }
-        Command command = commands.get(userInput[0]);
+        log.info("User Command:{}", userInput[0]);
+
+        Command command = null;
+        if(userInput.length > 1 && "create".equals(userInput[0])){
+            if("character".equals(userInput[1])){
+                command = commands.get("character");
+            }else{
+                command = commands.get("campaign");
+            }
+        }else{
+            command = commands.get(userInput[0]);
+        }
+        if(command == null){
+            log.info("\tNull Command");
+        }
         return command.execute();
     }
 }

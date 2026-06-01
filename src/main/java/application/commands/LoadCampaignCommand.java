@@ -11,8 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /*
 Command to list characters from the currently active campaign for usage by CharacterSelector
@@ -22,17 +21,52 @@ Should be called by default if there is an active campaign and the user is selec
 @Slf4j
 public class LoadCampaignCommand implements Command {
     CommandFramework framework;
-    int campaignID;
+    private final String campaignQuery = "SELECT id, name FROM campaigns;";
 
-    public LoadCampaignCommand(CommandFramework source, int campaign_id) {
+    public LoadCampaignCommand(CommandFramework source) {
         framework = source;
-        campaignID = campaign_id;
     }
 
+    /*
+    In this execute call, we need to...
+
+    1. Query the campaigns table to get a list of loaded campaigns
+    2. Query the selected campaign for which characters it contains
+    3. Print out each of those characters, in order for the user to be able to choose one
+        Ideally would use getOptions in combination, but am unsure if I want to pass in the already existing list for that
+     */
     @Override
     public boolean execute() {
+        Map<String, Integer> campaigns = getCampaigns();
+
+        if(campaigns.isEmpty()){
+            framework.put("Failed to Load Campaigns");
+            return false;
+        }
+
+        campaigns.forEach((name, id) -> {
+            framework.put(id + ": " + name);
+        });
+
+        int selectedCampaign = framework.getInt("Select Campaign via ID");
+
+        List<Character> characters = getCharactersFromCampaign(selectedCampaign);
+
+        if(characters.isEmpty()){
+            framework.put("Failed to Load Characters from Campaign {}", selectedCampaign);
+            return false;
+        }
+
+        characters.forEach(character -> {
+            framework.put(character.getName() + " (" + character.getCharacterType().toString() + ")");
+        });
+
+        return true;
+    }
+
+    public List<Character> getCharactersFromCampaign(int campaignID){
         Connection connection = DataSource.getConnection();
-        List<String> characters = getAvailableCharacterNames();
+        List<Character> characters = new ArrayList<>();
 
         try(PreparedStatement statement = connection.prepareStatement("SELECT name WHERE campaign_id = ?")){
             statement.setInt(0, campaignID);
@@ -40,18 +74,34 @@ public class LoadCampaignCommand implements Command {
             ResultSet resultSet = statement.executeQuery();
 
             while(!resultSet.isAfterLast()){
-                String name = resultSet.getString("name");
-                if(!characters.contains(name)){
-                    ArsTrackerLauncher.characters.add(constructCharacter(resultSet, resultSet.getRow()));
-                }
+                characters.add(constructCharacter(resultSet, resultSet.getRow()));
             }
         }catch (SQLException exp){
-            log.warn("Selecting Characters from Campaign {} has failed, with the error of {}", campaignID, exp.getMessage());
+            log.error("Selecting Characters from Campaign {} has failed, with the error of {}", campaignID, exp.getMessage());
         }
+
+        return characters;
     }
 
     private Character constructCharacter(ResultSet resultSet, int row) {
+        return null;
+    }
 
+    public Map<String, Integer> getCampaigns(){
+        Map<String, Integer> campaigns = new HashMap<>();
+        try(Connection conn = DataSource.getConnection(); PreparedStatement statement = conn.prepareStatement(campaignQuery)){
+            ResultSet resultSet = statement.executeQuery();
+
+            while(!resultSet.isAfterLast()){
+                campaigns.put(resultSet.getString("name"), resultSet.getInt("id"));
+            }
+
+            resultSet.close();
+        }catch(SQLException exp){
+            log.error("Failed to Query Campaigns, {}", exp.getMessage());
+        }
+
+        return campaigns;
     }
 
     /*
