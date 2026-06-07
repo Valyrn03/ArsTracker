@@ -1,7 +1,6 @@
 package application.terminal;
 
-import application.characters.Character;
-import org.beryx.textio.TextIO;
+import application.models.Character;
 
 import java.util.ArrayList;
 import java.util.List;

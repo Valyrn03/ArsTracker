@@ -1,17 +1,25 @@
 package application.terminal;
 
+import application.models.Campaign;
+import application.models.Character;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CommandFramework {
     public TextIO source;
     private TextTerminal terminal;
+    public Optional<Campaign> activeCampaign;
+    public Optional<Character> activeCharacter;
 
     public CommandFramework(TextIO io){
         source = io;
         terminal = source.getTextTerminal();
+
+        activeCampaign = Optional.empty();
+        activeCharacter = Optional.empty();
     }
 
     public int getInt(String prompt){

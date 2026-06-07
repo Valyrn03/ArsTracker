@@ -1,21 +1,20 @@
 package application.commands;
 
-import application.characters.Ability;
-import application.characters.Character;
-import application.characters.CharacterFeature;
+import application.models.Ability;
+import application.models.Character;
+import application.models.CharacterFeature;
 import application.terminal.Command;
 import application.terminal.CommandFramework;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class CharacterOutputCommand implements Command {
-    private application.characters.Character character;
     private CommandFramework framework;
 
-    public CharacterOutputCommand(CommandFramework framework, Character character){
-        this.character = character;
+    public CharacterOutputCommand(CommandFramework framework){
         this.framework = framework;
     }
 
@@ -28,6 +27,12 @@ public class CharacterOutputCommand implements Command {
      */
     @Override
     public boolean execute() {
+        if(framework.activeCharacter.isEmpty()){
+            framework.put("There Is No Active Character");
+            return false;
+        }
+
+        Character character = framework.activeCharacter.orElseThrow();
         framework.put("%s (%s)\n----------------------------\nAttributes: ", character.getName(), character.getCharacterType());
 
         for(Map.Entry<String, Integer> attribute: character.getAttributes().entrySet()){

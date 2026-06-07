@@ -1,16 +1,9 @@
-package application.characters;
+package application.models;
 
-import application.utils.CharacterUtils;
 import lombok.Getter;
-import org.sqlite.util.Logger;
-import org.sqlite.util.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.*;
-
-import static java.util.Collections.sort;
-
-//Random comment
 
 public class Character implements Serializable, Comparable<Character> {
 
@@ -19,49 +12,44 @@ public class Character implements Serializable, Comparable<Character> {
     //Ability <-> XP
     @Getter private List<Ability> abilities;
     private Map<ExtraneousAttribute, Integer> attributes;
+    private String campaign;
     @Getter private CharacterType characterType;
     @Getter ArrayList<CharacterFeature> features;
-    UUID id;
+    @Getter UUID id;
 
-    public Character(String name, int age, String characterCategory){
-        this.name = name;
-        baseAttributes = new HashMap<>();
-        attributes = new HashMap<>();
-        attributes.put(ExtraneousAttribute.AGE, age);
-        attributes.put(ExtraneousAttribute.SIZE, 0);
-        setDefaultAttributes();
-        abilities = new ArrayList<>();
-        id = UUID.randomUUID();
-        characterType = CharacterType.valueOf(characterCategory.toUpperCase());
-        features = new ArrayList<>();
-    }
-
-    public Character(String name, String characterCategory){
-        this.name = name;
+    private Character(){
         baseAttributes = new HashMap<>();
         attributes = new HashMap<>();
         attributes.put(ExtraneousAttribute.SIZE, 0);
         setDefaultAttributes();
         abilities = new ArrayList<>();
-        id = UUID.randomUUID();
-        characterType = CharacterType.valueOf(characterCategory.toUpperCase());
         features = new ArrayList<>();
     }
 
-    public Character(String name, CharacterType characterCategory){
-        this.name = name;
-        baseAttributes = new HashMap<>();
-        attributes = new HashMap<>();
-        attributes.put(ExtraneousAttribute.SIZE, 0);
-        setDefaultAttributes();
-        abilities = new ArrayList<>();
-        id = UUID.randomUUID();
-        characterType = characterCategory;
-        features = new ArrayList<>();
+    /*
+    Build a Character from the data found in the Character table plus the already known campaign.
+
+    There must be a campaign for the character to exist
+     */
+    public static Character buildCharacterFromMap(Map<String, String> map, Campaign campaign){
+        Character character = new Character();
+
+        character.id = UUID.fromString(map.get("id"));
+        character.name = map.get("name");
+        character.campaign = map.get("campaign");
+
+        character.attributes.put(ExtraneousAttribute.AGE, campaign.currentSeason - Integer.parseInt(map.get("birth_season")));
+        character.characterType = CharacterType.valueOf(map.get("character_type"));
+
+        for(Attribute attribute: Attribute.values()){
+            character.baseAttributes.put(attribute, Integer.parseInt(map.get(attribute.name().toLowerCase())));
+        }
+
+        return character;
     }
 
-    public UUID getID() {
-        return id;
+    public static Character buildCharacter(String name, int birthSeason, String type){
+        return null;
     }
 
     public static enum CharacterType {

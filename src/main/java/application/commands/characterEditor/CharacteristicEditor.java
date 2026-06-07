@@ -1,10 +1,6 @@
 package application.commands.characterEditor;
 
-import application.characters.Character;
-import application.terminal.Command;
 import lombok.extern.slf4j.Slf4j;
-import org.sqlite.util.Logger;
-import org.sqlite.util.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;

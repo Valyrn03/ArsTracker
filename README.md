@@ -3,13 +3,14 @@
 The purpose of this program is to allow for the tracking of characters from the Ars Magica roleplaying game, and later on to automate some of the calculations.
 
 # Structure
-All actions that a user can take are implemented in the directory "commands", each of which implement Command, which is an interface that requires only the method execute() so that the Command Design Pattern can be utilized. For each file in that directory, if it ends with "Commmand", then it is not dependent on user input, and vice versa. So for example, CharacterEditor utilizes user input and LoadCampaignCommand does not.
+The directory "commands" holds all classes interfacing between the objects and user input / terminal.
+The directory "terminal" holds abstract structures dealing with user input and the user input itself.
 
 Launcher is what controls the initialization of the program, and where the program returns to after a command is called, similar to a shell.
 
 The directory "terminal" holds abstract structures and DataSource, which is where all database interactions are implemented.
 
-The directory "characters" holds the classes and enums that will be used to represent characters.
+The directory "models" holds the classes and enums that will be used to represent characters.
 
 The directories "controllers" and "displays" are from an older version of the project, which was going to be implemented in JavaFX. I decided that I would rather make a terminal-esque program, and so those are left for possible future implementation. For now, they are unused.
 
@@ -28,3 +29,21 @@ The user should be able to get a list of characters, and select one to either se
 
 ## Theoretical Changes
 1. Combine commands and non-commands (execute as the only human interaction)
+
+# Refactoring Goals, Process, and Progress
+Currently, data processing, user input, and updating the DB is too intertwined making it difficult to expand on what I have.
+The primary goal of refactoring are to actually split those (the MVC structure which I thought I was following). 
+
+As such, the post-refactor structure/workflow should look like this:
+    DB call to load a Character object and all of its internals
+    Outputting parts of the Character object
+    User input to edit Character object (via methods connected to the Character object or other important ones)
+    DB call to update the Character
+
+Small question though: will the updates be done by the Character class or the static classes?
+
+Also add a bool array + enum to Character to track which sections were changed and need to be updated in the DB
+    Or find some better way to make sure I'm not just calling update on all fields
+
+# Possible (but unlikely) future improvements
+A backstack for returning to the previous screen with the same UI loaded.

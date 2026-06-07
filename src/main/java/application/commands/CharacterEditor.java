@@ -1,9 +1,9 @@
 package application.commands;
 
-import application.characters.Ability;
-import application.characters.AbilityCategory;
-import application.characters.Attribute;
-import application.characters.Character;
+import application.models.Ability;
+import application.models.AbilityCategory;
+import application.models.Attribute;
+import application.models.Character;
 import application.commands.characterEditor.AbilityEditor;
 import application.commands.characterEditor.CharacteristicEditor;
 import application.terminal.CharacterController;
@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /*
 Steps in Character Creation:
@@ -31,7 +32,6 @@ This class will only hold the methods that require user input. All verification 
  */
 @Slf4j
 public class CharacterEditor extends CharacterController {
-    private Character character;
     CommandFramework framework;
     //Thank you stack overflow, I did not know it was a thing
     static final List<AbilityCategory> categoricalIDs = new ArrayList<>() {
@@ -47,18 +47,13 @@ public class CharacterEditor extends CharacterController {
         }
     };
 
-    public CharacterEditor(CommandFramework framework, Character character) {
+    public CharacterEditor(CommandFramework framework) {
         super(framework);
-        this.character = character;
     }
 
     @Override
     public boolean execute() {
         return false;
-    }
-
-    public void changeCharacter(Character newCharacter){
-        character = newCharacter;
     }
 
     /**
@@ -107,6 +102,7 @@ public class CharacterEditor extends CharacterController {
      *     6. Call addAbilityToDatabase() in order to add the newly created Ability
      */
     public Ability createAbility(){
+        Character character = framework.activeCharacter.orElseThrow();
         List<String> abilityOptions = AbilityEditor.getAbilityOptions(character);
 
         String selectedAbility = abilityOptions.get(super.getOptions(abilityOptions));

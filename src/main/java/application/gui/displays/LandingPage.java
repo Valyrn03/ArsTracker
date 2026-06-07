@@ -1,7 +1,7 @@
-package application.displays;
+package application.gui.displays;
 
-import application.characters.Character;
-import application.controllers.LandingPageController;
+import application.models.Character;
+import application.gui.controllers.LandingPageController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

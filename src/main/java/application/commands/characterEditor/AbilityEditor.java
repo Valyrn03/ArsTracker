@@ -1,10 +1,9 @@
 package application.commands.characterEditor;
 
-import application.characters.Ability;
-import application.characters.Character;
-import application.terminal.DataSource;
+import application.models.Ability;
+import application.models.Character;
+import application.DataSource;
 import lombok.extern.slf4j.Slf4j;
-import lombok.extern.java.Log;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

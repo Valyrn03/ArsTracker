@@ -2,12 +2,11 @@ package application.commands;
 
 import application.terminal.Command;
 import application.terminal.CommandFramework;
-import application.terminal.DataSource;
+import application.DataSource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

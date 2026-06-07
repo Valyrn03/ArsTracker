@@ -1,10 +1,10 @@
 package application.commands;
 
 import application.ArsTrackerLauncher;
-import application.characters.Character;
+import application.models.Character;
 import application.terminal.Command;
 import application.terminal.CommandFramework;
-import application.terminal.DataSource;
+import application.DataSource;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;

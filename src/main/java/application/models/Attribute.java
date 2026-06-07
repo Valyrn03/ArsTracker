@@ -1,4 +1,4 @@
-package application.characters;
+package application.models;
 
 public enum Attribute {
     INTELLIGENCE, PERCEPTION, STRENGTH, STAMINA, PRESENCE, COMMUNICATION, DEXTERITY, QUICKNESS;

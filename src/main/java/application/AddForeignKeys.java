@@ -1,9 +1,5 @@
 package application;
 
-import application.terminal.DataSource;
-
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 

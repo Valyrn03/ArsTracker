@@ -1,7 +1,7 @@
-package application.displays;
+package application.gui.displays;
 
-import application.characters.Character;
-import application.controllers.CharacterEditorController;
+import application.models.Character;
+import application.gui.controllers.CharacterEditorController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

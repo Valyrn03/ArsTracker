@@ -1,6 +1,7 @@
 package application;
 
-import application.characters.Character;
+import application.models.Campaign;
+import application.models.Character;
 import application.commands.*;
 import application.terminal.Command;
 import application.terminal.CommandFramework;
@@ -24,9 +25,7 @@ public class ArsTrackerLauncher {
     String[] args;
     CommandFramework framework;
     TextTerminal terminal;
-    public static ArrayList<Character> characters;
     Map<String, Command> commands;
-    Character selectedCharacter;
 
     public ArsTrackerLauncher(String[] arg){
         args = arg;
@@ -37,25 +36,67 @@ public class ArsTrackerLauncher {
         terminal = source.getTextTerminal();
 
         commands = new HashMap<>();
-
-        selectedCharacter = null;
     }
 
-    public int addLauncherCommands() {
+    /*
+    Commands Always Loaded:
+        Open GUI
+        Close Program
+        Help
+     */
+    public int addDefaultLauncherCommands() {
         commands.put("openGUI", new LaunchGUICommand(framework));
-        commands.put("list", new LoadCampaignCommand(framework));
-        commands.put("select", new CharacterSelector(framework, characters));
         commands.put("close", new CloseCommand(framework));
-
-        commands.put("campaign", new CreateCampaign(framework));
-        commands.put("character", new CharacterCreator(framework));
-
-        if(selectedCharacter != null){
-            commands.put("print", new CharacterOutputCommand(framework, selectedCharacter));
-        }
-
         commands.put("help", new HelpCommand(framework));
         return commands.size();
+    }
+
+    /*
+    Commands loaded on booting the program:
+        List known campaigns
+        Select from listed campaigns
+        Create new campaign
+     */
+    public int addInitialCommands(){
+        commands.put("list", new LoadCampaignCommand(framework));
+        commands.put("select", new CampaignSelector(framework));
+        commands.put("create", new CreateCampaign(framework));
+        return commands.size();
+    }
+
+    /*
+    Commands available once a campaign is selected:
+        List characters
+        Select character
+        Create new character
+        Delete campaign
+     */
+    public int addCampaignCommands(){
+        commands.entrySet().removeIf(entry -> !entry.getKey().equals("openGUI") && !entry.getKey().equals("close") && !entry.getKey().equals("help"));
+
+        commands.put("back", new ReturnCommand(framework));
+        commands.put("list", new ListCharacterCommand(framework));
+        commands.put("select", new CharacterSelector(framework));
+        commands.put("create", new CharacterCreator(framework));
+        commands.put("delete", new CampaignDeletor(framework));
+
+        return commands.size();
+    }
+
+    /*
+    Commands available after selecting a character:
+        Go back to campaign list
+        Show/Print character
+        Edit character
+        Delete character
+     */
+    public int addCharacterCommands(){
+        commands.entrySet().removeIf(entry -> !entry.getKey().equals("openGUI") && !entry.getKey().equals("close") && !entry.getKey().equals("help"));
+
+        commands.put("back", new ReturnCommand(framework));
+        commands.put("show", new CharacterOutputCommand(framework));
+        commands.put("edit", new CharacterEditor(framework));
+        commands.put("delete", new DeleteCharacter(framework));
     }
 
     public void coreLoop(){

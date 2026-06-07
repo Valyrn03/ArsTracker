@@ -1,8 +1,8 @@
-package application.controllers;
+package application.gui.controllers;
 
-import application.characters.Ability;
-import application.characters.Attribute;
-import application.characters.Character;
+import application.models.Ability;
+import application.models.Attribute;
+import application.models.Character;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;

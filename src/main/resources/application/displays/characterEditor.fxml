@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http:javafx.com/fxml"
-      fx:controller="application.controllers.CharacterEditorController">
+      fx:controller="application.gui.controllers.CharacterEditorController">
     <VBox fx:id="extraneousTable"></VBox>
 
     <VBox fx:id="characteristicTable"></VBox>

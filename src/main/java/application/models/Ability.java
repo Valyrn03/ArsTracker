@@ -1,4 +1,4 @@
-package application.characters;
+package application.models;
 
 import application.utils.CharacterUtils;
 

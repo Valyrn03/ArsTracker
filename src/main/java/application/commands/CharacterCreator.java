@@ -1,7 +1,8 @@
 package application.commands;
 
-import application.characters.Ability;
-import application.characters.Character;
+import application.models.Ability;
+import application.models.Campaign;
+import application.models.Character;
 import application.commands.characterEditor.AbilityEditor;
 import application.terminal.CommandFramework;
 
@@ -26,7 +27,7 @@ public class CharacterCreator extends CharacterEditor {
     private static final int seasonsPerYear = 4;
 
     public CharacterCreator(CommandFramework framework) {
-        super(framework, null);
+        super(framework);
     }
 
     @Override
@@ -38,9 +39,9 @@ public class CharacterCreator extends CharacterEditor {
         List<String> characterTypes = new ArrayList<>(List.of(new String[]{"MAGUS", "COMPANION", "GROG"}));
         String type = characterTypes.get(super.getOptions(characterTypes));
 
-        character = new Character(name, birthSeason, type);
+        character = Character.buildCharacter(name, birthSeason, type);
 
-        CharacterEditor editor = new CharacterEditor(framework, character);
+        CharacterEditor editor = new CharacterEditor(framework);
         List<Integer> characteristics = editor.getCharacteristics("Characteristics >");
 
         List<String> continueOptions = new ArrayList<>();

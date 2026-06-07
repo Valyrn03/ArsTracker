@@ -1,16 +1,12 @@
 package application.commands;
 
 import application.ArsTrackerLauncher;
-import application.characters.Character;
+import application.models.Character;
 import application.terminal.CharacterController;
-import application.terminal.Command;
 import application.terminal.CommandFramework;
-import org.beryx.textio.TextIO;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static application.displays.LandingPage.getCharacter;
 
 public class CharacterSelector extends CharacterController {
     Character selectedCharacter;
@@ -21,7 +17,7 @@ public class CharacterSelector extends CharacterController {
         characterName = name;
     }
 
-    public CharacterSelector(CommandFramework framework, ArrayList<Character> arr){
+    public CharacterSelector(CommandFramework framework){
         super(framework);
     }
 

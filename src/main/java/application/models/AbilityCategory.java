@@ -1,4 +1,4 @@
-package application.characters;
+package application.models;
 
 public enum AbilityCategory{
     ANIMAL_HANDLING,
