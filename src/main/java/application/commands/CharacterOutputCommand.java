@@ -3,13 +3,12 @@ package application.commands;
 import application.models.Ability;
 import application.models.Character;
 import application.models.CharacterFeature;
-import application.terminal.Command;
-import application.terminal.CommandFramework;
+import application.Command;
+import application.CommandFramework;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class CharacterOutputCommand implements Command {
     private CommandFramework framework;

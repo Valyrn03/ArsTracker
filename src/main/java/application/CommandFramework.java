@@ -1,4 +1,4 @@
-package application.terminal;
+package application;
 
 import application.models.Campaign;
 import application.models.Character;

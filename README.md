@@ -3,8 +3,8 @@
 The purpose of this program is to allow for the tracking of characters from the Ars Magica roleplaying game, and later on to automate some of the calculations.
 
 # Structure
-The directory "commands" holds all classes interfacing between the objects and user input / terminal.
-The directory "terminal" holds abstract structures dealing with user input and the user input itself.
+The directory "commands" holds all classes interfacing between the objects and user input / terminal (Controller).
+The directory "terminal" holds abstract structures dealing with user input and the user input itself (View).
 
 Launcher is what controls the initialization of the program, and where the program returns to after a command is called, similar to a shell.
 

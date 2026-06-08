@@ -1,16 +1,14 @@
 package application;
 
-import application.models.Campaign;
+import application.gui.LaunchGUI;
 import application.models.Character;
 import application.commands.*;
-import application.terminal.Command;
-import application.terminal.CommandFramework;
+import application.terminal.HelpView;
 import lombok.extern.slf4j.Slf4j;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 import org.beryx.textio.TextTerminal;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,13 +16,12 @@ import java.util.Map;
 public class ArsTrackerLauncher {
     public static void main(String[] args){
         ArsTrackerLauncher launcher = new ArsTrackerLauncher(args);
-        log.info("{} Commands Loaded", launcher.addLauncherCommands());
+        log.info("{} Commands Loaded", launcher.addInitialCommands());
         launcher.coreLoop();
     }
 
     String[] args;
     CommandFramework framework;
-    TextTerminal terminal;
     Map<String, Command> commands;
 
     public ArsTrackerLauncher(String[] arg){
@@ -32,8 +29,6 @@ public class ArsTrackerLauncher {
         TextIO source = TextIoFactory.getTextIO();
         source.getTextTerminal().println("Type \"help\" to get a list of commands");
         framework = new CommandFramework(source);
-        ArrayList<Character> characters = new ArrayList<>();
-        terminal = source.getTextTerminal();
 
         commands = new HashMap<>();
     }
@@ -45,9 +40,9 @@ public class ArsTrackerLauncher {
         Help
      */
     public int addDefaultLauncherCommands() {
-        commands.put("openGUI", new LaunchGUICommand(framework));
+        commands.put("openGUI", new LaunchGUI(framework));
         commands.put("close", new CloseCommand(framework));
-        commands.put("help", new HelpCommand(framework));
+        commands.put("help", new HelpView(framework, commands.keySet()));
         return commands.size();
     }
 
@@ -58,8 +53,7 @@ public class ArsTrackerLauncher {
         Create new campaign
      */
     public int addInitialCommands(){
-        commands.put("list", new LoadCampaignCommand(framework));
-        commands.put("select", new CampaignSelector(framework));
+        commands.put("select", new CampaignSelectionCommand(framework));
         commands.put("create", new CreateCampaign(framework));
         return commands.size();
     }
@@ -76,9 +70,9 @@ public class ArsTrackerLauncher {
 
         commands.put("back", new ReturnCommand(framework));
         commands.put("list", new ListCharacterCommand(framework));
-        commands.put("select", new CharacterSelector(framework));
-        commands.put("create", new CharacterCreator(framework));
-        commands.put("delete", new CampaignDeletor(framework));
+        commands.put("select", new CharacterSelectionCommand(framework));
+        commands.put("create", new CharacterCreationCommand(framework));
+        commands.put("delete", new CampaignDeletionCommand(framework));
 
         return commands.size();
     }
@@ -95,8 +89,10 @@ public class ArsTrackerLauncher {
 
         commands.put("back", new ReturnCommand(framework));
         commands.put("show", new CharacterOutputCommand(framework));
-        commands.put("edit", new CharacterEditor(framework));
-        commands.put("delete", new DeleteCharacter(framework));
+        commands.put("edit", new CharacterEditCommand(framework));
+        commands.put("delete", new DeleteCharacterCommand(framework));
+
+        return commands.size();
     }
 
     public void coreLoop(){

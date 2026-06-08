@@ -1,15 +1,12 @@
-package application.commands;
+package application.gui;
 
 import application.Command;
 import application.CommandFramework;
 
-/*
-Safely closes the program, saving all changes (if changes were made)
- */
-public class CloseCommand implements Command {
+public class LaunchGUI implements Command {
     CommandFramework framework;
 
-    public CloseCommand(CommandFramework framework){
+    public LaunchGUI(CommandFramework framework){
         this.framework = framework;
     }
 

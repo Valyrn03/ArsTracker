@@ -3,18 +3,15 @@ package application.commands;
 import application.Command;
 import application.CommandFramework;
 
-/*
-Safely closes the program, saving all changes (if changes were made)
- */
-public class CloseCommand implements Command {
+public class CampaignSelectionCommand implements Command {
     CommandFramework framework;
 
-    public CloseCommand(CommandFramework framework){
+    public CampaignSelectionCommand(CommandFramework framework){
         this.framework = framework;
     }
 
     @Override
-    public boolean execute() {
+    public boolean execute(){
         return false;
     }
 }

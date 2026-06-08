@@ -1,11 +1,11 @@
-package application.terminal;
+package application;
 
 import application.models.Character;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CharacterController implements Command{
+public abstract class CharacterController implements Command {
     private CommandFramework framework;
     List<Character> characters;
 

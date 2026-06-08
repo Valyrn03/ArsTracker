@@ -12,12 +12,21 @@ import java.util.Optional;
 
 @Slf4j
 public class DataSource {
-    private static HikariConfig config = new HikariConfig(DataSource.class.getResource(".properties").toString());
-    private static HikariDataSource source = new HikariDataSource(config);
+    private HikariConfig config;
+    private HikariDataSource source;
 
-    private DataSource(){}
+    public DataSource(boolean isMock){
+        config = new HikariConfig(DataSource.class.getResource(".properties").toString());
+        if(isMock){
+            config.setJdbcUrl("jdbc:sqlite:testDB.db");
+            config.setUsername("");
+            config.setPassword("");
+        }
 
-    public static Connection getConnection(){
+        source = new HikariDataSource(config);
+    }
+
+    private Connection getConnection(){
         try{
             return source.getConnection();
         }catch (SQLException exp){
@@ -27,12 +36,12 @@ public class DataSource {
         }
     }
 
-    public static boolean add(Character character){
-        return false;
+    public void close(){
+        source.close();
     }
 
-    public static Optional<Character> loadCharacterFromId(String characterID){
-        Connection connection = DataSource.getConnection();
+    public Optional<Character> loadCharacterFromId(String characterID){
+        Connection connection = this.getConnection();
         ResultSet resultSet = null;
         ResultSetMetaData metadata = null;
         Map<String, String> characterDetails = new HashMap<>();
