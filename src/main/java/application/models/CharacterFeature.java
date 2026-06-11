@@ -6,18 +6,27 @@ import java.util.HashMap;
 
 public class CharacterFeature implements Comparable<CharacterFeature> {
     private HashMap<String, Integer> attributes;
-    @Getter
-    private boolean isVirtue;
+    @Getter private FeatureType type;
     private String name;
     private String description;
     private boolean isMajor;
 
-    public CharacterFeature(String name, String description, boolean virtue, boolean isMajor){
+    public CharacterFeature(String name, String description, boolean isVirtue, boolean isMajor){
         this.name = name;
         this.description = description;
         attributes = deriveAttribute(description);
-        isVirtue = virtue;
+
+        if(isVirtue){
+            type = FeatureType.VIRTUE;
+        }else{
+            type = FeatureType.FLAW;
+        }
         this.isMajor = isMajor;
+    }
+
+    public enum FeatureType{
+        VIRTUE,
+        FLAW
     }
 
     public int getAttribute(String attribute){
@@ -25,10 +34,6 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
             return Integer.MAX_VALUE;
         }
         return attributes.get(attribute);
-    }
-
-    public boolean isFlaw(){
-        return !isVirtue;
     }
 
     public HashMap<String, Integer> deriveAttribute(String description){
@@ -55,8 +60,8 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
     public int compareTo(CharacterFeature o) {
         if(this == o) {
             return 0;
-        }else if(this.isVirtue != o.isVirtue){
-            if(this.isVirtue){
+        }else if(this.type != o.type){
+            if(this.type == FeatureType.VIRTUE){
                 return 1;
             }else{
                 return -1;

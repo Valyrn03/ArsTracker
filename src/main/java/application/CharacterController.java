@@ -24,7 +24,7 @@ public abstract class CharacterController implements Command {
     }
 
     public int getOptions(List<String> options){
-        return framework.getOptions(options);
+        return framework.getOptions(options.stream());
     }
 
     public String getString(String prompt){

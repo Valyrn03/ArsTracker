@@ -7,7 +7,6 @@ import application.terminal.HelpView;
 import lombok.extern.slf4j.Slf4j;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
-import org.beryx.textio.TextTerminal;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,14 +22,20 @@ public class ArsTrackerLauncher {
     String[] args;
     CommandFramework framework;
     Map<String, Command> commands;
+    DataSource dataSource;
 
     public ArsTrackerLauncher(String[] arg){
         args = arg;
         TextIO source = TextIoFactory.getTextIO();
         source.getTextTerminal().println("Type \"help\" to get a list of commands");
         framework = new CommandFramework(source);
+        dataSource = new DataSource(false);
 
         commands = new HashMap<>();
+    }
+
+    public void setMock(){
+        dataSource = new DataSource(true);
     }
 
     /*
@@ -41,7 +46,7 @@ public class ArsTrackerLauncher {
      */
     public int addDefaultLauncherCommands() {
         commands.put("openGUI", new LaunchGUI(framework));
-        commands.put("close", new CloseCommand(framework));
+        commands.put("close", new CloseCommand(framework, dataSource));
         commands.put("help", new HelpView(framework, commands.keySet()));
         return commands.size();
     }
@@ -53,7 +58,7 @@ public class ArsTrackerLauncher {
         Create new campaign
      */
     public int addInitialCommands(){
-        commands.put("select", new CampaignSelectionCommand(framework));
+        commands.put("select", new CampaignSelectionCommand(framework, dataSource));
         commands.put("create", new CreateCampaign(framework));
         return commands.size();
     }

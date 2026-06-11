@@ -26,12 +26,12 @@ public class CharacterOutputCommand implements Command {
      */
     @Override
     public boolean execute() {
-        if(framework.activeCharacter.isEmpty()){
+        if(framework.getActiveCharacter().isEmpty()){
             framework.put("There Is No Active Character");
             return false;
         }
 
-        Character character = framework.activeCharacter.orElseThrow();
+        Character character = framework.getActiveCharacter().orElseThrow();
         framework.put("%s (%s)\n----------------------------\nAttributes: ", character.getName(), character.getCharacterType());
 
         for(Map.Entry<String, Integer> attribute: character.getAttributes().entrySet()){
