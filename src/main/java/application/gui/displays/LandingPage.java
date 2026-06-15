@@ -1,6 +1,6 @@
 package application.gui.displays;
 
-import application.models.Character;
+import application.models.ArsCharacter;
 import application.gui.controllers.LandingPageController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 public class LandingPage extends Application {
     static Stage stage;
-    static ArrayList<Character> characters;
+    static ArrayList<ArsCharacter> characters;
 
     @Override
     public void start(Stage primaryStage) throws IOException, SQLException {
@@ -48,7 +48,7 @@ public class LandingPage extends Application {
         stage.setScene(getScene());
     }
 
-    public static Character getCharacter(String name){
+    public static ArsCharacter getCharacter(String name){
         Logger logger = Logger.getLogger(LandingPage.class.getName());
         ArrayList<String> content;
         try{
@@ -64,7 +64,6 @@ public class LandingPage extends Application {
 
         logger.info("Located Character, Deserializing");
 
-        return Character.
-                deserialize(content);
+        return ArsCharacter.deserialize(content);
     }
 }
