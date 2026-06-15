@@ -2,9 +2,9 @@ package application.gui.controllers;
 
 import application.models.*;
 import application.models.Ability;
-import application.models.Character;
 import application.gui.displays.CharacterEditorDisplay;
 import application.gui.displays.CharacterSheetDisplay;
+import application.models.enums.Attribute;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class CharacterSheetController {
-    Character character;
+    ArsCharacter character;
     Logger logger;
 
     @FXML
@@ -60,7 +60,7 @@ public class CharacterSheetController {
         setCharacteristics();
         setAbilities();
         setFeatures();
-        if(character.getCharacterType().equals(Character.CharacterType.MAGUS)){
+        if(character.getCharacterType().equals(ArsCharacter.CharacterType.MAGUS)){
             setArts();
         }
 
@@ -132,7 +132,7 @@ public class CharacterSheetController {
      */
     private void setFeatures(){
         for(CharacterFeature feature : character.getFeatures()){
-            if(feature.isVirtue()){
+            if(feature.getType() == CharacterFeature.FeatureType.VIRTUE){
                 virtues.getChildren().add(new Label(feature.toString()));
             }else{
                 flaws.getChildren().add(new Label(feature.toString()));
@@ -147,7 +147,7 @@ public class CharacterSheetController {
         }
     }
 
-    public void setCharacter(Character input){
+    public void setCharacter(ArsCharacter input){
         character = input;
 
         logger = Logger.getLogger(CharacterSheetController.class.getName());
@@ -159,7 +159,7 @@ public class CharacterSheetController {
     /*
     Replaces and/or refreshes character display
      */
-    public static void resetScene(Character character, Stage currentStage) throws IOException {
+    public static void resetScene(ArsCharacter character, Stage currentStage) throws IOException {
         FXMLLoader loader = new FXMLLoader(CharacterSheetDisplay.class.getResource("characterView.fxml"));
 
         Parent root = (Parent) loader.load();

@@ -1,5 +1,6 @@
 package application.models;
 
+import application.models.enums.AbilityCategory;
 import application.utils.CharacterUtils;
 
 public class Ability implements Comparable<Ability>{

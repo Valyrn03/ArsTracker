@@ -1,8 +1,8 @@
 package application.gui.controllers;
 
 import application.models.Ability;
-import application.models.Attribute;
-import application.models.Character;
+import application.models.enums.Attribute;
+import application.models.ArsCharacter;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -38,7 +38,7 @@ public class CharacterEditorController {
 
     private Stage currentStage;
 
-    public void initialize(Character character, Stage currentStage){
+    public void initialize(ArsCharacter character, Stage currentStage){
 
         //Preparing Ability Table
         List<Ability> abilities = character.getAbilities();

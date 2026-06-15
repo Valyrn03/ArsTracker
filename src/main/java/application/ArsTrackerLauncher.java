@@ -1,7 +1,8 @@
 package application;
 
+import application.data.DataSource;
 import application.gui.LaunchGUI;
-import application.models.Character;
+import application.models.ArsCharacter;
 import application.commands.*;
 import application.terminal.HelpView;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +30,9 @@ public class ArsTrackerLauncher {
         TextIO source = TextIoFactory.getTextIO();
         source.getTextTerminal().println("Type \"help\" to get a list of commands");
         framework = new CommandFramework(source);
-        dataSource = new DataSource(false);
+        dataSource = new DataSource();
 
         commands = new HashMap<>();
-    }
-
-    public void setMock(){
-        dataSource = new DataSource(true);
     }
 
     /*

@@ -7,9 +7,9 @@ import java.util.HashMap;
 public class CharacterFeature implements Comparable<CharacterFeature> {
     private HashMap<String, Integer> attributes;
     @Getter private FeatureType type;
-    private String name;
-    private String description;
-    private boolean isMajor;
+    @Getter private String name;
+    @Getter private String description;
+    @Getter private boolean isMajor;
 
     public CharacterFeature(String name, String description, boolean isVirtue, boolean isMajor){
         this.name = name;

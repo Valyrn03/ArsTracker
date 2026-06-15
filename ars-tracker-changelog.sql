@@ -26,3 +26,21 @@ ALTER TABLE ability_category ADD isCategorical INT
 
 -- changeset liquibase:ability_add_specialities
 ALTER TABLE ability ADD speciality VARCHAR(36)
+
+-- changeset liquibase:add_book_table
+CREATE TABLE book (id VARCHAR(36), name VARCHAR(36), description VARCHAR(512), isSumma INT, level INT, quality INT, field VARCHAR(32), PRIMARY KEY (id))
+
+-- changeset liquibase:add_feature_table
+CREATE TABLE feature (id VARCHAR(36), name VARCHAR(36), description VARCHAR(1024), isVirtue INT, isMajor INT, PRIMARY KEY (id))
+
+-- changeset liquibase:add_applied_feature_table
+CREATE TABLE applied_feature (player_id VARCHAR(36), feature_id VARCHAR(36), PRIMARY KEY (player_id, feature_id))
+
+-- changeset liquibase:add_general_feature_rule_table
+CREATE TABLE feature_rule (feature_id VARCHAR(36), name VARCHAR(36), description VARCHAR(512), PRIMARY KEY (feature_id, name))
+
+-- changeset liquibase:add_ability_feature_rule_table
+CREATE TABLE ability_feature_rule (id VARCHAR(36), feature_id VARCHAR(36), ability VARCHAR(36), value INT, PRIMARY KEY (id)) --ability is an FK to ability_category
+
+-- changeset liquibase:add_covenant_feature_table
+CREATE TABLE covenant_feature (id VARCHAR(36), name VARCHAR(36), description VARCHAR(512), isBoon INT, isMajor INT, PRIMARY KEY (id))

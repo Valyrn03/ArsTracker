@@ -27,6 +27,7 @@ module application {
     exports application.terminal;
     exports application.models;
     exports application.commands;
-    exports application.database;
-    opens application.database to javafx.fxml;
+    exports application.data;
+    opens application.data to javafx.fxml;
+    exports application.models.enums;
 }

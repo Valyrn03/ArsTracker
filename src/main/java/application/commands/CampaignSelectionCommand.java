@@ -2,7 +2,7 @@ package application.commands;
 
 import application.Command;
 import application.CommandFramework;
-import application.DataSource;
+import application.data.DataSource;
 import application.models.Campaign;
 
 import java.util.List;

@@ -2,9 +2,10 @@ package application.commands;
 
 import application.Command;
 import application.CommandFramework;
-import application.DataSource;
+import application.data.DataSource;
+import application.models.ArsCharacter;
 import application.models.Campaign;
-import application.models.Character;
+import application.models.ArsCharacter;
 import lombok.extern.slf4j.Slf4j;
 
 /*
@@ -24,7 +25,7 @@ public class CloseCommand implements Command {
     public boolean execute() {
         for(Campaign campaign : framework.getAccessedCampaigns()){
             log.info("Saving campaign {}", campaign.id);
-            for(Character character : campaign.accessedCharacters){
+            for(ArsCharacter character : campaign.accessedCharacters){
                 log.info("\tSaving character {}", character.getId());
 
                 dataSource.updateCharacter(character);

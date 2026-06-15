@@ -1,5 +1,6 @@
 package application.models;
 
+import application.models.enums.Art;
 import lombok.Getter;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public class Covenant {
 
     private int establishmentSeason;
     private List<Book> books;
-    private List<LabText> labTexts;
+    private record LabTexts(List<Spell> spells, List<EnchantedItem> items){}
     private Map<Art, Integer> visStores;
     private List<CovenantFeature> features;
 }

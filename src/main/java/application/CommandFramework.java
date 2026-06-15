@@ -1,7 +1,8 @@
 package application;
 
+import application.models.ArsCharacter;
 import application.models.Campaign;
-import application.models.Character;
+import application.models.ArsCharacter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.beryx.textio.TextIO;
@@ -18,7 +19,7 @@ public class CommandFramework {
     public TextIO source;
     private TextTerminal terminal;
     @Getter private Optional<Campaign> activeCampaign;
-    @Getter private Optional<Character> activeCharacter;
+    @Getter private Optional<ArsCharacter> activeCharacter;
     @Getter List<Campaign> accessedCampaigns;
 
     public CommandFramework(TextIO io){
@@ -35,7 +36,7 @@ public class CommandFramework {
         accessedCampaigns.add(campaign);
     }
 
-    public void setActiveCharacter(Character character){
+    public void setActiveCharacter(ArsCharacter character){
         activeCharacter = Optional.of(character);
         try{
             activeCampaign.orElseThrow(NoSuchElementException::new).accessedCharacters.add(character);

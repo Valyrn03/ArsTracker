@@ -1,11 +1,12 @@
 package application.models;
 
+import application.models.enums.Attribute;
 import lombok.Getter;
 
 import java.io.Serializable;
 import java.util.*;
 
-public class Character implements Serializable, Comparable<Character> {
+public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
 
     @Getter private String name;
     private Map<Attribute, Integer> baseAttributes;
@@ -17,7 +18,7 @@ public class Character implements Serializable, Comparable<Character> {
     @Getter ArrayList<CharacterFeature> features;
     @Getter UUID id;
 
-    private Character(){
+    private ArsCharacter(){
         baseAttributes = new HashMap<>();
         attributes = new HashMap<>();
         attributes.put(ExtraneousAttribute.SIZE, 0);
@@ -31,8 +32,8 @@ public class Character implements Serializable, Comparable<Character> {
 
     There must be a campaign for the character to exist
      */
-    public static Character buildCharacterFromMap(Map<String, String> map, Campaign campaign){
-        Character character = new Character();
+    public static ArsCharacter buildCharacterFromMap(Map<String, String> map, Campaign campaign){
+        ArsCharacter character = new ArsCharacter();
 
         character.id = UUID.fromString(map.get("id"));
         character.name = map.get("name");
@@ -48,7 +49,7 @@ public class Character implements Serializable, Comparable<Character> {
         return character;
     }
 
-    public static Character buildCharacter(String name, int birthSeason, String type){
+    public static ArsCharacter buildCharacter(String name, int birthSeason, String type){
         return null;
     }
 
@@ -84,8 +85,8 @@ public class Character implements Serializable, Comparable<Character> {
         StringBuilder builder = new StringBuilder();
         //Name, Type, Age, Characteristics, Abilities, Virtues & Flaws
         builder.append(name).append("\n\n").append(characterType.toString());
-        if(baseAttributes.containsKey(ExtraneousAttribute.AGE)){
-            builder.append("(").append(baseAttributes.get(ExtraneousAttribute.AGE).toString()).append(")\n\n");
+        if(attributes.containsKey(ExtraneousAttribute.AGE)){
+            builder.append("(").append(attributes.get(ExtraneousAttribute.AGE).toString()).append(")\n\n");
         }
 
         builder.append("CHARACTERISTICS\n");
@@ -110,7 +111,7 @@ public class Character implements Serializable, Comparable<Character> {
 
         builder.append("\nVIRTUES\n");
         for(CharacterFeature feature : features){
-            if(feature.isVirtue()){
+            if(feature.getType() == CharacterFeature.FeatureType.VIRTUE){
                 builder.append("\t")
                         .append(feature.toString())
                         .append("\n");
@@ -164,14 +165,14 @@ public class Character implements Serializable, Comparable<Character> {
         Abilities
             *
      */
-    public static Character deserialize(ArrayList<String> content){
+    public static ArsCharacter deserialize(ArrayList<String> content){
         return null;
     }
 
     //Currently only tests if they are equal or not via serialize
     //Character Parts: Name, BaseAttributes, Attributes, Abilities, Type, Features
     @Override
-    public int compareTo(Character o) {
+    public int compareTo(ArsCharacter o) {
         return getName().compareTo(o.getName()) | getCharacterType().compareTo(o.getCharacterType());
     }
 }

@@ -1,7 +1,6 @@
-package application;
+package application.data;
 
-import application.models.Campaign;
-import application.models.Character;
+import application.models.*;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -10,17 +9,12 @@ import java.sql.*;
 import java.util.*;
 
 @Slf4j
-public class DataSource {
+public class DataSource implements IDataSource{
     private HikariConfig config;
     private HikariDataSource source;
 
-    public DataSource(boolean isMock){
+    public DataSource(){
         config = new HikariConfig(DataSource.class.getResource(".properties").toString());
-        if(isMock){
-            config.setJdbcUrl("jdbc:sqlite:testDB.db");
-            config.setUsername("");
-            config.setPassword("");
-        }
 
         source = new HikariDataSource(config);
     }
@@ -35,11 +29,13 @@ public class DataSource {
         }
     }
 
+    @Override
     public void close(){
         source.close();
     }
 
-    public Optional<Character> loadCharacterFromId(String characterID){
+    @Override
+    public Optional<ArsCharacter> loadCharacterFromId(String characterID){
         Connection connection = this.getConnection();
         ResultSet resultSet = null;
         ResultSetMetaData metadata = null;
@@ -80,15 +76,13 @@ public class DataSource {
         }
 
         if(characterDetails != null){
-            return Optional.of(Character.buildCharacterFromMap(characterDetails, null)); //Need to remember why I passed in a Campaign object
+            return Optional.of(ArsCharacter.buildCharacterFromMap(characterDetails, null)); //Need to remember why I passed in a Campaign object
         }else{
             return Optional.empty();
         }
     }
 
-    /*
-    Load campaign table in order to access details about it, getting the characters will be a separate function.
-     */
+    @Override
     public Optional<Campaign> loadCampaignFromId(String campaignID){
         Connection connection = this.getConnection();
         ResultSet resultSet = null;
@@ -136,14 +130,17 @@ public class DataSource {
         }
     }
 
-    public void updateCharacter(Character character){
-
+    @Override
+    public boolean updateCharacter(ArsCharacter character) {
+        return false;
     }
 
-    public void updateCampaign(Campaign campaign){
-
+    @Override
+    public boolean updateCampaign(Campaign campaign){
+        return false;
     }
 
+    @Override
     public List<Campaign> getCampaigns(){
         List<Campaign> campaigns = new ArrayList<>();
         ResultSet resultSet = null;
@@ -189,5 +186,22 @@ public class DataSource {
                 log.error("\tFailed to close connection");
             }
         }
+
+        return campaigns;
+    }
+
+    @Override
+    public List<Ability> loadAbilitiesFromCharacter(String characterID) {
+        return List.of();
+    }
+
+    @Override
+    public List<CharacterFeature> loadFeaturesFromCharacter(String characterID) {
+        return List.of();
+    }
+
+    @Override
+    public Optional<Book> loadBookFromId(String bookID) {
+        return Optional.empty();
     }
 }
