@@ -154,10 +154,6 @@ public class DataSource implements IDataSource{
 
             if(!resultSet.isBeforeFirst()){
                 log.error("Result Set is Empty");
-
-                resultSet.close();
-                connection.close();
-                return campaigns;
             }
 
             while(resultSet.next()){
@@ -171,20 +167,20 @@ public class DataSource implements IDataSource{
             }
         }catch (SQLException exp){
             log.error("Failed with load campaigns with error {}", exp.getMessage());
+        }
 
-            try{
-                if(resultSet != null){
-                    resultSet.close();
-                }
-            }catch (SQLException ex){
-                log.error("\tFailed to close result set");
+        try{
+            if(resultSet != null){
+                resultSet.close();
             }
+        }catch (SQLException ex){
+            log.error("\tFailed to close result set");
+        }
 
-            try{
-                connection.close();
-            }catch (SQLException ex){
-                log.error("\tFailed to close connection");
-            }
+        try{
+            connection.close();
+        }catch (SQLException ex){
+            log.error("\tFailed to close connection");
         }
 
         return campaigns;
@@ -228,5 +224,67 @@ public class DataSource implements IDataSource{
     @Override
     public List<Book> loadBooksFromCovenant(String covenantID) {
         return List.of();
+    }
+
+    @Override
+    public Optional<Covenant> loadCovenantFromId(String covenantID) {
+        Connection connection = getConnection();
+        ResultSet resultSet = null;
+        Covenant covenant = null;
+
+        try(PreparedStatement statement = connection.prepareStatement("SELECT * FROM covenant WHERE id = ?")){
+            statement.setString(0, covenantID);
+
+            resultSet = statement.executeQuery();
+
+            if(!resultSet.isBeforeFirst()){
+                log.info("Covenant with ID {} does not exist", covenantID);
+            }
+            resultSet.first();
+
+            Map<String, String> stringMap = new HashMap<>();
+            Map<String, Integer> integerMap = new HashMap<>();
+
+            stringMap.put("id", resultSet.getString("id"));
+            stringMap.put("name", resultSet.getString("name"));
+            stringMap.put("tribunal", resultSet.getString("tribunal"));
+
+            integerMap.put("establishSeason", resultSet.getInt("establishSeason"));
+            integerMap.put("CrVis", resultSet.getInt("CrVis"));
+            integerMap.put("InVis", resultSet.getInt("InVis"));
+            integerMap.put("MuVis", resultSet.getInt("MuVis"));
+            integerMap.put("PeVis", resultSet.getInt("PeVis"));
+            integerMap.put("ReVis", resultSet.getInt("ReVis"));
+            integerMap.put("AnVis", resultSet.getInt("AnVis"));
+            integerMap.put("AuVis", resultSet.getInt("AuVis"));
+            integerMap.put("AqVis", resultSet.getInt("AqVis"));
+            integerMap.put("CoVis", resultSet.getInt("CoVis"));
+            integerMap.put("HeVis", resultSet.getInt("HeVis"));
+            integerMap.put("IgVis", resultSet.getInt("IgVis"));
+            integerMap.put("ImVis", resultSet.getInt("ImVis"));
+            integerMap.put("MeVis", resultSet.getInt("MeVis"));
+            integerMap.put("TeVis", resultSet.getInt("TeVis"));
+            integerMap.put("ViVis", resultSet.getInt("ViVis"));
+
+            covenant = Covenant.buildCovenantFromMap(stringMap, integerMap);
+        }catch (SQLException ex){
+            log.error("Failed to load covenant from ID {}", covenantID);
+        }
+
+        try{
+            if(resultSet != null){
+                resultSet.close();
+            }
+        }catch (SQLException ex){
+            log.error("\tFailed to close result set");
+        }
+
+        try{
+            connection.close();
+        }catch (SQLException ex){
+            log.error("\tFailed to close connection");
+        }
+
+        return Optional.ofNullable(covenant);
     }
 }

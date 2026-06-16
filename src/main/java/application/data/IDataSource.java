@@ -30,4 +30,6 @@ public interface IDataSource {
     List<CovenantFeature> loadFeaturesFromCovenant(String covenantID);
 
     List<Book> loadBooksFromCovenant(String covenantID);
+
+    Optional<Covenant> loadCovenantFromId(String covenantID);
 }

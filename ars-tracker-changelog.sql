@@ -50,3 +50,12 @@ CREATE TABLE applied_covenant_feature (campaign_id VARCHAR(36), feature_id VARCH
 
 -- changeset liquibase:add_owned_books_table
 CREATE TABLE owned_book (covenant_id VARCHAR(36), book_id VARCHAR(36), PRIMARY KEY(covenant_id, book_id))
+
+-- changeset liquibase:add_covenant_table
+CREATE TABLE covenant (id INTEGER PRIMARY KEY, name VARCHAR(64), tribunal VARCHAR(36), establishSeason INT, visStores VARCHAR(512))
+
+-- changeset liquibase:covenant_col_over_json
+DROP TABLE covenant
+
+-- changeset liquibase:add_back_covenant_table
+CREATE TABLE covenant (id VARCHAR(36), name VARCHAR(64), tribunal VARCHAR(36), establishSeason INT, CrVis INT, InVis INT, MuVis INT, PeVis INT, ReVis INT, AnVis INT, AuVis INT, AqVis INT, CoVis INT, HeVis INT, IgVis INT, ImVis INT, MeVis INT, TeVis INT, ViVis INT)
