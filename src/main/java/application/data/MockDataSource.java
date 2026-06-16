@@ -54,4 +54,14 @@ public class MockDataSource implements IDataSource{
     public Optional<Book> loadBookFromId(String bookID) {
         return Optional.empty();
     }
+
+    @Override
+    public List<CovenantFeature> loadFeaturesFromCovenant(String campaignID) {
+        return List.of();
+    }
+
+    @Override
+    public List<Book> loadBooksFromCovenant(String covenantID) {
+        return List.of();
+    }
 }

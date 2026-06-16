@@ -190,11 +190,22 @@ public class DataSource implements IDataSource{
         return campaigns;
     }
 
+    /*
+    Load from the `ability_tracker` table to get which type of ability and the specific instance
+        `ability_category` stores which ability, as read from the list of abilities in the rulebook
+        `ability` stores a specific instance, for example if there's multiple options
+     */
     @Override
     public List<Ability> loadAbilitiesFromCharacter(String characterID) {
         return List.of();
     }
 
+    /*
+    Query `applied_feature` table to get the features the given character has
+        Then the `feature` table to get the important information
+        And `feature_rule` or `ability_feature_rule` to get how it specifically effects the character
+            Numerically
+     */
     @Override
     public List<CharacterFeature> loadFeaturesFromCharacter(String characterID) {
         return List.of();
@@ -203,5 +214,19 @@ public class DataSource implements IDataSource{
     @Override
     public Optional<Book> loadBookFromId(String bookID) {
         return Optional.empty();
+    }
+
+    /*
+    Query `applied_covenant_feature` to get the IDs of the features belonging to the covenant
+        Then `covenant_feature` to get the important details
+     */
+    @Override
+    public List<CovenantFeature> loadFeaturesFromCovenant(String covenantID) {
+        return List.of();
+    }
+
+    @Override
+    public List<Book> loadBooksFromCovenant(String covenantID) {
+        return List.of();
     }
 }

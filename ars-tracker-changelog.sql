@@ -44,3 +44,9 @@ CREATE TABLE ability_feature_rule (id VARCHAR(36), feature_id VARCHAR(36), abili
 
 -- changeset liquibase:add_covenant_feature_table
 CREATE TABLE covenant_feature (id VARCHAR(36), name VARCHAR(36), description VARCHAR(512), isBoon INT, isMajor INT, PRIMARY KEY (id))
+
+-- changeset liquibase:add_applied_covenant_feature_table
+CREATE TABLE applied_covenant_feature (campaign_id VARCHAR(36), feature_id VARCHAR(36), PRIMARY KEY(campaign_id, feature_id))
+
+-- changeset liquibase:add_owned_books_table
+CREATE TABLE owned_book (covenant_id VARCHAR(36), book_id VARCHAR(36), PRIMARY KEY(covenant_id, book_id))

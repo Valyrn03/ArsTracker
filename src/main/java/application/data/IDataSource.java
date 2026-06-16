@@ -26,4 +26,8 @@ public interface IDataSource {
     List<CharacterFeature> loadFeaturesFromCharacter(String characterID);
 
     Optional<Book> loadBookFromId(String bookID);
+
+    List<CovenantFeature> loadFeaturesFromCovenant(String covenantID);
+
+    List<Book> loadBooksFromCovenant(String covenantID);
 }
