@@ -41,12 +41,12 @@ public class MockDataSource implements IDataSource{
     }
 
     @Override
-    public List<Ability> loadAbilitiesFromCharacter(String characterID) {
+    public List<Ability> loadAbilitiesFromCharacter(ArsCharacter character) {
         return List.of();
     }
 
     @Override
-    public List<CharacterFeature> loadFeaturesFromCharacter(String characterID) {
+    public List<CharacterFeature> loadFeaturesFromCharacter(ArsCharacter character) {
         return List.of();
     }
 
@@ -56,17 +56,27 @@ public class MockDataSource implements IDataSource{
     }
 
     @Override
-    public List<CovenantFeature> loadFeaturesFromCovenant(String campaignID) {
+    public Optional<CovenantFeature> loadCovenantFeatureFromId(String featureID) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<CovenantFeature> loadFeaturesFromCovenant(Covenant covenant) {
         return List.of();
     }
 
     @Override
-    public List<Book> loadBooksFromCovenant(String covenantID) {
+    public List<Book> loadBooksFromCovenant(Covenant covenant) {
         return List.of();
     }
 
     @Override
     public Optional<Covenant> loadCovenantFromId(String covenantID) {
         return Optional.empty();
+    }
+
+    @Override
+    public List<Covenant> loadCovenantsFromCampaign(Campaign campaign) {
+        return List.of();
     }
 }

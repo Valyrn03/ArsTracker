@@ -21,17 +21,19 @@ public interface IDataSource {
 
     List<Campaign> getCampaigns();
 
-    List<Ability> loadAbilitiesFromCharacter(String characterID);
+    List<Ability> loadAbilitiesFromCharacter(ArsCharacter character);
 
-    List<CharacterFeature> loadFeaturesFromCharacter(String characterID);
+    List<CharacterFeature> loadFeaturesFromCharacter(ArsCharacter character);
 
     Optional<Book> loadBookFromId(String bookID);
 
     Optional<CovenantFeature> loadCovenantFeatureFromId(String featureID);
 
-    List<CovenantFeature> loadFeaturesFromCovenant(String covenantID);
+    List<CovenantFeature> loadFeaturesFromCovenant(Covenant covenant);
 
-    List<Book> loadBooksFromCovenant(String covenantID);
+    List<Book> loadBooksFromCovenant(Covenant covenant);
 
     Optional<Covenant> loadCovenantFromId(String covenantID);
+
+    List<Covenant> loadCovenantsFromCampaign(Campaign campaign);
 }

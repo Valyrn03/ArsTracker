@@ -192,7 +192,7 @@ public class DataSource implements IDataSource{
         `ability` stores a specific instance, for example if there's multiple options
      */
     @Override
-    public List<Ability> loadAbilitiesFromCharacter(String characterID) {
+    public List<Ability> loadAbilitiesFromCharacter(ArsCharacter character) {
         return List.of();
     }
 
@@ -203,7 +203,7 @@ public class DataSource implements IDataSource{
             Numerically
      */
     @Override
-    public List<CharacterFeature> loadFeaturesFromCharacter(String characterID) {
+    public List<CharacterFeature> loadFeaturesFromCharacter(ArsCharacter character) {
         return List.of();
     }
 
@@ -261,21 +261,21 @@ public class DataSource implements IDataSource{
     Has to be separately added to the given Covenant object
      */
     @Override
-    public List<CovenantFeature> loadFeaturesFromCovenant(String covenantID) {
+    public List<CovenantFeature> loadFeaturesFromCovenant(Covenant covenant) {
         Connection connection = getConnection();
         ResultSet resultSet = null;
         List<String> featureIDs = new ArrayList<>();
 
         //Load the IDs of the features that belong to the given covenant
         try(PreparedStatement statement = connection.prepareStatement("SELECT feature_id FROM applied_covenant_feature WHERE campaign_id = ?")){
-            statement.setString(0, covenantID);
+            statement.setString(0, String.valueOf(covenant.getId()));
 
             resultSet = statement.executeQuery();
             while(resultSet.next()){
                 featureIDs.add(resultSet.getString("feature_id"));
             }
         }catch (SQLException exp){
-            log.error("Failed to load features belonging to covenant with id {}", covenantID);
+            log.error("Failed to load features belonging to covenant with id {}", covenant.getId().toString());
             featureIDs.clear();
         }
 
@@ -311,7 +311,7 @@ public class DataSource implements IDataSource{
     }
 
     @Override
-    public List<Book> loadBooksFromCovenant(String covenantID) {
+    public List<Book> loadBooksFromCovenant(Covenant covenant) {
         return List.of();
     }
 
@@ -375,5 +375,10 @@ public class DataSource implements IDataSource{
         }
 
         return Optional.ofNullable(covenant);
+    }
+
+    @Override
+    public List<Covenant> loadCovenantsFromCampaign(Campaign campaign) {
+        return List.of();
     }
 }

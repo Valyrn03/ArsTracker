@@ -7,11 +7,11 @@ import application.models.Campaign;
 
 import java.util.List;
 
-public class CampaignSelectionCommand implements Command {
+public class SelectCampaignCommand implements Command {
     CommandFramework framework;
     DataSource dataSource;
 
-    public CampaignSelectionCommand(CommandFramework framework, DataSource dataSource){
+    public SelectCampaignCommand(CommandFramework framework, DataSource dataSource){
         this.framework = framework;
         this.dataSource = dataSource;
     }

@@ -22,6 +22,8 @@ public class Covenant {
     private Map<Art, Integer> visStores;
     private List<CovenantFeature> features;
 
+    public List<ArsCharacter> accessedCharacters;
+
     private Covenant(){
         this.playerCharacters = new ArrayList<>();
         this.nonPlayerCharacters = new ArrayList<>();
@@ -32,6 +34,8 @@ public class Covenant {
         for(Art art : Art.values()){
             this.visStores.put(art, 0);
         }
+
+        this.accessedCharacters = new ArrayList<>();
     }
 
     public static Covenant buildCovenantFromMap(Map<String, String> stringMap, Map<String, Integer> intMap){
@@ -62,5 +66,9 @@ public class Covenant {
 
     public void addFeature(CovenantFeature feature){
         this.features.add(feature);
+    }
+
+    public void addFeature(List<CovenantFeature> feature){
+        this.features.addAll(feature);
     }
 }

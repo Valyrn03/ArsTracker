@@ -11,7 +11,7 @@ public class Campaign {
     private List<Covenant> covenants;
     @Getter String name;
     @Getter int currentSeason;
-    public List<ArsCharacter> accessedCharacters;
+    public List<Covenant> accessedCovenants;
 
     private Campaign(UUID id, String name, int season){
         this.id = id;

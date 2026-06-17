@@ -1,7 +1,7 @@
 package application.commands;
 
 import application.models.Ability;
-import application.models.Character;
+import application.models.ArsCharacter;
 import application.models.CharacterFeature;
 import application.Command;
 import application.CommandFramework;
@@ -31,7 +31,7 @@ public class CharacterOutputCommand implements Command {
             return false;
         }
 
-        Character character = framework.getActiveCharacter().orElseThrow();
+        ArsCharacter character = framework.getActiveCharacter().orElseThrow();
         framework.put("%s (%s)\n----------------------------\nAttributes: ", character.getName(), character.getCharacterType());
 
         for(Map.Entry<String, Integer> attribute: character.getAttributes().entrySet()){
@@ -49,7 +49,7 @@ public class CharacterOutputCommand implements Command {
         List<CharacterFeature> flaws = new ArrayList<>();
 
         for(CharacterFeature feature : character.getFeatures()){
-            if(feature.isFlaw()){
+            if(feature.getType() == CharacterFeature.FeatureType.FLAW){
                 flaws.add(feature);
                 continue;
             }

@@ -2,7 +2,6 @@ package application;
 
 import application.data.DataSource;
 import application.gui.LaunchGUI;
-import application.models.ArsCharacter;
 import application.commands.*;
 import application.terminal.HelpView;
 import lombok.extern.slf4j.Slf4j;
@@ -55,16 +54,16 @@ public class ArsTrackerLauncher {
         Create new campaign
      */
     public int addInitialCommands(){
-        commands.put("select", new CampaignSelectionCommand(framework, dataSource));
+        commands.put("select", new SelectCampaignCommand(framework, dataSource));
         commands.put("create", new CreateCampaign(framework));
         return commands.size();
     }
 
     /*
     Commands available once a campaign is selected:
-        List characters
-        Select character
-        Create new character
+        List covenants
+        Select covenant
+        Create new covenant
         Delete campaign
      */
     public int addCampaignCommands(){
@@ -75,6 +74,25 @@ public class ArsTrackerLauncher {
         commands.put("select", new CharacterSelectionCommand(framework));
         commands.put("create", new CharacterCreationCommand(framework));
         commands.put("delete", new CampaignDeletionCommand(framework));
+
+        return commands.size();
+    }
+
+    /*
+    Commands available once a covenant is selected:
+        List characters
+        Select character
+        Create new character
+        Delete covenant
+     */
+    public int addCovenantCommands(){
+        commands.entrySet().removeIf(entry -> !entry.getKey().equals("openGUI") && !entry.getKey().equals("close") && !entry.getKey().equals("help"));
+
+        commands.put("back", new ReturnCommand(framework));
+        commands.put("list", new ListCharacterCommand(framework));
+        commands.put("select", new CharacterSelectionCommand(framework));
+        commands.put("create", new CharacterCreationCommand(framework));
+        commands.put("delete", new CovenantDeletionCommand(framework));
 
         return commands.size();
     }

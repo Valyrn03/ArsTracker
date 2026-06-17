@@ -3,6 +3,7 @@ package application;
 import application.models.ArsCharacter;
 import application.models.Campaign;
 import application.models.ArsCharacter;
+import application.models.Covenant;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.beryx.textio.TextIO;
@@ -19,6 +20,7 @@ public class CommandFramework {
     public TextIO source;
     private TextTerminal terminal;
     @Getter private Optional<Campaign> activeCampaign;
+    @Getter private Optional<Covenant> activeCovenant;
     @Getter private Optional<ArsCharacter> activeCharacter;
     @Getter List<Campaign> accessedCampaigns;
 
@@ -36,10 +38,19 @@ public class CommandFramework {
         accessedCampaigns.add(campaign);
     }
 
+    public void setActiveCovenant(Covenant covenant){
+        activeCovenant = Optional.of(covenant);
+        try{
+            activeCampaign.orElseThrow(NoSuchElementException::new).accessedCovenants.add(covenant);
+        }catch (NoSuchElementException exp){
+            log.error("Attempted to select covenant while no campaign was active");
+        }
+    }
+
     public void setActiveCharacter(ArsCharacter character){
         activeCharacter = Optional.of(character);
         try{
-            activeCampaign.orElseThrow(NoSuchElementException::new).accessedCharacters.add(character);
+            activeCovenant.orElseThrow(NoSuchElementException::new).accessedCharacters.add(character);
         }catch (NoSuchElementException exp){
             log.error("Attempted to add active character when active campaign is not set");
         }
