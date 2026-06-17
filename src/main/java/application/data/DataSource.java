@@ -212,13 +212,102 @@ public class DataSource implements IDataSource{
         return Optional.empty();
     }
 
+    @Override
+    public Optional<CovenantFeature> loadCovenantFeatureFromId(String featureID) {
+        Connection connection = getConnection();
+        ResultSet resultSet = null;
+        CovenantFeature feature = null;
+
+        try(PreparedStatement statement = connection.prepareStatement("SELECT * FROM covenant_feature WHERE id = ?")){
+            statement.setString(0, featureID);
+
+            resultSet = statement.executeQuery();
+            resultSet.first();
+
+            Map<String, String> map = new HashMap<>();
+            map.put("id", resultSet.getString("id"));
+            map.put("name", resultSet.getString("name"));
+            map.put("description", resultSet.getString("description"));
+            map.put("type", resultSet.getString("isBoon"));
+            map.put("isMajor", resultSet.getString("isMajor"));
+
+            feature = new CovenantFeature(map);
+        }catch (SQLException exp){
+            log.error("Failed to load feature with id {}", featureID);
+            feature = null;
+        }
+
+        try{
+            if(resultSet != null){
+                resultSet.close();
+            }
+        }catch (SQLException ex){
+            log.error("\tFailed to close result set");
+        }
+
+        try{
+            connection.close();
+        }catch (SQLException ex){
+            log.error("\tFailed to close connection");
+        }
+
+        return Optional.ofNullable(feature);
+    }
+
     /*
     Query `applied_covenant_feature` to get the IDs of the features belonging to the covenant
         Then `covenant_feature` to get the important details
+
+    Has to be separately added to the given Covenant object
      */
     @Override
     public List<CovenantFeature> loadFeaturesFromCovenant(String covenantID) {
-        return List.of();
+        Connection connection = getConnection();
+        ResultSet resultSet = null;
+        List<String> featureIDs = new ArrayList<>();
+
+        //Load the IDs of the features that belong to the given covenant
+        try(PreparedStatement statement = connection.prepareStatement("SELECT feature_id FROM applied_covenant_feature WHERE campaign_id = ?")){
+            statement.setString(0, covenantID);
+
+            resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                featureIDs.add(resultSet.getString("feature_id"));
+            }
+        }catch (SQLException exp){
+            log.error("Failed to load features belonging to covenant with id {}", covenantID);
+            featureIDs.clear();
+        }
+
+        try{
+            if(resultSet != null){
+                resultSet.close();
+            }
+        }catch (SQLException ex){
+            log.error("\tFailed to close result set");
+            featureIDs.clear();
+        }
+
+        try{
+            connection.close();
+        }catch (SQLException ex){
+            log.error("\tFailed to close connection");
+            featureIDs.clear();
+        }
+
+        //If there was an error or none where found, return early
+        if(featureIDs.isEmpty()){
+            return new ArrayList<>();
+        }
+
+        //Create a new list with the features themselves, load as many as possible from the DB and add them to the list
+        List<CovenantFeature> features = new ArrayList<>();
+
+        for(String id : featureIDs){
+            loadCovenantFeatureFromId(id).map(features::add);
+        }
+
+        return features;
     }
 
     @Override

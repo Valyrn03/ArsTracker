@@ -59,4 +59,8 @@ public class Covenant {
 
         return covenant;
     }
+
+    public void addFeature(CovenantFeature feature){
+        this.features.add(feature);
+    }
 }

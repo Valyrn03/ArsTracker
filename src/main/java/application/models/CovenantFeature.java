@@ -1,20 +1,29 @@
 package application.models;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class CovenantFeature {
-    @Getter private String name;
-    @Getter private FeatureType type;
-    @Getter boolean isMajor;
-    @Getter String description;
+    @Getter UUID id;
+    @Getter @Setter String name;
+    @Getter @Setter FeatureType type;
+    @Getter @Setter boolean isMajor;
+    @Getter @Setter String description;
 
     public CovenantFeature(Map<String, String> map){
+        this.id = UUID.fromString(map.get("id"));
         this.name = map.get("name");
-        this.type = FeatureType.valueOf(map.get("type"));
-        this.isMajor = Boolean.parseBoolean(map.get("isMajor"));
+        this.isMajor = map.get("isMajor").equals("0");
         this.description = map.get("description");
+
+        if(map.get("isBoon").equals("0")){
+            this.type = FeatureType.BOON;
+        }else{
+            this.type = FeatureType.HOOK;
+        }
     }
 
     public enum FeatureType{

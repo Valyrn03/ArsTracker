@@ -27,6 +27,8 @@ public interface IDataSource {
 
     Optional<Book> loadBookFromId(String bookID);
 
+    Optional<CovenantFeature> loadCovenantFeatureFromId(String featureID);
+
     List<CovenantFeature> loadFeaturesFromCovenant(String covenantID);
 
     List<Book> loadBooksFromCovenant(String covenantID);
