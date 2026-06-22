@@ -1,12 +1,17 @@
 package application;
 
+import application.data.CampaignDataSource;
 import application.data.DataSource;
+import application.data.IDataSource;
+import application.data.MockDataSource;
 import application.gui.LaunchGUI;
 import application.commands.*;
 import application.terminal.HelpView;
 import lombok.extern.slf4j.Slf4j;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
+import org.beryx.textio.TextTerminal;
+import org.beryx.textio.mock.MockTextTerminal;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +27,7 @@ public class ArsTrackerLauncher {
     String[] args;
     CommandFramework framework;
     Map<String, Command> commands;
-    DataSource dataSource;
+    IDataSource dataSource;
 
     public ArsTrackerLauncher(String[] arg){
         args = arg;
@@ -32,6 +37,18 @@ public class ArsTrackerLauncher {
         dataSource = new DataSource();
 
         commands = new HashMap<>();
+    }
+
+    private ArsTrackerLauncher(){
+
+    }
+
+    public static ArsTrackerLauncher getMockLauncher(){
+        ArsTrackerLauncher launcher = new ArsTrackerLauncher();
+        TextIO source = TextIoFactory.getTextIO();
+        launcher.framework = new CommandFramework(source, new MockTextTerminal());
+        launcher.dataSource = new MockDataSource();
+
     }
 
     /*
@@ -54,7 +71,7 @@ public class ArsTrackerLauncher {
         Create new campaign
      */
     public int addInitialCommands(){
-        commands.put("select", new SelectCampaignCommand(framework, dataSource));
+        commands.put("select", new SelectCampaignCommand(framework, new CampaignDataSource(dataSource)));
         commands.put("create", new CreateCampaign(framework));
         return commands.size();
     }

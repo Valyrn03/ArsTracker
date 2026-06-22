@@ -1,13 +1,13 @@
 package application;
 
-import application.models.Character;
+import application.models.ArsCharacter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CharacterController implements Command {
     private CommandFramework framework;
-    List<Character> characters;
+    List<ArsCharacter> characters;
 
     public CharacterController(CommandFramework source){
         framework = source;
@@ -31,7 +31,7 @@ public abstract class CharacterController implements Command {
         return framework.getString(prompt);
     }
 
-    public boolean add(Character character){
+    public boolean add(ArsCharacter character){
         if(characters.contains(character)){
             return false;
         }

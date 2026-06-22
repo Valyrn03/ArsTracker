@@ -16,6 +16,7 @@ module application {
     requires com.zaxxer.hikari;
     requires org.apache.commons.lang3;
     requires static lombok;
+    requires org.jline;
 
     opens application to javafx.fxml;
     exports application;

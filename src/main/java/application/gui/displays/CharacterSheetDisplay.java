@@ -1,6 +1,6 @@
 package application.gui.displays;
 
-import application.models.Character;
+import application.models.ArsCharacter;
 import application.gui.controllers.CharacterSheetController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 public class CharacterSheetDisplay {
-    public static Scene start(Character character) throws IOException {
+    public static Scene start(ArsCharacter character) throws IOException {
         Logger logger = Logger.getLogger("Character Loader");
         FXMLLoader fxmlLoader = new FXMLLoader(CharacterSheetDisplay.class.getResource("characterView.fxml"));
         Parent root = (Parent) fxmlLoader.load();

@@ -3,15 +3,16 @@ package application.commands;
 import application.Command;
 import application.CommandFramework;
 import application.data.DataSource;
+import application.data.ICampaignDataSource;
 import application.models.Campaign;
 
 import java.util.List;
 
 public class SelectCampaignCommand implements Command {
     CommandFramework framework;
-    DataSource dataSource;
+    ICampaignDataSource dataSource;
 
-    public SelectCampaignCommand(CommandFramework framework, DataSource dataSource){
+    public SelectCampaignCommand(CommandFramework framework, ICampaignDataSource dataSource){
         this.framework = framework;
         this.dataSource = dataSource;
     }

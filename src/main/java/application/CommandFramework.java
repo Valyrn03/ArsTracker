@@ -5,9 +5,14 @@ import application.models.Campaign;
 import application.models.ArsCharacter;
 import application.models.Covenant;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextTerminal;
+import org.beryx.textio.mock.MockTextTerminal;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.terminal.Terminal;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,19 +22,17 @@ import java.util.stream.Stream;
 
 @Slf4j
 public class CommandFramework {
-    public TextIO source;
-    private TextTerminal terminal;
+    @Setter private Terminal terminal;
     @Getter private Optional<Campaign> activeCampaign;
     @Getter private Optional<Covenant> activeCovenant;
     @Getter private Optional<ArsCharacter> activeCharacter;
     @Getter List<Campaign> accessedCampaigns;
 
-    public CommandFramework(TextIO io){
-        source = io;
-        terminal = source.getTextTerminal();
-        log.info("Terminal Properties: {}", terminal.getProperties().getAllKeys().toString());
+    public CommandFramework(Terminal io){
+        terminal = io;
 
         activeCampaign = Optional.empty();
+        activeCovenant = Optional.empty();
         activeCharacter = Optional.empty();
     }
 
@@ -57,7 +60,15 @@ public class CommandFramework {
     }
 
     public int getInt(String prompt){
-        return source.newIntInputReader().read(prompt + " >");
+        LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
+
+        String line = reader.readLine(prompt + "> ");
+
+        try{
+            return Integer.parseInt(line);
+        }catch (NumberFormatException exp){
+            return getInt("\t");
+        }
     }
 
     public int getOptions(Stream<String> options){

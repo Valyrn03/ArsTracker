@@ -2,38 +2,12 @@ package application.data;
 
 import application.models.*;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
 public interface IDataSource {
     void close();
 
-    Optional<ArsCharacter> loadCharacterFromId(String characterID);
-
-    /*
-    Load campaign table in order to access details about it, getting the characters will be a separate function.
-     */
-    Optional<Campaign> loadCampaignFromId(String campaignID);
-
-    boolean updateCharacter(ArsCharacter character);
-
-    boolean updateCampaign(Campaign campaign);
-
-    List<Campaign> getCampaigns();
-
-    List<Ability> loadAbilitiesFromCharacter(ArsCharacter character);
-
-    List<CharacterFeature> loadFeaturesFromCharacter(ArsCharacter character);
-
-    Optional<Book> loadBookFromId(String bookID);
-
-    Optional<CovenantFeature> loadCovenantFeatureFromId(String featureID);
-
-    List<CovenantFeature> loadFeaturesFromCovenant(Covenant covenant);
-
-    List<Book> loadBooksFromCovenant(Covenant covenant);
-
-    Optional<Covenant> loadCovenantFromId(String covenantID);
-
-    List<Covenant> loadCovenantsFromCampaign(Campaign campaign);
+    public Connection getConnection();
 }

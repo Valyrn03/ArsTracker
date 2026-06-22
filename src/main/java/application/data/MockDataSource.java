@@ -2,16 +2,12 @@ package application.data;
 
 import application.models.*;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
-public class MockDataSource implements IDataSource{
+public class MockDataSource implements ICampaignDataSource, ICovenantDataSource, ICharacterDataSource, IDataSource{
     public MockDataSource(){
-
-    }
-
-    @Override
-    public void close() {
 
     }
 
@@ -78,5 +74,20 @@ public class MockDataSource implements IDataSource{
     @Override
     public List<Covenant> loadCovenantsFromCampaign(Campaign campaign) {
         return List.of();
+    }
+
+    @Override
+    public boolean updateCovenant(Covenant covenant) {
+        return false;
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public Connection getConnection() {
+        return null;
     }
 }

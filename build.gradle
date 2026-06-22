@@ -4,6 +4,7 @@ plugins {
   id 'org.javamodularity.moduleplugin' version '1.8.12'
   id 'org.openjfx.javafxplugin' version '0.0.13'
   id 'org.beryx.jlink' version '2.25.0'
+  id 'io.freefair.lombok' version '9.5.0'
 }
 
 group 'com.valyrn'
@@ -16,7 +17,7 @@ repositories {
 sourceCompatibility = '21'
 targetCompatibility = '21'
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
   options.encoding = 'UTF-8'
 }
 
@@ -45,7 +46,7 @@ dependencies {
   }
 
   implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.49.0.0'
-  implementation group: 'org.beryx', name: 'text-io', version: '3.4.1'
+  implementation 'org.jline:jline:3.30.0'
 
   testImplementation(platform('org.junit:junit-bom:5.11.4'))
   testImplementation('org.junit.jupiter:junit-jupiter')
@@ -64,8 +65,6 @@ dependencies {
   // https://mvnrepository.com/artifact/org.projectlombok/lombok
   compileOnly 'org.projectlombok:lombok:1.18.42'
   annotationProcessor 'org.projectlombok:lombok:1.18.42'
-
-  implementation("org.mockito:mockito-core:5.21.0")
 }
 
 test {useJUnitPlatform()}
