@@ -7,9 +7,6 @@ import application.models.Covenant;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.beryx.textio.TextIO;
-import org.beryx.textio.TextTerminal;
-import org.beryx.textio.mock.MockTextTerminal;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
@@ -72,26 +69,28 @@ public class CommandFramework {
     }
 
     public int getOptions(Stream<String> options){
-        terminal.println("Choose one of the following options:");
+        terminal.writer().println("Choose one of the following options:");
         AtomicInteger i = new AtomicInteger();
         options.forEachOrdered((option) -> {
-            terminal.printf("\t%d: %s\n", i, option);
+            terminal.writer().println(String.format("\t%d: %s\n", i.get(), option));
             i.getAndIncrement();
         });
-        return source.newIntInputReader().read(" >");
+
+        return getInt(">");
     }
 
     public String getString(String prompt){
-        return source.newStringInputReader().read(prompt + " >");
+        LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
+        return reader.readLine(prompt + ">");
     }
 
     public void put(String prompt, Object... args){
-        terminal.println(String.format(prompt, args));
+        terminal.writer().println(String.format(prompt, args));
     }
 
     public void put(List<Object> list){
         for(Object obj : list){
-            terminal.println(obj.toString());
+            terminal.writer().println(obj.toString());
         }
     }
 }

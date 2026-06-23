@@ -8,11 +8,10 @@ import application.gui.LaunchGUI;
 import application.commands.*;
 import application.terminal.HelpView;
 import lombok.extern.slf4j.Slf4j;
-import org.beryx.textio.TextIO;
-import org.beryx.textio.TextIoFactory;
-import org.beryx.textio.TextTerminal;
-import org.beryx.textio.mock.MockTextTerminal;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,9 +30,11 @@ public class ArsTrackerLauncher {
 
     public ArsTrackerLauncher(String[] arg){
         args = arg;
-        TextIO source = TextIoFactory.getTextIO();
-        source.getTextTerminal().println("Type \"help\" to get a list of commands");
-        framework = new CommandFramework(source);
+        try{
+            framework = new CommandFramework(TerminalBuilder.builder().system(true).build());
+        }catch (IOException exp){
+            log.error("Failed to open terminal with error {}", exp.getMessage());
+        }
         dataSource = new DataSource();
 
         commands = new HashMap<>();
@@ -45,10 +46,11 @@ public class ArsTrackerLauncher {
 
     public static ArsTrackerLauncher getMockLauncher(){
         ArsTrackerLauncher launcher = new ArsTrackerLauncher();
-        TextIO source = TextIoFactory.getTextIO();
-        launcher.framework = new CommandFramework(source, new MockTextTerminal());
+//        TextIO source = TextIoFactory.getTextIO();
+//        launcher.framework = new CommandFramework(source, new MockTextTerminal());
         launcher.dataSource = new MockDataSource();
 
+        return launcher;
     }
 
     /*
