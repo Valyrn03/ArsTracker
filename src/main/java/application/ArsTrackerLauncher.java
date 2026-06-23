@@ -7,6 +7,7 @@ import application.data.MockDataSource;
 import application.gui.LaunchGUI;
 import application.commands.*;
 import application.terminal.HelpView;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
@@ -25,7 +26,7 @@ public class ArsTrackerLauncher {
 
     String[] args;
     CommandFramework framework;
-    Map<String, Command> commands;
+    @Getter Map<String, Command> commands;
     IDataSource dataSource;
 
     public ArsTrackerLauncher(String[] arg){
@@ -36,19 +37,19 @@ public class ArsTrackerLauncher {
             log.error("Failed to open terminal with error {}", exp.getMessage());
         }
         dataSource = new DataSource();
-
         commands = new HashMap<>();
+        assert addDefaultLauncherCommands() == 3;
     }
 
-    private ArsTrackerLauncher(){
+    public ArsTrackerLauncher(){
 
     }
 
     public static ArsTrackerLauncher getMockLauncher(){
         ArsTrackerLauncher launcher = new ArsTrackerLauncher();
-//        TextIO source = TextIoFactory.getTextIO();
-//        launcher.framework = new CommandFramework(source, new MockTextTerminal());
+        launcher.commands = new HashMap<>();
         launcher.dataSource = new MockDataSource();
+        assert launcher.addDefaultLauncherCommands() == 3;
 
         return launcher;
     }
@@ -60,6 +61,7 @@ public class ArsTrackerLauncher {
         Help
      */
     public int addDefaultLauncherCommands() {
+        log.info("Adding default commands");
         commands.put("openGUI", new LaunchGUI(framework));
         commands.put("close", new CloseCommand(framework, dataSource));
         commands.put("help", new HelpView(framework, commands.keySet()));

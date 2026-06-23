@@ -26,4 +26,9 @@ public class ListCovenantsCommand implements Command {
 
         return !covenants.isEmpty();
     }
+
+    @Override
+    public String name() {
+        return "ListCovenantsCommand";
+    }
 }

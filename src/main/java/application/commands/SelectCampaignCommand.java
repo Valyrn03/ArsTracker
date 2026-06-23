@@ -26,4 +26,9 @@ public class SelectCampaignCommand implements Command {
         framework.setActiveCampaign(campaigns.get(selection));
         return true;
     }
+
+    @Override
+    public String name() {
+        return "SelectCampaignCommand";
+    }
 }

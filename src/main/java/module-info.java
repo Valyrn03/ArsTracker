@@ -10,7 +10,6 @@ module application {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires java.sql;
-    requires org.beryx.textio;
     requires org.xerial.sqlitejdbc;
     requires org.slf4j;
     requires com.zaxxer.hikari;
