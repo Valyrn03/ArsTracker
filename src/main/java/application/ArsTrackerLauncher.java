@@ -20,6 +20,7 @@ import java.util.Map;
 public class ArsTrackerLauncher {
     public static void main(String[] args){
         ArsTrackerLauncher launcher = new ArsTrackerLauncher(args);
+        log.info("{} Commands Loaded", launcher.addDefaultLauncherCommands());
         log.info("{} Commands Loaded", launcher.addInitialCommands());
         launcher.coreLoop();
     }
@@ -138,8 +139,18 @@ public class ArsTrackerLauncher {
 
     public void coreLoop(){
         boolean result = false;
+        framework.put("In order to get the list of commands, type \"help\"");
         do{
-            result = controlInput();
+            Command command = null;
+            String user = framework.getString(">");
+            if(user.isEmpty()){
+                log.info("Incorrect Command {}", user);
+                command = commands.get("close");
+            }else{
+                command = commands.getOrDefault(user, commands.get("close"));
+            }
+
+            result = command.execute();
         }while (result);
 
         framework.put("Exiting...");
@@ -150,32 +161,6 @@ public class ArsTrackerLauncher {
     }
 
     public boolean execute(Command command){
-        return command.execute();
-    }
-
-    public boolean controlInput(){
-        String commandInput = framework.getString("");
-        String[] userInput = commandInput.split(" ");
-        if(userInput.length == 0){
-            log.info("Incorrect Command {}", commandInput);
-            Command command = commands.get("close");
-            return command.execute();
-        }
-        log.info("User Command:{}", userInput[0]);
-
-        Command command = null;
-        if(userInput.length > 1 && "create".equals(userInput[0])){
-            if("character".equals(userInput[1])){
-                command = commands.get("character");
-            }else{
-                command = commands.get("campaign");
-            }
-        }else{
-            command = commands.get(userInput[0]);
-        }
-        if(command == null){
-            log.info("\tNull Command");
-        }
         return command.execute();
     }
 }
