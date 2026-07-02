@@ -9,6 +9,7 @@ import application.commands.*;
 import application.terminal.HelpView;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.output.WriterOutputStream;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
@@ -19,6 +20,9 @@ import java.util.Map;
 @Slf4j
 public class ArsTrackerLauncher {
     public static void main(String[] args){
+        log.info("RUNNING");
+        Class<?> stream = WriterOutputStream.builder().getClass();
+        log.info("{}", stream.getCanonicalName());
         ArsTrackerLauncher launcher = new ArsTrackerLauncher(args);
         log.info("{} Commands Loaded", launcher.addDefaultLauncherCommands());
         log.info("{} Commands Loaded", launcher.addInitialCommands());
@@ -151,6 +155,7 @@ public class ArsTrackerLauncher {
             }
 
             result = command.execute();
+            log.debug("Loop Result: {}", result);
         }while (result);
 
         framework.put("Exiting...");

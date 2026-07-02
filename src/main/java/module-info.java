@@ -16,6 +16,8 @@ module application {
     requires org.apache.commons.lang3;
     requires static lombok;
     requires org.jline;
+    requires liquibase.core;
+    requires org.apache.commons.io;
 
     opens application to javafx.fxml;
     exports application;
