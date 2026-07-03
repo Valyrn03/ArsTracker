@@ -21,6 +21,11 @@ public class SelectCampaignCommand implements Command {
     public boolean execute(){
         List<Campaign> campaigns = dataSource.getCampaigns();
 
+        if(campaigns.isEmpty()){
+            framework.put("0 Campaigns Loaded");
+            return true;
+        }
+
         int selection = framework.getOptions(campaigns.stream().map(Campaign::getName));
 
         framework.setActiveCampaign(campaigns.get(selection));

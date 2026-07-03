@@ -64,7 +64,7 @@ public class CommandFramework {
         try{
             return Integer.parseInt(line);
         }catch (NumberFormatException exp){
-            return getInt("\t");
+            return getInt("\t(requires number selection)>");
         }
     }
 

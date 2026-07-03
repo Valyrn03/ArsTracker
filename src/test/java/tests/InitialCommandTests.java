@@ -7,11 +7,14 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
@@ -35,15 +38,15 @@ public class InitialCommandTests {
     }
 
     @Test
-    void testCampaignSelection(){
-        try{
-            Terminal terminal = TerminalBuilder.builder().system(false).build();
-            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+    void testEmptyCampaignSelection() throws IOException{
+        String simulatedInput = "select\nclose\n";
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(new ByteArrayInputStream(simulatedInput.getBytes()), outputStream).build();
+        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+        launcher.coreLoop();
+        terminal.close();
 
-            OutputStream outputStream = terminal.output();
-            log.info(outputStream.toString());
-        }catch (IOException exp){
-            log.error("Some sort of IO exception {}", exp.getMessage());
-        }
+        log.info(outputStream.toString());
+        assertEquals("select\n0 Campaigns Loaded\nclose\n", outputStream.toString());
     }
 }

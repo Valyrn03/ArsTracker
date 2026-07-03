@@ -1,7 +1,7 @@
 plugins {
   id 'java'
   id 'application'
-  id 'org.javamodularity.moduleplugin' version '1.8.12'
+//  id 'org.javamodularity.moduleplugin' version '1.8.12'
   id 'org.beryx.jlink' version '2.25.0'
   id 'io.freefair.lombok' version '9.5.0'
 }

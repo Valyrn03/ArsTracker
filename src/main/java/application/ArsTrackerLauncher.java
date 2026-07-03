@@ -46,7 +46,7 @@ public class ArsTrackerLauncher {
         assert addDefaultLauncherCommands() == 3;
     }
 
-    public ArsTrackerLauncher(){
+    private ArsTrackerLauncher(){
 
     }
 
@@ -55,6 +55,7 @@ public class ArsTrackerLauncher {
         launcher.commands = new HashMap<>();
         launcher.dataSource = new MockDataSource();
         assert launcher.addDefaultLauncherCommands() == 3;
+        assert launcher.addInitialCommands() == 5;
 
         launcher.framework = new CommandFramework(io);
 
