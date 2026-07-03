@@ -74,8 +74,6 @@ public class DataSource implements IDataSource{
             log.error("Liquibase error {}", exp.getMessage());
         }catch (FileNotFoundException exp){
             log.error("Failed to find repo root, {}", exp.getMessage());
-        }finally {
-            close();
         }
     }
 
@@ -105,56 +103,48 @@ public class DataSource implements IDataSource{
 
         try(Connection conn = getConnection();
             PreparedStatement statement = conn.prepareStatement("INSERT OR IGNORE INTO ability_category (name, overarchingType) VALUES (?, ?)")){
-
             for(String ability : techniques){
-                statement.setString(0, ability);
-                statement.setString(1, "technique");
+                statement.setString(1, ability);
+                statement.setString(2, "technique");
                 statement.execute();
             }
-
             for(String ability : forms){
-                statement.setString(0, ability);
-                statement.setString(1, "form");
+                statement.setString(1, ability);
+                statement.setString(2, "form");
                 statement.execute();
             }
-
-            statement.close();
         } catch (SQLException e) {
             log.error("Failed to Populate Arts Table, Exception: {}", e.getMessage());
-        } finally {
-            close();
         }
     }
 
     private void resetAbilities(){
         try(Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement("INSERT OR IGNORE INTO ability_category(name, overarchingType) VALUES (?, ?)")){
             for(String ability : generalAbilities()){
-                statement.setString(0, ability);
-                statement.setString(1, "general");
+                statement.setString(1, ability);
+                statement.setString(2, "general");
                 statement.execute();
             }
 
             for(String ability : academicAbilities()){
-                statement.setString(0, ability);
-                statement.setString(1, "academic");
+                statement.setString(1, ability);
+                statement.setString(2, "academic");
                 statement.execute();
             }
 
             for(String ability : arcaneAbilities()){
-                statement.setString(0, ability);
-                statement.setString(1, "arcane");
+                statement.setString(1, ability);
+                statement.setString(2, "arcane");
                 statement.execute();
             }
 
             for(String ability : supernaturalAbilities()){
-                statement.setString(0, ability);
-                statement.setString(1, "supernatural");
+                statement.setString(1, ability);
+                statement.setString(2, "supernatural");
                 statement.execute();
             }
         }catch (SQLException exp){
             log.error("Failed to populate Abilities table with the following error: {}", exp.getMessage());
-        }finally {
-            close();
         }
     }
 
