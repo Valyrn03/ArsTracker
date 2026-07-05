@@ -54,10 +54,10 @@ public class ArsTrackerLauncher {
         ArsTrackerLauncher launcher = new ArsTrackerLauncher();
         launcher.commands = new HashMap<>();
         launcher.dataSource = new MockDataSource();
+        launcher.framework = new CommandFramework(io);
+
         assert launcher.addDefaultLauncherCommands() == 3;
         assert launcher.addInitialCommands() == 5;
-
-        launcher.framework = new CommandFramework(io);
 
         return launcher;
     }
@@ -158,7 +158,7 @@ public class ArsTrackerLauncher {
             }
 
             result = command.execute();
-            log.debug("Loop Result: {}", result);
+            log.info("Loop Result: {} on command {}", result, command.name());
         }while (result);
 
         framework.put("Exiting...");

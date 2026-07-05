@@ -11,6 +11,7 @@ import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -31,6 +32,8 @@ public class CommandFramework {
         activeCampaign = Optional.empty();
         activeCovenant = Optional.empty();
         activeCharacter = Optional.empty();
+
+        accessedCampaigns = new ArrayList<>();
     }
 
     public void setActiveCampaign(Campaign campaign){
