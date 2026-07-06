@@ -19,4 +19,6 @@ public interface ICovenantDataSource {
     Optional<Covenant> loadCovenantFromId(String covenantID);
 
     boolean updateCovenant(Covenant covenant);
+
+    boolean addCovenant(Covenant covenant);
 }

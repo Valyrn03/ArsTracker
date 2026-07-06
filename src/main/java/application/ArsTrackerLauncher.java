@@ -159,6 +159,11 @@ public class ArsTrackerLauncher {
 
             result = command.execute();
             log.info("Loop Result: {} on command {}", result, command.name());
+
+            log.info(command.getClass().getName());
+            if(command.getClass().getName().endsWith("CloseCommand")){
+                result = !result;
+            }
         }while (result);
 
         framework.put("Exiting...");

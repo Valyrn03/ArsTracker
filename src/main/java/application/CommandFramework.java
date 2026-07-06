@@ -71,7 +71,23 @@ public class CommandFramework {
         }
     }
 
-    public int getOptions(Stream<String> options){
+    public int getInt(String prompt, Object... values){
+        LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
+
+        for(Object val : values){
+            prompt = prompt.replace("{}", val.toString());
+        }
+
+        String line = reader.readLine(prompt + "> ");
+
+        try{
+            return Integer.parseInt(line);
+        }catch (NumberFormatException exp){
+            return getInt("\t(requires number selection)>");
+        }
+    }
+
+    public int getOptionsIndex(Stream<String> options){
         terminal.writer().println("Choose one of the following options:");
         AtomicInteger i = new AtomicInteger();
         options.forEachOrdered((option) -> {
@@ -80,6 +96,30 @@ public class CommandFramework {
         });
 
         return getInt(">");
+    }
+
+    public String getOptions(List<String> options){
+        terminal.writer().println("Choose one of the following options:");
+
+        for(int i = 0; i < options.size(); i++){
+            terminal.writer().println(String.format("\t%d: %s\n", i, options.get(i)));
+        }
+
+        int index = getInt(">");
+        return options.get(index);
+    }
+
+    public String getOptions(Stream<String> options){
+        terminal.writer().println("Choose one of the following options:");
+        List<String> record = new ArrayList<>();
+
+        options.forEachOrdered((option) -> {
+            terminal.writer().println(String.format("\t%d: %s\n", record.size(), option));
+            record.add(option);
+        });
+
+        int index = getInt(">");
+        return record.get(index);
     }
 
     public String getString(String prompt){

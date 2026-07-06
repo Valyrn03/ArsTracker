@@ -23,9 +23,9 @@ public abstract class CharacterController implements Command {
         return (absValue * (absValue + 1))/2;
     }
 
-    public int getOptions(List<String> options){
-        return framework.getOptions(options.stream());
-    }
+//    public int getOptions(List<String> options){
+//        return framework.getOptions(options.stream());
+//    }
 
     public String getString(String prompt){
         return framework.getString(prompt);

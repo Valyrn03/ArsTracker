@@ -30,7 +30,7 @@ public class SelectCampaignCommand implements Command {
         }
 
         log.info("Choosing selection from {} options", campaigns.size());
-        int selection = framework.getOptions(campaigns.stream().map(Campaign::getName));
+        int selection = framework.getOptionsIndex(campaigns.stream().map(Campaign::getName));
 
         framework.setActiveCampaign(campaigns.get(selection));
         return true;

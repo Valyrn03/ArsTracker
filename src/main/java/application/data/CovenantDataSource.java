@@ -166,4 +166,9 @@ public class CovenantDataSource implements ICovenantDataSource{
     public boolean updateCovenant(Covenant covenant) {
         return false;
     }
+
+    @Override
+    public boolean addCovenant(Covenant covenant) {
+        return false;
+    }
 }

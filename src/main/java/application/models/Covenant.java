@@ -64,11 +64,48 @@ public class Covenant {
         return covenant;
     }
 
+    public static Covenant buildCovenant(String name, String tribunal, int season, Map<Art, Integer> vis){
+        Covenant covenant = new Covenant();
+
+        covenant.name = name;
+        covenant.tribunal = Tribunal.valueOf(tribunal);
+        covenant.establishmentSeason = season;
+        covenant.visStores = vis;
+
+        return covenant;
+    }
+
+    public static Covenant buildCovenant(String id){
+        Covenant covenant = new Covenant();
+
+        return covenant;
+    }
+
     public void addFeature(CovenantFeature feature){
         this.features.add(feature);
     }
 
     public void addFeature(List<CovenantFeature> feature){
         this.features.addAll(feature);
+    }
+
+    public static List<String> tribunals(){
+        List<String> tribunals = new ArrayList<>();
+
+        tribunals.add("Novgorod");
+        tribunals.add("Rhine");
+        tribunals.add("Loch Leglean");
+        tribunals.add("Hibernian");
+        tribunals.add("Stonehenge");
+        tribunals.add("Normandy");
+        tribunals.add("Provencal");
+        tribunals.add("Greater Alps");
+        tribunals.add("Transylvanian");
+        tribunals.add("Theban");
+        tribunals.add("Levant");
+        tribunals.add("Roman");
+        tribunals.add("Iberian");
+
+        return tribunals;
     }
 }

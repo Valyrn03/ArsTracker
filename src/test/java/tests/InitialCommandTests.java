@@ -11,7 +11,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,13 +42,13 @@ public class InitialCommandTests {
     @Test
     void testEmptyCampaignSelection() throws IOException{
         String simulatedInput = "select\nclose\n";
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(new ByteArrayInputStream(simulatedInput.getBytes()), outputStream).build();
+        Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
         ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
         launcher.coreLoop();
         terminal.close();
 
-        log.info(outputStream.toString());
-        assertEquals("select\n0 Campaigns Loaded\nclose\n", outputStream.toString());
+        assertEquals(">>select\n0 Campaigns Loaded\n>>close\nExiting...\n", TestUtils.outputStreamToReadable(outputStream, simulatedInput.length() + 2));
     }
 }

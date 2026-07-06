@@ -45,9 +45,7 @@ public class CloseCommand implements Command {
             }
             campaignDataSource.updateCampaign(campaign);
         }
-
-        log.debug("Exiting Program");
-        return false;
+        return true;
     }
 
     @Override
