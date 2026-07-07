@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class InitialCommandTests {
     @Test
     void testInitialHelpCommand(){
-        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(null);
+        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(null, null);
 
         //Testing whether the initial commands are correctly loaded
         List<String> initialCommandNames = new ArrayList<>();
@@ -33,7 +33,7 @@ public class InitialCommandTests {
 
         List<String> loadedCommandNames = new ArrayList<>();
         launcher.getCommands().forEach((name, command) -> {
-            loadedCommandNames.add(command.name());
+            loadedCommandNames.add(command.getClass().getSimpleName());
         });
 
         assertTrue(initialCommandNames.containsAll(loadedCommandNames) && loadedCommandNames.containsAll(initialCommandNames));
@@ -45,7 +45,7 @@ public class InitialCommandTests {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
-        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, null);
         launcher.coreLoop();
         terminal.close();
 

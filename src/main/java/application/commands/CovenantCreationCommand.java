@@ -48,9 +48,4 @@ public class CovenantCreationCommand implements Command {
 
         return dataSource.addCovenant(covenant);
     }
-
-    @Override
-    public String name() {
-        return "CovenantCreationCommand";
-    }
 }

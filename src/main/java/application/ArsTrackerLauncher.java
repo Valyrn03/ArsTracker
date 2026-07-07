@@ -7,6 +7,9 @@ import application.data.MockDataSource;
 import application.gui.LaunchGUI;
 import application.commands.*;
 import application.terminal.HelpView;
+import application.utils.CharacterUtils;
+import application.utils.IIdGenerator;
+import application.utils.MockIdGenerator;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.WriterOutputStream;
@@ -15,6 +18,7 @@ import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -37,7 +41,7 @@ public class ArsTrackerLauncher {
     public ArsTrackerLauncher(String[] arg){
         args = arg;
         try{
-            framework = new CommandFramework(TerminalBuilder.builder().system(true).build());
+            framework = new CommandFramework(TerminalBuilder.builder().system(true).build(), new CharacterUtils());
         }catch (IOException exp){
             log.error("Failed to open terminal with error {}", exp.getMessage());
         }
@@ -50,11 +54,11 @@ public class ArsTrackerLauncher {
 
     }
 
-    public static ArsTrackerLauncher getMockLauncher(Terminal io){
+    public static ArsTrackerLauncher getMockLauncher(Terminal io, List<String> ids){
         ArsTrackerLauncher launcher = new ArsTrackerLauncher();
         launcher.commands = new HashMap<>();
         launcher.dataSource = new MockDataSource();
-        launcher.framework = new CommandFramework(io);
+        launcher.framework = new CommandFramework(io, new MockIdGenerator(ids));
 
         assert launcher.addDefaultLauncherCommands() == 3;
         assert launcher.addInitialCommands() == 5;
@@ -158,7 +162,7 @@ public class ArsTrackerLauncher {
             }
 
             result = command.execute();
-            log.info("Loop Result: {} on command {}", result, command.name());
+            log.info("Loop Result: {} on command {}", result, command.getClass().getSimpleName());
 
             log.info(command.getClass().getName());
             if(command.getClass().getName().endsWith("CloseCommand")){
@@ -167,13 +171,5 @@ public class ArsTrackerLauncher {
         }while (result);
 
         framework.put("Exiting...");
-    }
-
-    private Character createCharacter() {
-        return null;
-    }
-
-    public boolean execute(Command command){
-        return command.execute();
     }
 }

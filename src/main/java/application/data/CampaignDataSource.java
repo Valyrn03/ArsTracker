@@ -104,4 +104,18 @@ public class CampaignDataSource implements ICampaignDataSource{
     public List<Covenant> loadCovenantsFromCampaign(Campaign campaign) {
         return List.of();
     }
+
+    @Override
+    public boolean addCampaign(Campaign campaign) {
+        try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("INSERT INTO campaign VALUES (?, ?, ?)")){
+            statement.setString(0, String.valueOf(campaign.id));
+            statement.setString(1, campaign.getName());
+            statement.setInt(2, campaign.getCurrentSeason());
+
+            return statement.execute();
+        }catch (SQLException exception){
+            log.error("Failed with adding campaign {}, with error {}", campaign.id, exception.getMessage());
+            return false;
+        }
+    }
 }

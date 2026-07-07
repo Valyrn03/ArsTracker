@@ -65,9 +65,4 @@ public class CharacterOutputCommand implements Command {
 
         return true;
     }
-
-    @Override
-    public String name() {
-        return "CharacterOutputCommand";
-    }
 }

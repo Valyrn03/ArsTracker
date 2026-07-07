@@ -15,9 +15,4 @@ public class CharacterCreationCommand implements Command {
     public boolean execute() {
         return false;
     }
-
-    @Override
-    public String name() {
-        return "CharacterCreationCommand";
-    }
 }

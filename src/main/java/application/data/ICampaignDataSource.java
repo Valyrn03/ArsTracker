@@ -17,4 +17,6 @@ public interface ICampaignDataSource {
     List<Campaign> getCampaigns();
 
     List<Covenant> loadCovenantsFromCampaign(Campaign campaign);
+
+    boolean addCampaign(Campaign campaign);
 }

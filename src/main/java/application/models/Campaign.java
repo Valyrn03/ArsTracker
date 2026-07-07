@@ -45,9 +45,9 @@ public class Campaign {
         return characters;
     }
 
-    public static Campaign createCampaign(String name, int season){
+    public static Campaign createCampaign(UUID id, String name, int season){
         Campaign campaign = new Campaign();
-        campaign.id = UUID.randomUUID();
+        campaign.id = id;
         campaign.name = name;
         campaign.currentSeason = season;
         campaign.covenants = new ArrayList<>();

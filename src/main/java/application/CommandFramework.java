@@ -4,6 +4,7 @@ import application.models.ArsCharacter;
 import application.models.Campaign;
 import application.models.ArsCharacter;
 import application.models.Covenant;
+import application.utils.IIdGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -11,10 +12,7 @@ import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -25,13 +23,15 @@ public class CommandFramework {
     @Getter private Optional<Covenant> activeCovenant;
     @Getter private Optional<ArsCharacter> activeCharacter;
     @Getter List<Campaign> accessedCampaigns;
+    IIdGenerator idGenerator;
 
-    public CommandFramework(Terminal io){
+    public CommandFramework(Terminal io, IIdGenerator generator){
         terminal = io;
 
         activeCampaign = Optional.empty();
         activeCovenant = Optional.empty();
         activeCharacter = Optional.empty();
+        idGenerator = generator;
 
         accessedCampaigns = new ArrayList<>();
     }
@@ -59,17 +59,17 @@ public class CommandFramework {
         }
     }
 
-    public int getInt(String prompt){
-        LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
-
-        String line = reader.readLine(prompt + "> ");
-
-        try{
-            return Integer.parseInt(line);
-        }catch (NumberFormatException exp){
-            return getInt("\t(requires number selection)>");
-        }
-    }
+//    public int getInt(String prompt){
+//        LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
+//
+//        String line = reader.readLine(prompt + "> ");
+//
+//        try{
+//            return Integer.parseInt(line);
+//        }catch (NumberFormatException exp){
+//            return getInt("\tMust be a number");
+//        }
+//    }
 
     public int getInt(String prompt, Object... values){
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
@@ -83,7 +83,47 @@ public class CommandFramework {
         try{
             return Integer.parseInt(line);
         }catch (NumberFormatException exp){
-            return getInt("\t(requires number selection)>");
+            return getInt("\tMust be a number");
+        }
+    }
+
+//    public int getInt(String prompt, int lower, int higher){
+//        LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
+//
+//        String line = reader.readLine(prompt + "> ");
+//
+//        try{
+//            int result = Integer.parseInt(line);
+//            if (result < lower || result > higher){
+//                throw new IndexOutOfBoundsException();
+//            }
+//            return result;
+//        }catch (NumberFormatException exp){
+//            return getInt("\tMust be a number");
+//        }catch (IndexOutOfBoundsException exp){
+//            return getInt("\tMust be within the range of {} and {}", lower, higher);
+//        }
+//    }
+
+    public int getInt(String prompt, int lower, int higher, Object... values){
+        LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
+
+        for(Object val : values){
+            prompt = prompt.replace("{}", val.toString());
+        }
+
+        String line = reader.readLine(prompt + "> ");
+
+        try{
+            int result = Integer.parseInt(line);
+            if (result < lower || result > higher){
+                throw new IndexOutOfBoundsException();
+            }
+            return result;
+        }catch (NumberFormatException exp){
+            return getInt("\tMust be a number", lower, higher);
+        }catch (IndexOutOfBoundsException exp){
+            return getInt("\tMust be within the range of {} and {}", lower, higher);
         }
     }
 
@@ -135,5 +175,9 @@ public class CommandFramework {
         for(Object obj : list){
             terminal.writer().println(obj.toString());
         }
+    }
+
+    public UUID getId(){
+        return idGenerator.getUUID();
     }
 }

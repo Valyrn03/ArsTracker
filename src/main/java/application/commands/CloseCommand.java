@@ -47,9 +47,4 @@ public class CloseCommand implements Command {
         }
         return true;
     }
-
-    @Override
-    public String name() {
-        return "CloseCommand";
-    }
 }

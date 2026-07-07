@@ -4,12 +4,17 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import static application.CharacterController.calculateCost;
 
 @Slf4j
-public class CharacterUtils {
+public class CharacterUtils implements IIdGenerator {
+    public CharacterUtils(){
+
+    }
+
     public static int abilityExperienceToScore(int experience){
         Logger logger = Logger.getLogger(CharacterUtils.class.getName());
         logger.info("Experience: " + experience);
@@ -57,5 +62,15 @@ public class CharacterUtils {
             return null;
         }
         return costs;
+    }
+
+    public static UUID id(){
+        CharacterUtils utils = new CharacterUtils();
+        return utils.getUUID();
+    }
+
+    @Override
+    public UUID getUUID() {
+        return UUID.randomUUID();
     }
 }
