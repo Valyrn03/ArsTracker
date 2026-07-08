@@ -59,18 +59,6 @@ public class CommandFramework {
         }
     }
 
-//    public int getInt(String prompt){
-//        LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
-//
-//        String line = reader.readLine(prompt + "> ");
-//
-//        try{
-//            return Integer.parseInt(line);
-//        }catch (NumberFormatException exp){
-//            return getInt("\tMust be a number");
-//        }
-//    }
-
     public int getInt(String prompt, Object... values){
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
 
@@ -87,25 +75,7 @@ public class CommandFramework {
         }
     }
 
-//    public int getInt(String prompt, int lower, int higher){
-//        LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
-//
-//        String line = reader.readLine(prompt + "> ");
-//
-//        try{
-//            int result = Integer.parseInt(line);
-//            if (result < lower || result > higher){
-//                throw new IndexOutOfBoundsException();
-//            }
-//            return result;
-//        }catch (NumberFormatException exp){
-//            return getInt("\tMust be a number");
-//        }catch (IndexOutOfBoundsException exp){
-//            return getInt("\tMust be within the range of {} and {}", lower, higher);
-//        }
-//    }
-
-    public int getInt(String prompt, int lower, int higher, Object... values){
+    public int getIntLimited(String prompt, int lower, int higher, Object... values){
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
 
         for(Object val : values){
@@ -121,9 +91,9 @@ public class CommandFramework {
             }
             return result;
         }catch (NumberFormatException exp){
-            return getInt("\tMust be a number", lower, higher);
+            return getIntLimited("\tMust be a number", lower, higher);
         }catch (IndexOutOfBoundsException exp){
-            return getInt("\tMust be within the range of {} and {}", lower, higher);
+            return getIntLimited("\tMust be within the range of {} and {}", lower, higher);
         }
     }
 

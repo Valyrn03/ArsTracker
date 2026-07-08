@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Campaign {
+public class Campaign{
     public UUID id;
 //    private List<Character> playerCharacters;
     private List<Covenant> covenants;
@@ -53,5 +53,27 @@ public class Campaign {
         campaign.covenants = new ArrayList<>();
 
         return campaign;
+    }
+
+    //Not completely correct because ignores covenants
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof Campaign other)){
+            return false;
+        }
+
+        if(!this.id.equals(other.id)){
+            return false;
+        }
+
+        if(!this.name.equals(other.name)){
+            return false;
+        }
+
+        if(this.currentSeason != other.currentSeason){
+            return false;
+        }
+
+        return true;
     }
 }

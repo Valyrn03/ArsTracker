@@ -34,9 +34,9 @@ public class ArsTrackerLauncher {
     }
 
     String[] args;
-    CommandFramework framework;
+    @Getter CommandFramework framework;
     @Getter Map<String, Command> commands;
-    IDataSource dataSource;
+    @Getter IDataSource dataSource;
 
     public ArsTrackerLauncher(String[] arg){
         args = arg;

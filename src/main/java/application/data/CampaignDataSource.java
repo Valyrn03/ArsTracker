@@ -108,9 +108,9 @@ public class CampaignDataSource implements ICampaignDataSource{
     @Override
     public boolean addCampaign(Campaign campaign) {
         try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("INSERT INTO campaign VALUES (?, ?, ?)")){
-            statement.setString(0, String.valueOf(campaign.id));
-            statement.setString(1, campaign.getName());
-            statement.setInt(2, campaign.getCurrentSeason());
+            statement.setString(1, String.valueOf(campaign.id));
+            statement.setString(2, campaign.getName());
+            statement.setInt(3, campaign.getCurrentSeason());
 
             return statement.execute();
         }catch (SQLException exception){
