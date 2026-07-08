@@ -5,12 +5,13 @@ import application.models.Covenant;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ICampaignDataSource {
     /*
     Load campaign table in order to access details about it, getting the characters will be a separate function.
      */
-    Optional<Campaign> loadCampaignFromId(String campaignID);
+    Optional<Campaign> loadCampaignFromId(UUID campaignID);
 
     boolean updateCampaign(Campaign campaign);
 

@@ -17,12 +17,12 @@ public class CampaignDataSource implements ICampaignDataSource{
     }
 
     @Override
-    public Optional<Campaign> loadCampaignFromId(String campaignID) {
+    public Optional<Campaign> loadCampaignFromId(UUID campaignID) {
         ResultSet resultSet = null;
         ResultSetMetaData metaData = null;
         Map<String, String> campaignDetails = new HashMap<>();
         try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM campaign WHERE id = ?")){
-            statement.setString(0, campaignID);
+            statement.setString(0, String.valueOf(campaignID));
 
             resultSet = statement.executeQuery();
 

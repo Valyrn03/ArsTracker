@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Campaign{
+public class Campaign implements Cloneable{
     public UUID id;
 //    private List<Character> playerCharacters;
     private List<Covenant> covenants;
@@ -55,6 +55,13 @@ public class Campaign{
         return campaign;
     }
 
+    /*
+    In an ideal case also triggers updates for all covenants and characters
+     */
+    public void advanceSeason(){
+        currentSeason++;
+    }
+
     //Not completely correct because ignores covenants
     @Override
     public boolean equals(Object o) {
@@ -75,5 +82,10 @@ public class Campaign{
         }
 
         return true;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
     }
 }
