@@ -10,15 +10,18 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import tests.utils;
 
+import java.util.Random;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CampaignTests {
+    IDataSource superSource;
+    CampaignDataSource dataSource;
     @BeforeEach
     void setUp(){
-        IDataSource superSource = new MockDataSource();
-        CampaignDataSource dataSource = new CampaignDataSource(superSource);
+        superSource = new MockDataSource();
+        dataSource = new CampaignDataSource(superSource);
     }
 
     @Nested
@@ -61,7 +64,11 @@ public class CampaignTests {
 
         @Test
         void testAddCampaignNegativeAge(){
+            UUID id = UUID.randomUUID();
+            Random random = new Random();
+            Campaign campaign = Campaign.createCampaign(id, id.toString(), random.nextInt(-10000, 0));
 
+            assertFalse(dataSource.addCampaign(campaign));
         }
     }
 }

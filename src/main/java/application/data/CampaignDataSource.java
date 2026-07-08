@@ -78,7 +78,7 @@ public class CampaignDataSource implements ICampaignDataSource{
 
             while(resultSet.next()){
                 Map<String, String> map = new HashMap<>();
-                for(int i = 0; i < metaData.getColumnCount(); i++){
+                for(int i = 1; i < metaData.getColumnCount() + 1; i++){
                     map.put(metaData.getColumnName(i), resultSet.getString(i));
                 }
 
@@ -112,7 +112,8 @@ public class CampaignDataSource implements ICampaignDataSource{
             statement.setString(2, campaign.getName());
             statement.setInt(3, campaign.getCurrentSeason());
 
-            return statement.execute();
+            statement.execute();
+            return true;
         }catch (SQLException exception){
             log.error("Failed with adding campaign {}, with error {}", campaign.id, exception.getMessage());
             return false;
