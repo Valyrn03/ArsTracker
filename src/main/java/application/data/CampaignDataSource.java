@@ -57,7 +57,18 @@ public class CampaignDataSource implements ICampaignDataSource{
 
     @Override
     public boolean updateCampaign(Campaign campaign) {
-        return false;
+        if (campaign == null){
+            return false;
+        }
+        try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("UPDATE campaign SET current_season = ? WHERE name = ?")){
+            statement.setInt(1, campaign.getCurrentSeason());
+            statement.setString(2, campaign.getName());
+
+            return statement.executeUpdate() == 1;
+        }catch (SQLException exp){
+            log.error("Failed to update campaign {} with error {}", campaign.getName(), exp.getMessage());
+            return false;
+        }
     }
 
     @Override

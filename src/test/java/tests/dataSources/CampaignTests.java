@@ -104,14 +104,14 @@ public class CampaignTests {
 
             Optional<Campaign> newCampaign = dataSource.loadCampaignFromName(baseCampaign.getName());
             assertTrue(newCampaign.isPresent());
-            assertEquals(baseCampaign, newCampaign.get());
+            assertTrue(baseCampaign.equals(newCampaign.get()));
         }
 
         @Test
         @DisplayName("returns false on a nonexistent campaign with no saved campaigns")
         void rejectsUnknownCampaignWithNoSaved(){
             Campaign campaign = utils.generateCampaign();
-            assertTrue(dataSource.updateCampaign(campaign));
+            assertFalse(dataSource.updateCampaign(campaign));
         }
 
         @Test
@@ -181,13 +181,13 @@ public class CampaignTests {
         @Test
         @DisplayName("returns the singular covenant associated with the campaign")
         void returnsSingularCovenant() {
-
+            fail();
         }
 
         @Test
         @DisplayName("returns the covenants associated with a campaign")
         void returnsMultipleCovenants(){
-
+            fail();
         }
 
         @Test
