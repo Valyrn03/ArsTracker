@@ -9,7 +9,7 @@ import java.util.*;
 public class Covenant {
     private record LabTexts(List<Spell> spells, List<EnchantedItem> items){}
 
-    @Getter private UUID id;
+    @Getter private int id;
     @Getter private Tribunal tribunal;
     @Getter private String name;
     private int establishmentSeason;
@@ -40,7 +40,7 @@ public class Covenant {
 
     public static Covenant buildCovenantFromMap(Map<String, String> stringMap, Map<String, Integer> intMap){
         Covenant covenant = new Covenant();
-        covenant.id = UUID.fromString(stringMap.get("id"));
+        covenant.id = intMap.get("id");
         covenant.name = stringMap.get("name");
         covenant.tribunal = Tribunal.valueOf(stringMap.get("tribunal"));
         covenant.establishmentSeason = intMap.get("establishSeason");

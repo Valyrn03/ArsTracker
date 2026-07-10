@@ -18,12 +18,10 @@ public class CampaignCreationCommand implements Command {
 
     @Override
     public boolean execute() {
-        UUID id = framework.getId();
         String name = framework.getString("Campaign Name");
         int season = framework.getInt("Year") * 4;
         season += framework.getIntLimited("Season", 1, 4);
 
-        Campaign campaign = Campaign.createCampaign(id, name, season);
-        return dataSource.addCampaign(campaign);
+        return dataSource.addCampaign(name, season);
     }
 }

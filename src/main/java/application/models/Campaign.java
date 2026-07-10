@@ -6,15 +6,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Campaign implements Cloneable{
-    public UUID id;
+    public int id;
 //    private List<Character> playerCharacters;
     private List<Covenant> covenants;
     @Getter String name;
     @Getter int currentSeason;
     public List<Covenant> accessedCovenants;
 
-    private Campaign(UUID id, String name, int season){
-        this.id = id;
+    private Campaign(int id, String name, int season){
         this.currentSeason = season;
         this.name = name;
 
@@ -27,7 +26,6 @@ public class Campaign implements Cloneable{
 
     public static Campaign buildCampaign(Map<String, String> map){
         Campaign campaign = new Campaign();
-        campaign.id = UUID.fromString(map.get("id"));
         campaign.name = map.get("name");
         campaign.currentSeason = Integer.parseInt(map.get("current_season"));
         campaign.covenants = new ArrayList<>();
@@ -45,9 +43,8 @@ public class Campaign implements Cloneable{
         return characters;
     }
 
-    public static Campaign createCampaign(UUID id, String name, int season){
+    public static Campaign createCampaign(String name, int season){
         Campaign campaign = new Campaign();
-        campaign.id = id;
         campaign.name = name;
         campaign.currentSeason = season;
         campaign.covenants = new ArrayList<>();
@@ -69,7 +66,7 @@ public class Campaign implements Cloneable{
             return false;
         }
 
-        if(!this.id.equals(other.id)){
+        if(this.id != other.id){
             return false;
         }
 

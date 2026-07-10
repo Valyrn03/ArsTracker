@@ -11,7 +11,7 @@ public interface ICampaignDataSource {
     /*
     Load campaign table in order to access details about it, getting the characters will be a separate function.
      */
-    Optional<Campaign> loadCampaignFromId(UUID campaignID);
+    Optional<Campaign> loadCampaignFromName(String name);
 
     boolean updateCampaign(Campaign campaign);
 
@@ -19,5 +19,5 @@ public interface ICampaignDataSource {
 
     List<Covenant> loadCovenantsFromCampaign(Campaign campaign);
 
-    boolean addCampaign(Campaign campaign);
+    boolean addCampaign(String name, int seasons);
 }

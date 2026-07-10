@@ -56,7 +56,7 @@ public class SelectCampaignTests {
     @Test
     void testSelectSingleCampaign() throws IOException {
         Campaign testCampaign = utils.generateCampaign();
-        List<String> mockCampaignId = List.of(testCampaign.id.toString());
+        List<String> mockCampaignId = List.of(testCampaign.getName());
 
         String simulatedInput = "select\n1\nclose\n";
         ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
@@ -65,7 +65,7 @@ public class SelectCampaignTests {
 
         ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, mockCampaignId);
         CampaignDataSource dataSource = new CampaignDataSource(launcher.getDataSource());
-        dataSource.addCampaign(testCampaign); //trusting this works due to other tests...
+        dataSource.addCampaign(testCampaign.getName(), testCampaign.getCurrentSeason()); //trusting this works due to other tests...
 
         launcher.coreLoop();
         terminal.close();

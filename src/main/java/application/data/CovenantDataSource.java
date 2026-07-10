@@ -74,7 +74,7 @@ public class CovenantDataSource implements ICovenantDataSource{
                 featureIDs.add(resultSet.getString("feature_id"));
             }
         }catch (SQLException exp){
-            log.error("Failed to load features belonging to covenant with id {}", covenant.getId().toString());
+            log.error("Failed to load features belonging to covenant with id {}", covenant.getId());
             featureIDs.clear();
         }
 

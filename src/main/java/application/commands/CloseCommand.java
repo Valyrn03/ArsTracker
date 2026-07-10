@@ -31,7 +31,7 @@ public class CloseCommand implements Command {
     @Override
     public boolean execute() {
         for(Campaign campaign : framework.getAccessedCampaigns()){
-            log.info("Saving campaign {}", campaign.id);
+            log.info("Saving campaign {}", campaign.getName());
             for(Covenant covenant : campaign.accessedCovenants){
                 log.info("\tSaving covenant {}", covenant.getName());
 

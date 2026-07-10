@@ -23,6 +23,6 @@ public class utils {
     public static Campaign generateCampaign(){
         UUID id = UUID.randomUUID();
         Random random = new Random();
-        return Campaign.createCampaign(id, id.toString(), random.nextInt(10000));
+        return Campaign.createCampaign(id.toString(), random.nextInt(10000));
     }
 }

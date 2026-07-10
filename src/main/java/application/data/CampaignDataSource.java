@@ -17,28 +17,27 @@ public class CampaignDataSource implements ICampaignDataSource{
     }
 
     @Override
-    public Optional<Campaign> loadCampaignFromId(UUID campaignID) {
+    public Optional<Campaign> loadCampaignFromName(String name) {
         ResultSet resultSet = null;
         ResultSetMetaData metaData = null;
         Map<String, String> campaignDetails = new HashMap<>();
-        try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM campaign WHERE id = ?")){
-            statement.setString(0, String.valueOf(campaignID));
+        try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM campaign WHERE name = ?")){
+            statement.setString(1, name);
 
             resultSet = statement.executeQuery();
 
             if(!resultSet.isBeforeFirst()){
-                log.info("Campaign with name {} does not exist", campaignID);
+                log.info("Campaign {} does not exist", name);
                 resultSet.close();
                 return Optional.empty();
             }
-            resultSet.first();
 
             metaData = resultSet.getMetaData();
-            for(int i = 0; i < metaData.getColumnCount(); i++){
+            for(int i = 1; i < metaData.getColumnCount() + 1; i++){
                 campaignDetails.put(metaData.getColumnName(i), resultSet.getString(i));
             }
         }catch (SQLException exp){
-            log.error("Loading campaign with ID {} failed with the following error: \n{}", campaignID, exp.getMessage());
+            log.error("Loading campaign {} failed with the following error: \n{}", name, exp.getMessage());
             try{
                 if(resultSet != null){
                     resultSet.close();
@@ -106,16 +105,19 @@ public class CampaignDataSource implements ICampaignDataSource{
     }
 
     @Override
-    public boolean addCampaign(Campaign campaign) {
-        try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("INSERT INTO campaign VALUES (?, ?, ?)")){
-            statement.setString(1, String.valueOf(campaign.id));
-            statement.setString(2, campaign.getName());
-            statement.setInt(3, campaign.getCurrentSeason());
+    public boolean addCampaign(String name, int seasons) {
+        if(seasons < 0 || name == null){
+            return false;
+        }
+
+        try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("INSERT INTO campaign VALUES (?, ?)")){
+            statement.setString(1, name);
+            statement.setInt(2, seasons);
 
             statement.execute();
             return true;
         }catch (SQLException exception){
-            log.error("Failed with adding campaign {}, with error {}", campaign.id, exception.getMessage());
+            log.error("Failed with adding campaign {}, with error {}", name, exception.getMessage());
             return false;
         }
     }

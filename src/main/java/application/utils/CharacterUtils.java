@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import static application.CharacterController.calculateCost;
 
 @Slf4j
-public class CharacterUtils implements IIdGenerator {
+public class CharacterUtils{
     public CharacterUtils(){
 
     }
@@ -62,15 +62,5 @@ public class CharacterUtils implements IIdGenerator {
             return null;
         }
         return costs;
-    }
-
-    public static UUID id(){
-        CharacterUtils utils = new CharacterUtils();
-        return utils.getUUID();
-    }
-
-    @Override
-    public UUID getUUID() {
-        return UUID.randomUUID();
     }
 }

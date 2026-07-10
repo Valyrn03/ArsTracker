@@ -2,9 +2,7 @@ package application;
 
 import application.models.ArsCharacter;
 import application.models.Campaign;
-import application.models.ArsCharacter;
 import application.models.Covenant;
-import application.utils.IIdGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -23,15 +21,13 @@ public class CommandFramework {
     @Getter private Optional<Covenant> activeCovenant;
     @Getter private Optional<ArsCharacter> activeCharacter;
     @Getter List<Campaign> accessedCampaigns;
-    IIdGenerator idGenerator;
 
-    public CommandFramework(Terminal io, IIdGenerator generator){
+    public CommandFramework(Terminal io){
         terminal = io;
 
         activeCampaign = Optional.empty();
         activeCovenant = Optional.empty();
         activeCharacter = Optional.empty();
-        idGenerator = generator;
 
         accessedCampaigns = new ArrayList<>();
     }
@@ -145,9 +141,5 @@ public class CommandFramework {
         for(Object obj : list){
             terminal.writer().println(obj.toString());
         }
-    }
-
-    public UUID getId(){
-        return idGenerator.getUUID();
     }
 }

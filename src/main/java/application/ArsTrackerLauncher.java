@@ -8,8 +8,6 @@ import application.gui.LaunchGUI;
 import application.commands.*;
 import application.terminal.HelpView;
 import application.utils.CharacterUtils;
-import application.utils.IIdGenerator;
-import application.utils.MockIdGenerator;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.WriterOutputStream;
@@ -41,7 +39,7 @@ public class ArsTrackerLauncher {
     public ArsTrackerLauncher(String[] arg){
         args = arg;
         try{
-            framework = new CommandFramework(TerminalBuilder.builder().system(true).build(), new CharacterUtils());
+            framework = new CommandFramework(TerminalBuilder.builder().system(true).build());
         }catch (IOException exp){
             log.error("Failed to open terminal with error {}", exp.getMessage());
         }
@@ -58,7 +56,7 @@ public class ArsTrackerLauncher {
         ArsTrackerLauncher launcher = new ArsTrackerLauncher();
         launcher.commands = new HashMap<>();
         launcher.dataSource = new MockDataSource();
-        launcher.framework = new CommandFramework(io, new MockIdGenerator(ids));
+        launcher.framework = new CommandFramework(io);
 
         assert launcher.addDefaultLauncherCommands() == 3;
         assert launcher.addInitialCommands() == 5;
@@ -88,7 +86,7 @@ public class ArsTrackerLauncher {
      */
     public int addInitialCommands(){
         commands.put("select", new SelectCampaignCommand(framework, new CampaignDataSource(dataSource)));
-        commands.put("create", new CreateCampaign(framework));
+        commands.put("create", new CampaignCreationCommand(framework, new CampaignDataSource(dataSource)));
         return commands.size();
     }
 
