@@ -1,6 +1,7 @@
 package application.data;
 
 import application.models.Book;
+import application.models.Campaign;
 import application.models.Covenant;
 import application.models.CovenantFeature;
 
@@ -20,5 +21,5 @@ public interface ICovenantDataSource {
 
     boolean updateCovenant(Covenant covenant);
 
-    boolean addCovenant(Covenant covenant);
+    boolean addCovenant(Covenant covenant, Campaign campaign);
 }

@@ -46,6 +46,9 @@ public class CovenantCreationCommand implements Command {
 
         //Now need to add hooks and boons...
 
-        return dataSource.addCovenant(covenant);
+        if(framework.getActiveCampaign().isEmpty()){
+            return false;
+        }
+        return dataSource.addCovenant(covenant, framework.getActiveCampaign().get());
     }
 }

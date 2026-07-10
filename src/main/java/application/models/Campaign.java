@@ -6,7 +6,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Campaign implements Cloneable{
-    public int id;
 //    private List<Character> playerCharacters;
     private List<Covenant> covenants;
     @Getter String name;
@@ -63,10 +62,6 @@ public class Campaign implements Cloneable{
     @Override
     public boolean equals(Object o) {
         if(!(o instanceof Campaign other)){
-            return false;
-        }
-
-        if(this.id != other.id){
             return false;
         }
 

@@ -132,4 +132,9 @@ public class CampaignDataSource implements ICampaignDataSource{
             return false;
         }
     }
+
+    @Override
+    public boolean addCampaign(Campaign campaign) {
+        return addCampaign(campaign.getName(), campaign.getCurrentSeason());
+    }
 }

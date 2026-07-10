@@ -1,6 +1,7 @@
 package application.data;
 
 import application.models.Book;
+import application.models.Campaign;
 import application.models.Covenant;
 import application.models.CovenantFeature;
 import com.zaxxer.hikari.HikariDataSource;
@@ -167,8 +168,9 @@ public class CovenantDataSource implements ICovenantDataSource{
         return false;
     }
 
+    //Use the campaign's name (b/c primary key)
     @Override
-    public boolean addCovenant(Covenant covenant) {
+    public boolean addCovenant(Covenant covenant, Campaign campaign) {
         return false;
     }
 }

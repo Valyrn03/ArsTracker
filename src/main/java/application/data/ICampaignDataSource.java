@@ -20,4 +20,6 @@ public interface ICampaignDataSource {
     List<Covenant> loadCovenantsFromCampaign(Campaign campaign);
 
     boolean addCampaign(String name, int seasons);
+
+    boolean addCampaign(Campaign campaign);
 }

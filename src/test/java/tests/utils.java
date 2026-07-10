@@ -1,12 +1,13 @@
 package tests;
 
 import application.models.Campaign;
+import application.models.Covenant;
+import application.models.enums.Art;
+import application.models.enums.Tribunal;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class utils {
     public static final String startingLine = "In order to get the list of commands, type \"help\"\r\n\n";
@@ -24,5 +25,17 @@ public class utils {
         UUID id = UUID.randomUUID();
         Random random = new Random();
         return Campaign.createCampaign(id.toString(), random.nextInt(10000));
+    }
+
+    public static Covenant generateCovenant(){
+        Random random = new Random();
+        Map<Art, Integer> vis = new HashMap<>();
+        for (Art art : Art.values()){
+            vis.put(art, random.nextInt(0, 100));
+        }
+        return Covenant.buildCovenant(UUID.randomUUID().toString(),
+                String.valueOf(Tribunal.values()[random.nextInt(Tribunal.values().length)]),
+                random.nextInt(0, 10000),
+                vis);
     }
 }

@@ -74,7 +74,7 @@ public class CampaignTests {
         void returnsExistingCampaign(){
             Campaign campaign = utils.generateCampaign();
 
-            dataSource.addCampaign(campaign.getName(), campaign.getCurrentSeason());
+            dataSource.addCampaign(campaign);
 
             Optional<Campaign> result = dataSource.loadCampaignFromName(campaign.getName());
 
@@ -97,7 +97,7 @@ public class CampaignTests {
         @DisplayName("Updates an existing campaign and returns true")
         void updateExistingCampaign() throws CloneNotSupportedException {
             Campaign baseCampaign = utils.generateCampaign();
-            dataSource.addCampaign(baseCampaign.getName(), baseCampaign.getCurrentSeason());
+            dataSource.addCampaign(baseCampaign);
 
             baseCampaign.advanceSeason();
             dataSource.updateCampaign(baseCampaign);
@@ -120,7 +120,7 @@ public class CampaignTests {
             Campaign campaignOne = utils.generateCampaign();
             Campaign campaignTwo = utils.generateCampaign();
 
-            dataSource.addCampaign(campaignOne.getName(), campaignOne.getCurrentSeason());
+            dataSource.addCampaign(campaignOne);
 
             assertFalse(dataSource.updateCampaign(campaignTwo));
         }
@@ -146,7 +146,7 @@ public class CampaignTests {
         void returnsAddedCampaign() {
             Campaign campaign = utils.generateCampaign();
 
-            dataSource.addCampaign(campaign.getName(), campaign.getCurrentSeason());
+            dataSource.addCampaign(campaign);
 
             assertEquals(1, dataSource.getCampaigns().size());
             assertEquals(campaign, dataSource.getCampaigns().getFirst());
@@ -159,14 +159,14 @@ public class CampaignTests {
             Campaign campaignTwo = utils.generateCampaign();
             Campaign campaignThree = utils.generateCampaign();
 
-            dataSource.addCampaign(campaignOne.getName(), campaignOne.getCurrentSeason());
-            dataSource.addCampaign(campaignTwo.getName(), campaignTwo.getCurrentSeason());
+            dataSource.addCampaign(campaignOne);
+            dataSource.addCampaign(campaignTwo);
 
             assertEquals(2, dataSource.getCampaigns().size());
             assertTrue(dataSource.getCampaigns().contains(campaignOne));
             assertTrue(dataSource.getCampaigns().contains(campaignTwo));
 
-            dataSource.addCampaign(campaignThree.getName(), campaignThree.getCurrentSeason());
+            dataSource.addCampaign(campaignThree);
 
             assertEquals(3, dataSource.getCampaigns().size());
             assertTrue(dataSource.getCampaigns().contains(campaignOne));
@@ -194,7 +194,7 @@ public class CampaignTests {
         @DisplayName("returns an empty list when no covenants exist for the campaign")
         void returnsEmptyListForNoCovenants() {
             Campaign campaign = utils.generateCampaign();
-            dataSource.addCampaign(campaign.getName(), campaign.getCurrentSeason());
+            dataSource.addCampaign(campaign);
 
             assertTrue(dataSource.loadCovenantsFromCampaign(campaign).isEmpty());
         }
@@ -203,6 +203,12 @@ public class CampaignTests {
         @DisplayName("returns an empty list for a null campaign")
         void returnsEmptyListForNullCampaign() {
             assertTrue(dataSource.loadCovenantsFromCampaign(null).isEmpty());
+        }
+
+        @Test
+        @DisplayName("Returns only the covenants that belong to the selected campaign")
+        void returnOnlyChildren(){
+            fail();
         }
     }
 
