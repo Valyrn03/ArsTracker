@@ -89,6 +89,35 @@ public class Covenant {
         this.features.addAll(feature);
     }
 
+    public void addVis(Art art, int valueChange){
+        visStores.put(art, visStores.get(art) + valueChange);
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof Covenant other)){
+            return false;
+        }
+
+        if(this.id != other.id){
+            return false;
+        }
+
+        if(!this.tribunal.equals(other.tribunal)){
+            return false;
+        }
+
+        if(!this.name.equals(other.name)){
+            return false;
+        }
+
+        if(this.establishmentSeason != other.establishmentSeason){
+            return false;
+        }
+
+        return this.visStores.equals(other.visStores);
+    }
+
     public static List<String> tribunals(){
         List<String> tribunals = new ArrayList<>();
 

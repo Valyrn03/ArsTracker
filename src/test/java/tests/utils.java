@@ -2,6 +2,7 @@ package tests;
 
 import application.models.Campaign;
 import application.models.Covenant;
+import application.models.CovenantFeature;
 import application.models.enums.Art;
 import application.models.enums.Tribunal;
 
@@ -37,5 +38,23 @@ public class utils {
                 String.valueOf(Tribunal.values()[random.nextInt(Tribunal.values().length)]),
                 random.nextInt(0, 10000),
                 vis);
+    }
+
+    public static CovenantFeature generateCovenantFeature(){
+        Random random = new Random();
+
+        CovenantFeature feature = new CovenantFeature(random.nextInt());
+        feature.setName(UUID.randomUUID().toString());
+
+        if(random.nextBoolean()){
+            feature.setType(CovenantFeature.FeatureType.HOOK);
+        }else{
+            feature.setType(CovenantFeature.FeatureType.BOON);
+        }
+
+        feature.setMajor(random.nextBoolean());
+        feature.setDescription(feature.getName());
+
+        return feature;
     }
 }

@@ -26,6 +26,10 @@ public class CovenantFeature {
         }
     }
 
+    public CovenantFeature(int i_id){
+        this.id = i_id;
+    }
+
     public enum FeatureType{
         BOON,
         HOOK

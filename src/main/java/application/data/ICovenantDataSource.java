@@ -17,9 +17,15 @@ public interface ICovenantDataSource {
 
     List<Book> loadBooksFromCovenant(Covenant covenant);
 
-    Optional<Covenant> loadCovenantFromId(String covenantID);
+    Optional<Covenant> loadCovenantFromId(int covenantID);
 
     boolean updateCovenant(Covenant covenant);
 
     boolean addCovenant(Covenant covenant, Campaign campaign);
+
+    boolean addNewCovenantFeature(CovenantFeature feature);
+
+    boolean addFeatureToCovenant(Covenant covenant, CovenantFeature feature);
+
+    Optional<CovenantFeature> getCovenantFeatureById(int id);
 }

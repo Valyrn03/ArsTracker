@@ -10,10 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static tests.utils.generateCampaign;
@@ -23,11 +20,14 @@ public class CovenantTests {
     IDataSource superSource;
     ICovenantDataSource dataSource;
     ICampaignDataSource campaignDataSource;
+    Campaign campaign;
     @BeforeEach
     void setUp(){
         superSource = new MockDataSource();
         dataSource = new CovenantDataSource(superSource);
         campaignDataSource = new CampaignDataSource(superSource);
+        campaign = generateCampaign();
+        campaignDataSource.addCampaign(campaign);
     }
 
     @Nested
@@ -35,7 +35,6 @@ public class CovenantTests {
         @Test
         void returnsTrueOnAddition(){
             Covenant covenant = generateCovenant();
-            Campaign campaign = generateCampaign();
 
             campaignDataSource.addCampaign(campaign.getName(), campaign.getCurrentSeason());
             assertTrue(dataSource.addCovenant(covenant, campaign));
@@ -53,7 +52,6 @@ public class CovenantTests {
 
         @Test
         void returnsFalseOnNullCovenant(){
-            Campaign campaign = generateCampaign();
             campaignDataSource.addCampaign(campaign);
             assertFalse(dataSource.addCovenant(null, campaign));
         }
@@ -73,23 +71,41 @@ public class CovenantTests {
             assertTrue(campaignDataSource.loadCovenantsFromCampaign(campaignOne).contains(covenant));
             assertFalse(campaignDataSource.loadCovenantsFromCampaign(campaignTwo).contains(covenant));
         }
+
+        @Test
+        @DisplayName("Make sure it fails if the campaign isn't loaded into the DB")
+        void returnsFalseOnUnloadedCampaign(){
+            fail();
+        }
     }
 
     @Nested
     class UpdateCovenant{
         @Test
         void returnsTrueOnUpdate(){
+            Covenant covenant = generateCovenant();
 
+            dataSource.addCovenant(covenant, campaign);
+
+            covenant.addVis(Art.AQUAM, 1);
+
+            assertTrue(dataSource.updateCovenant(covenant));
+            assertEquals(Optional.of(covenant), dataSource.loadCovenantFromId(covenant.getId()));
         }
 
         @Test
         void returnsFalseOnNullCovenant(){
-
+            assertFalse(dataSource.updateCovenant(null));
         }
 
         @Test
         void returnsFalseOnNonexistentCovenant(){
+            Covenant covenant = generateCovenant();
+            Covenant covenant1 = generateCovenant();
 
+            campaignDataSource.addCampaign(campaign);
+            dataSource.addCovenant(covenant1, campaign);
+            assertFalse(dataSource.updateCovenant(covenant));
         }
     }
 
@@ -97,18 +113,33 @@ public class CovenantTests {
     class LoadBookFromId{
         @Test
         void returnsBookOnQuery(){
-
+            fail();
         }
 
         @Test
         void returnsEmptyOnNonexistent(){
-
+            fail();
         }
 
         @Test
         void returnsEmptyOnNull(){
-
+            fail();
         }
+    }
+
+    @Nested
+    class AddNewCovenantFeature{
+
+    }
+
+    @Nested
+    class AddFeatureToCovenant{
+
+    }
+
+    @Nested
+    class GetCovenantFeatureById{
+
     }
 
     @Nested
@@ -188,34 +219,41 @@ public class CovenantTests {
         @Test
         @DisplayName("returns singular saved covenant")
         void returnsSingularCovenant(){
+            Covenant covenant = generateCovenant();
 
+            campaignDataSource.addCampaign(campaign);
+            dataSource.addCovenant(covenant, campaign);
+            assertEquals(Optional.of(covenant), dataSource.loadCovenantFromId(covenant.getId()));
         }
 
         @Test
         @DisplayName("returns singular covenant from multiple in given campaign")
         void returnsSpecificCovenant(){
+            Covenant covenantOne = generateCovenant();
+            Covenant covenantTwo = generateCovenant();
 
+            dataSource.addCovenant(covenantOne, campaign);
+            dataSource.addCovenant(covenantTwo, campaign);
+
+            assertEquals(Optional.of(covenantOne), dataSource.loadCovenantFromId(covenantOne.getId()));
         }
 
         @Test
         @DisplayName("returns correct covenant with multiple campaigns")
         void returnsOnMultipleCampaigns(){
+            Campaign campaignTwo = generateCampaign();
+            campaignDataSource.addCampaign(campaignTwo);
 
-        }
+            Covenant covenant = generateCovenant();
+            dataSource.addCovenant(covenant, campaign);
 
-        @Test
-        void returnsEmptyOnNullCovenant(){
-
-        }
-
-        @Test
-        void returnsEmptyOnNullCampaign(){
-
+            assertEquals(Optional.of(covenant), dataSource.loadCovenantFromId(covenant.getId()));
         }
 
         @Test
         void returnsEmptyOnNonexistentCovenant(){
-
+            Covenant covenant = generateCovenant();
+            assertEquals(Optional.empty(), dataSource.loadCovenantFromId(covenant.getId()));
         }
     }
 }

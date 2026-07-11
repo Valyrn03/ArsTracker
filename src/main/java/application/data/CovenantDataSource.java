@@ -109,12 +109,12 @@ public class CovenantDataSource implements ICovenantDataSource{
     }
 
     @Override
-    public Optional<Covenant> loadCovenantFromId(String covenantID) {
+    public Optional<Covenant> loadCovenantFromId(int covenantID) {
         ResultSet resultSet = null;
         Covenant covenant = null;
 
         try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM covenant WHERE id = ?")){
-            statement.setString(0, covenantID);
+            statement.setInt(0, covenantID);
 
             resultSet = statement.executeQuery();
 
@@ -126,10 +126,10 @@ public class CovenantDataSource implements ICovenantDataSource{
             Map<String, String> stringMap = new HashMap<>();
             Map<String, Integer> integerMap = new HashMap<>();
 
-            stringMap.put("id", resultSet.getString("id"));
             stringMap.put("name", resultSet.getString("name"));
             stringMap.put("tribunal", resultSet.getString("tribunal"));
 
+            integerMap.put("id", resultSet.getInt("id"));
             integerMap.put("establishSeason", resultSet.getInt("establishSeason"));
             integerMap.put("CrVis", resultSet.getInt("CrVis"));
             integerMap.put("InVis", resultSet.getInt("InVis"));
@@ -172,5 +172,20 @@ public class CovenantDataSource implements ICovenantDataSource{
     @Override
     public boolean addCovenant(Covenant covenant, Campaign campaign) {
         return false;
+    }
+
+    @Override
+    public boolean addNewCovenantFeature(CovenantFeature feature) {
+        return false;
+    }
+
+    @Override
+    public boolean addFeatureToCovenant(Covenant covenant, CovenantFeature feature) {
+        return false;
+    }
+
+    @Override
+    public Optional<CovenantFeature> getCovenantFeatureById(int id) {
+        return Optional.empty();
     }
 }
