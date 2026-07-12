@@ -38,12 +38,12 @@ public class CloseCommand implements Command {
                 for(ArsCharacter character : covenant.accessedCharacters){
                     log.info("\tSaving character {}", character.getName());
 
-                    characterDataSource.updateCharacter(character);
+//                    characterDataSource.updateCharacter(character);
                 }
 
-                covenantDataSource.updateCovenant(covenant);
+//                covenantDataSource.updateCovenant(covenant);
             }
-            campaignDataSource.updateCampaign(campaign);
+//            campaignDataSource.updateCampaign(campaign);
         }
         return true;
     }

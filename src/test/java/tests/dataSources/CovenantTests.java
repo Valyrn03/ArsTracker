@@ -4,8 +4,6 @@ import application.data.*;
 import application.models.Campaign;
 import application.models.Covenant;
 import application.models.CovenantFeature;
-import application.models.enums.Art;
-import application.models.enums.Tribunal;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 
@@ -70,32 +68,10 @@ public class CovenantTests {
     }
 
     @Nested
-    class UpdateCovenant{
+    class UpdateVisStores{
         @Test
-        void returnsTrueOnUpdate(){
-            Covenant covenant = generateCovenant();
-
-            dataSource.addCovenant(covenant, campaign);
-
-            covenant.addVis(Art.AQUAM, 1);
-
-            assertTrue(dataSource.updateCovenant(covenant));
-            assertEquals(Optional.of(covenant), dataSource.loadCovenantFromId(covenant.getId()));
-        }
-
-        @Test
-        void returnsFalseOnNullCovenant(){
-            assertFalse(dataSource.updateCovenant(null));
-        }
-
-        @Test
-        void returnsFalseOnNonexistentCovenant(){
-            Covenant covenant = generateCovenant();
-            Covenant covenant1 = generateCovenant();
-
-            campaignDataSource.addCampaign(campaign);
-            dataSource.addCovenant(covenant1, campaign);
-            assertFalse(dataSource.updateCovenant(covenant));
+        void test(){
+            fail();
         }
     }
 
@@ -118,15 +94,17 @@ public class CovenantTests {
     }
 
     @Nested
-    class AddNewCovenantFeature{
+    class SaveCovenantFeature{
         @Test
         void returnsTrueOnAddition(){
-            assertTrue(dataSource.addNewCovenantFeature(generateCovenantFeature()));
+            CovenantFeature feature = generateCovenantFeature();
+            assertTrue(dataSource.saveCovenantFeature(feature));
+            assertNotEquals(0, feature.getId());
         }
 
         @Test
         void returnsFalseOnNullFeature(){
-            assertFalse(dataSource.addNewCovenantFeature(null));
+            assertFalse(dataSource.saveCovenantFeature(null));
         }
 
     }
@@ -139,6 +117,7 @@ public class CovenantTests {
             CovenantFeature feature = generateCovenantFeature();
 
             dataSource.addCovenant(covenant, campaign);
+            dataSource.saveCovenantFeature(feature);
 
             assertTrue(dataSource.addFeatureToCovenant(covenant, feature));
         }
@@ -150,6 +129,9 @@ public class CovenantTests {
             CovenantFeature featureTwo = generateCovenantFeature();
 
             dataSource.addCovenant(covenant, campaign);
+            dataSource.saveCovenantFeature(featureOne);
+            dataSource.saveCovenantFeature(featureTwo);
+
             assertTrue(dataSource.addFeatureToCovenant(covenant, featureOne));
             assertTrue(dataSource.addFeatureToCovenant(covenant, featureTwo));
         }
@@ -171,7 +153,6 @@ public class CovenantTests {
         void returnsFalseOnNonexistentCovenant(){
             assertFalse(dataSource.addFeatureToCovenant(generateCovenant(), generateCovenantFeature()));
         }
-
     }
 
     @Nested
@@ -180,9 +161,12 @@ public class CovenantTests {
         void returnsFeatureOnQuery(){
             CovenantFeature feature = generateCovenantFeature();
 
-            dataSource.addNewCovenantFeature(feature);
+            dataSource.saveCovenantFeature(feature);
 
-            assertEquals(Optional.of(feature), dataSource.loadCovenantFeatureFromId(feature.getId()));
+            Optional<CovenantFeature> loadedFeature = dataSource.loadCovenantFeatureFromId(feature.getId());
+            assertEquals(Optional.of(feature), loadedFeature, () -> feature.toString() + "\nvs\n" + loadedFeature.map(CovenantFeature::toString));
+
+            log.info(dataSource.toString());
         }
 
         @Test
@@ -203,6 +187,7 @@ public class CovenantTests {
             CovenantFeature feature = generateCovenantFeature();
 
             dataSource.addCovenant(covenant, campaign);
+            dataSource.saveCovenantFeature(feature);
             dataSource.addFeatureToCovenant(covenant, feature);
 
             List<CovenantFeature> features = dataSource.loadFeaturesFromCovenant(covenant);
@@ -219,6 +204,8 @@ public class CovenantTests {
             CovenantFeature featureTwo = generateCovenantFeature();
 
             dataSource.addCovenant(covenant, campaign);
+            dataSource.saveCovenantFeature(featureOne);
+            dataSource.saveCovenantFeature(featureTwo);
             dataSource.addFeatureToCovenant(covenant, featureOne);
             dataSource.addFeatureToCovenant(covenant, featureTwo);
 

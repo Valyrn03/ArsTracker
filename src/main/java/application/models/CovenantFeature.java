@@ -1,13 +1,17 @@
 package application.models;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Map;
 import java.util.UUID;
 
+@ToString
+@EqualsAndHashCode
 public class CovenantFeature {
-    @Getter int id;
+    @Getter @Setter int id;
     @Getter @Setter String name;
     @Getter @Setter FeatureType type;
     @Getter @Setter boolean isMajor;
@@ -28,6 +32,13 @@ public class CovenantFeature {
 
     public CovenantFeature(int i_id){
         this.id = i_id;
+    }
+
+    /*
+    Constructor to be used when a new feature is created
+     */
+    public CovenantFeature(){
+        this.id = 0;
     }
 
     public enum FeatureType{

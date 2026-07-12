@@ -1,16 +1,18 @@
 package application.models;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@EqualsAndHashCode
 public class Campaign implements Cloneable{
 //    private List<Character> playerCharacters;
     private List<Covenant> covenants;
     @Getter String name;
     @Getter int currentSeason;
-    public List<Covenant> accessedCovenants;
+    @EqualsAndHashCode.Exclude public List<Covenant> accessedCovenants;
 
     private Campaign(int id, String name, int season){
         this.currentSeason = season;
@@ -56,24 +58,6 @@ public class Campaign implements Cloneable{
      */
     public void advanceSeason(){
         currentSeason++;
-    }
-
-    //Not completely correct because ignores covenants
-    @Override
-    public boolean equals(Object o) {
-        if(!(o instanceof Campaign other)){
-            return false;
-        }
-
-        if(!this.name.equals(other.name)){
-            return false;
-        }
-
-        if(this.currentSeason != other.currentSeason){
-            return false;
-        }
-
-        return true;
     }
 
     @Override

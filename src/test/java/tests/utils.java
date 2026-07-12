@@ -55,7 +55,7 @@ public class utils {
     public static CovenantFeature generateCovenantFeature(){
         Random random = new Random();
 
-        CovenantFeature feature = new CovenantFeature(random.nextInt());
+        CovenantFeature feature = new CovenantFeature();
         feature.setName(UUID.randomUUID().toString());
 
         if(random.nextBoolean()){
