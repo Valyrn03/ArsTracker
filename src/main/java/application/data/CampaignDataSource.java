@@ -60,7 +60,8 @@ public class CampaignDataSource implements ICampaignDataSource{
         if (campaign == null){
             return false;
         }
-        try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("UPDATE campaign SET current_season = ? WHERE name = ?")){
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("UPDATE campaign SET current_season = ? WHERE name = ?")){
             statement.setInt(1, campaign.getCurrentSeason());
             statement.setString(2, campaign.getName());
 
@@ -112,7 +113,37 @@ public class CampaignDataSource implements ICampaignDataSource{
 
     @Override
     public List<Covenant> loadCovenantsFromCampaign(Campaign campaign) {
-        return List.of();
+        if(campaign == null){
+            log.error("Campaign input is null");
+            return Collections.emptyList();
+        }
+        List<Covenant> covenants = new ArrayList<>();
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM covenant WHERE campaign_name = ?")){
+            statement.setString(1, campaign.getName());
+
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                ResultSetMetaData metaData = resultSet.getMetaData();
+                Map<String, String> stringMap = new HashMap<>();
+                Map<String, Integer> intMap = new HashMap<>();
+
+                for(int i = 1; i < metaData.getColumnCount() + 1; i++){
+                    if("name".equals(metaData.getColumnName(i)) || "tribunal".equals(metaData.getColumnName(i))){
+                        stringMap.put(metaData.getColumnName(i), resultSet.getString(i));
+                    }else{
+                        intMap.put(metaData.getColumnName(i), resultSet.getInt(i));
+                    }
+                }
+
+                covenants.add(Covenant.buildCovenantFromMap(stringMap, intMap));
+            }
+        }catch (SQLException exp){
+            log.error("Loading covenants from campaign {} failed with the following error: {}", campaign.getName(), exp.getMessage());
+            return Collections.emptyList();
+        }
+
+        return covenants;
     }
 
     @Override

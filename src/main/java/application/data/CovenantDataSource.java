@@ -4,6 +4,7 @@ import application.models.Book;
 import application.models.Campaign;
 import application.models.Covenant;
 import application.models.CovenantFeature;
+import application.models.enums.Art;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,12 +28,12 @@ public class CovenantDataSource implements ICovenantDataSource{
     }
 
     @Override
-    public Optional<CovenantFeature> loadCovenantFeatureFromId(String featureID) {
+    public Optional<CovenantFeature> loadCovenantFeatureFromId(int featureID) {
         ResultSet resultSet = null;
         CovenantFeature feature = null;
 
         try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM covenant_feature WHERE id = ?")){
-            statement.setString(0, featureID);
+            statement.setInt(0, featureID);
 
             resultSet = statement.executeQuery();
             resultSet.first();
@@ -64,7 +65,7 @@ public class CovenantDataSource implements ICovenantDataSource{
     @Override
     public List<CovenantFeature> loadFeaturesFromCovenant(Covenant covenant) {
         ResultSet resultSet = null;
-        List<String> featureIDs = new ArrayList<>();
+        List<Integer> featureIDs = new ArrayList<>();
 
         //Load the IDs of the features that belong to the given covenant
         try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT feature_id FROM applied_covenant_feature WHERE campaign_id = ?")){
@@ -72,7 +73,7 @@ public class CovenantDataSource implements ICovenantDataSource{
 
             resultSet = statement.executeQuery();
             while(resultSet.next()){
-                featureIDs.add(resultSet.getString("feature_id"));
+                featureIDs.add(resultSet.getInt("feature_id"));
             }
         }catch (SQLException exp){
             log.error("Failed to load features belonging to covenant with id {}", covenant.getId());
@@ -96,7 +97,7 @@ public class CovenantDataSource implements ICovenantDataSource{
         //Create a new list with the features themselves, load as many as possible from the DB and add them to the list
         List<CovenantFeature> features = new ArrayList<>();
 
-        for(String id : featureIDs){
+        for(int id : featureIDs){
             loadCovenantFeatureFromId(id).map(features::add);
         }
 
@@ -165,13 +166,67 @@ public class CovenantDataSource implements ICovenantDataSource{
 
     @Override
     public boolean updateCovenant(Covenant covenant) {
-        return false;
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("UPDATE covenant SET ")){
+
+        }catch (SQLException exception){
+            log.error("Updating covenant {} failed with the error {}", covenant.getName(), exception.getMessage());
+            return false;
+        }
+
+        return true;
     }
 
     //Use the campaign's name (b/c primary key)
     @Override
     public boolean addCovenant(Covenant covenant, Campaign campaign) {
-        return false;
+        //Check to make sure the given campaign is in the DB, and if not refuse to continue.
+        try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM campaign WHERE name = ?")){
+            statement.setString(1, campaign.getName());
+            ResultSet resultSet = statement.executeQuery();
+
+            if(!resultSet.isBeforeFirst()){
+                log.error("Campaign {} has not been added previously", campaign.getName());
+                return false;
+            }
+        }catch (SQLException exp){
+            log.error("Failed to check campaign status for covenant {} in campaign {}", covenant.getName(), campaign.getName());
+        }
+
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO covenant (name, tribunal, campaign_name, establishSeason, CrVis, InVis, MuVis, PeVis, ReVis, AnVis, AuVis, AqVis, CoVis, HeVis, IgVis, ImVis, MeVis, TeVis, ViVis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement idStatement = connection.prepareStatement("SELECT last_insert_rowid()")){
+            statement.setString(1, covenant.getName());
+            statement.setString(2, covenant.getTribunal().toString());
+            statement.setString(3, campaign.getName());
+            statement.setInt(4, covenant.getEstablishmentSeason());
+
+            statement.setInt(5, covenant.getVis(Art.CREO));
+            statement.setInt(6, covenant.getVis(Art.INTELLEGO));
+            statement.setInt(7, covenant.getVis(Art.MUTO));
+            statement.setInt(8, covenant.getVis(Art.PERDO));
+            statement.setInt(9, covenant.getVis(Art.REGO));
+            statement.setInt(10, covenant.getVis(Art.ANIMAL));
+            statement.setInt(11, covenant.getVis(Art.AURAM));
+            statement.setInt(12, covenant.getVis(Art.AQUAM));
+            statement.setInt(13, covenant.getVis(Art.CORPUS));
+            statement.setInt(14, covenant.getVis(Art.HERBAM));
+            statement.setInt(15, covenant.getVis(Art.IGNEM));
+            statement.setInt(16, covenant.getVis(Art.IMAGINEM));
+            statement.setInt(17, covenant.getVis(Art.MENTEM));
+            statement.setInt(18, covenant.getVis(Art.TERRAM));
+            statement.setInt(19, covenant.getVis(Art.VIM));
+
+            statement.execute();
+
+            ResultSet resultSet = idStatement.executeQuery();
+            covenant.setId(resultSet.getInt(1));
+        }catch (SQLException exp){
+            log.error("Failed to add covenant {} with error {}", covenant.getName(), exp.getMessage());
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -182,10 +237,5 @@ public class CovenantDataSource implements ICovenantDataSource{
     @Override
     public boolean addFeatureToCovenant(Covenant covenant, CovenantFeature feature) {
         return false;
-    }
-
-    @Override
-    public Optional<CovenantFeature> getCovenantFeatureById(int id) {
-        return Optional.empty();
     }
 }

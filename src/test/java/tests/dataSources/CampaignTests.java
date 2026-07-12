@@ -4,18 +4,26 @@ import application.data.CampaignDataSource;
 import application.data.IDataSource;
 import application.data.MockDataSource;
 import application.models.Campaign;
+import application.models.Covenant;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import tests.utils;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static tests.utils.*;
 
+@Slf4j
 public class CampaignTests {
     IDataSource superSource;
     CampaignDataSource dataSource;
@@ -31,7 +39,7 @@ public class CampaignTests {
         @Test
         @DisplayName("add a new campaign, with all fields filled out and correct")
         void testAddCampaign(){
-            Campaign campaign = utils.generateCampaign();
+            Campaign campaign = generateCampaign();
 
             boolean result = dataSource.addCampaign(campaign.getName(), campaign.getCurrentSeason());
 
@@ -43,7 +51,7 @@ public class CampaignTests {
         @Test
         @DisplayName("should be returning false when a campaign with the same id or name already exists")
         void testAddCampaignSameName(){
-            Campaign baseCampaign = utils.generateCampaign();
+            Campaign baseCampaign = generateCampaign();
 
             assertTrue(dataSource.addCampaign(baseCampaign.getName(), baseCampaign.getCurrentSeason()));
 
@@ -72,7 +80,7 @@ public class CampaignTests {
         @Test
         @DisplayName("Test with a singular known campaign")
         void returnsExistingCampaign(){
-            Campaign campaign = utils.generateCampaign();
+            Campaign campaign = generateCampaign();
 
             dataSource.addCampaign(campaign);
 
@@ -96,7 +104,7 @@ public class CampaignTests {
         @Test
         @DisplayName("Updates an existing campaign and returns true")
         void updateExistingCampaign() throws CloneNotSupportedException {
-            Campaign baseCampaign = utils.generateCampaign();
+            Campaign baseCampaign = generateCampaign();
             dataSource.addCampaign(baseCampaign);
 
             baseCampaign.advanceSeason();
@@ -110,15 +118,15 @@ public class CampaignTests {
         @Test
         @DisplayName("returns false on a nonexistent campaign with no saved campaigns")
         void rejectsUnknownCampaignWithNoSaved(){
-            Campaign campaign = utils.generateCampaign();
+            Campaign campaign = generateCampaign();
             assertFalse(dataSource.updateCampaign(campaign));
         }
 
         @Test
         @DisplayName("returns false on a nonexistent campaign")
         void rejectsUnknownCampaign(){
-            Campaign campaignOne = utils.generateCampaign();
-            Campaign campaignTwo = utils.generateCampaign();
+            Campaign campaignOne = generateCampaign();
+            Campaign campaignTwo = generateCampaign();
 
             dataSource.addCampaign(campaignOne);
 
@@ -144,7 +152,7 @@ public class CampaignTests {
         @Test
         @DisplayName("returns the singular saved campaign")
         void returnsAddedCampaign() {
-            Campaign campaign = utils.generateCampaign();
+            Campaign campaign = generateCampaign();
 
             dataSource.addCampaign(campaign);
 
@@ -155,9 +163,9 @@ public class CampaignTests {
         @Test
         @DisplayName("returns all saved campaigns")
         void returnsAllAddedCampaigns(){
-            Campaign campaignOne = utils.generateCampaign();
-            Campaign campaignTwo = utils.generateCampaign();
-            Campaign campaignThree = utils.generateCampaign();
+            Campaign campaignOne = generateCampaign();
+            Campaign campaignTwo = generateCampaign();
+            Campaign campaignThree = generateCampaign();
 
             dataSource.addCampaign(campaignOne);
             dataSource.addCampaign(campaignTwo);
@@ -178,22 +186,59 @@ public class CampaignTests {
     @Nested
     @DisplayName("loadCovenantsFromCampaign")
     class LoadCovenantsFromCampaign {
+        private boolean addCovenant(Covenant covenant, String campaignName){
+            try(Connection connection = superSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement("INSERT INTO covenant (name, tribunal, campaign_name, establishSeason) VALUES (?, ?, ?, ?)");
+                PreparedStatement statement1 = connection.prepareStatement("SELECT last_insert_rowid()")){
+                statement.setString(1, covenant.getName());
+                statement.setString(2, covenant.getTribunal().toString());
+                statement.setString(3, campaignName);
+                statement.setInt(4, covenant.getEstablishmentSeason());
+
+                statement.execute();
+
+                ResultSet resultSet = statement1.executeQuery();
+                covenant.setId(resultSet.getInt(1));
+            }catch (SQLException exception){
+                log.error("{}", exception.getMessage());
+                return false;
+            }
+
+            return true;
+        }
         @Test
         @DisplayName("returns the singular covenant associated with the campaign")
         void returnsSingularCovenant() {
-            fail();
+            Campaign campaign = generateCampaign();
+            Covenant covenant = generateCovenantMinusArts();
+
+            dataSource.addCampaign(campaign);
+            assertTrue(addCovenant(covenant, campaign.getName()));
+
+            assertEquals(1, dataSource.loadCovenantsFromCampaign(campaign).size());
+            assertEquals(covenant, dataSource.loadCovenantsFromCampaign(campaign).getFirst());
         }
 
         @Test
         @DisplayName("returns the covenants associated with a campaign")
         void returnsMultipleCovenants(){
-            fail();
+            Campaign campaign = generateCampaign();
+            Covenant covenantOne = generateCovenantMinusArts();
+            Covenant covenantTwo = generateCovenantMinusArts();
+
+            dataSource.addCampaign(campaign);
+            assertTrue(addCovenant(covenantOne, campaign.getName()));
+            assertTrue(addCovenant(covenantTwo, campaign.getName()));
+
+            assertEquals(2, dataSource.loadCovenantsFromCampaign(campaign).size());
+            assertTrue(dataSource.loadCovenantsFromCampaign(campaign).contains(covenantOne));
+            assertTrue(dataSource.loadCovenantsFromCampaign(campaign).contains(covenantTwo));
         }
 
         @Test
         @DisplayName("returns an empty list when no covenants exist for the campaign")
         void returnsEmptyListForNoCovenants() {
-            Campaign campaign = utils.generateCampaign();
+            Campaign campaign = generateCampaign();
             dataSource.addCampaign(campaign);
 
             assertTrue(dataSource.loadCovenantsFromCampaign(campaign).isEmpty());
@@ -208,7 +253,20 @@ public class CampaignTests {
         @Test
         @DisplayName("Returns only the covenants that belong to the selected campaign")
         void returnOnlyChildren(){
-            fail();
+            Campaign campaignOne = generateCampaign();
+            Campaign campaignTwo = generateCampaign();
+            Covenant covenantOne = generateCovenantMinusArts();
+            Covenant covenantTwo = generateCovenantMinusArts();
+
+            dataSource.addCampaign(campaignOne);
+            dataSource.addCampaign(campaignTwo);
+            assertTrue(addCovenant(covenantOne, campaignOne.getName()));
+            assertTrue(addCovenant(covenantTwo, campaignTwo.getName()));
+
+            assertEquals(1, dataSource.loadCovenantsFromCampaign(campaignOne).size());
+            assertEquals(covenantOne, dataSource.loadCovenantsFromCampaign(campaignOne).getFirst());
+            assertEquals(1, dataSource.loadCovenantsFromCampaign(campaignTwo).size());
+            assertEquals(covenantTwo, dataSource.loadCovenantsFromCampaign(campaignTwo).getFirst());
         }
     }
 

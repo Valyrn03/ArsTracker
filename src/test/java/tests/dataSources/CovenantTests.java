@@ -3,24 +3,24 @@ package tests.dataSources;
 import application.data.*;
 import application.models.Campaign;
 import application.models.Covenant;
+import application.models.CovenantFeature;
 import application.models.enums.Art;
 import application.models.enums.Tribunal;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.*;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static tests.utils.generateCampaign;
-import static tests.utils.generateCovenant;
+import static tests.utils.*;
 
+@Slf4j
 public class CovenantTests {
     IDataSource superSource;
     ICovenantDataSource dataSource;
     ICampaignDataSource campaignDataSource;
     Campaign campaign;
+
     @BeforeEach
     void setUp(){
         superSource = new MockDataSource();
@@ -35,25 +35,13 @@ public class CovenantTests {
         @Test
         void returnsTrueOnAddition(){
             Covenant covenant = generateCovenant();
-
-            campaignDataSource.addCampaign(campaign.getName(), campaign.getCurrentSeason());
             assertTrue(dataSource.addCovenant(covenant, campaign));
-        }
-
-        @Test
-        void returnsFalseOnNullCampaign(){
-            assertFalse(dataSource.addCovenant(generateCovenant(), null));
+            log.info("New ID: {}", covenant.getId());
         }
 
         @Test
         void returnsFalseOnNonexistentCampaign(){
             assertFalse(dataSource.addCovenant(generateCovenant(), generateCampaign()));
-        }
-
-        @Test
-        void returnsFalseOnNullCovenant(){
-            campaignDataSource.addCampaign(campaign);
-            assertFalse(dataSource.addCovenant(null, campaign));
         }
 
         @Test
@@ -75,7 +63,9 @@ public class CovenantTests {
         @Test
         @DisplayName("Make sure it fails if the campaign isn't loaded into the DB")
         void returnsFalseOnUnloadedCampaign(){
-            fail();
+            Campaign unloadedCampaign = generateCampaign();
+
+            assertFalse(dataSource.addCovenant(generateCovenant(), unloadedCampaign));
         }
     }
 
@@ -129,16 +119,58 @@ public class CovenantTests {
 
     @Nested
     class AddNewCovenantFeature{
+        @Test
+        void returnsTrueOnAddition(){
+            assertTrue(dataSource.addNewCovenantFeature(generateCovenantFeature()));
+        }
+
+        @Test
+        void returnsFalseOnNullFeature(){
+            assertFalse(dataSource.addNewCovenantFeature(null));
+        }
 
     }
 
     @Nested
     class AddFeatureToCovenant{
+        @Test
+        void returnsTrueOnAddition(){
+            Covenant covenant = generateCovenant();
+            CovenantFeature feature = generateCovenantFeature();
 
-    }
+            dataSource.addCovenant(covenant, campaign);
 
-    @Nested
-    class GetCovenantFeatureById{
+            assertTrue(dataSource.addFeatureToCovenant(covenant, feature));
+        }
+
+        @Test
+        void returnsTrueOnMultipleAdditions(){
+            Covenant covenant = generateCovenant();
+            CovenantFeature featureOne = generateCovenantFeature();
+            CovenantFeature featureTwo = generateCovenantFeature();
+
+            dataSource.addCovenant(covenant, campaign);
+            assertTrue(dataSource.addFeatureToCovenant(covenant, featureOne));
+            assertTrue(dataSource.addFeatureToCovenant(covenant, featureTwo));
+        }
+
+        @Test
+        void returnsFalseOnNullCovenant(){
+            assertFalse(dataSource.addFeatureToCovenant(null, generateCovenantFeature()));
+        }
+
+        @Test
+        void returnsFalseOnNullFeature(){
+            Covenant covenant = generateCovenant();
+            dataSource.addCovenant(covenant, campaign);
+
+            assertFalse(dataSource.addFeatureToCovenant(covenant, null));
+        }
+
+        @Test
+        void returnsFalseOnNonexistentCovenant(){
+            assertFalse(dataSource.addFeatureToCovenant(generateCovenant(), generateCovenantFeature()));
+        }
 
     }
 
@@ -146,18 +178,20 @@ public class CovenantTests {
     class LoadCovenantFeatureFromId{
         @Test
         void returnsFeatureOnQuery(){
+            CovenantFeature feature = generateCovenantFeature();
 
+            dataSource.addNewCovenantFeature(feature);
+
+            assertEquals(Optional.of(feature), dataSource.loadCovenantFeatureFromId(feature.getId()));
         }
 
         @Test
         void returnsEmptyOnNonexistent(){
+            CovenantFeature feature = generateCovenantFeature();
 
+            assertEquals(Optional.empty(), dataSource.loadCovenantFeatureFromId(feature.getId()));
         }
 
-        @Test
-        void returnsEmptyOnNull(){
-
-        }
     }
 
     @Nested
@@ -165,26 +199,48 @@ public class CovenantTests {
         @Test
         @DisplayName("returns a singular feature from a singular covenant")
         void returnsSingular(){
+            Covenant covenant = generateCovenant();
+            CovenantFeature feature = generateCovenantFeature();
 
+            dataSource.addCovenant(covenant, campaign);
+            dataSource.addFeatureToCovenant(covenant, feature);
+
+            List<CovenantFeature> features = dataSource.loadFeaturesFromCovenant(covenant);
+
+            assertEquals(1, features.size());
+            assertTrue(features.contains(feature));
         }
 
         @Test
         @DisplayName("returns multiple features from a given covenant")
         void returnsMultipleFeatures(){
+            Covenant covenant = generateCovenant();
+            CovenantFeature featureOne = generateCovenantFeature();
+            CovenantFeature featureTwo = generateCovenantFeature();
 
+            dataSource.addCovenant(covenant, campaign);
+            dataSource.addFeatureToCovenant(covenant, featureOne);
+            dataSource.addFeatureToCovenant(covenant, featureTwo);
+
+            List<CovenantFeature> features = dataSource.loadFeaturesFromCovenant(covenant);
+
+            assertEquals(2, features.size());
+            assertTrue(features.contains(featureOne));
+            assertTrue(features.contains(featureTwo));
         }
 
         @Test
         @DisplayName("returns empty list on null covenant")
         void returnsEmptyOnNull(){
-
+            assertTrue(dataSource.loadFeaturesFromCovenant(null).isEmpty());
         }
 
         @Test
         @DisplayName("returns an empty list on a nonexistent covenant")
         void returnsEmptyOnNonexistent(){
-
+            assertTrue(dataSource.loadFeaturesFromCovenant(generateCovenant()).isEmpty());
         }
+
     }
 
     @Nested

@@ -40,6 +40,18 @@ public class utils {
                 vis);
     }
 
+    public static Covenant generateCovenantMinusArts(){
+        Random random = new Random();
+        Map<Art, Integer> vis = new HashMap<>();
+        for (Art art : Art.values()){
+            vis.put(art, 0);
+        }
+        return Covenant.buildCovenant(UUID.randomUUID().toString(),
+                String.valueOf(Tribunal.values()[random.nextInt(Tribunal.values().length)]),
+                random.nextInt(0, 10000),
+                vis);
+    }
+
     public static CovenantFeature generateCovenantFeature(){
         Random random = new Random();
 

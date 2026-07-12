@@ -3,16 +3,17 @@ package application.models;
 import application.models.enums.Art;
 import application.models.enums.Tribunal;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 
 public class Covenant {
     private record LabTexts(List<Spell> spells, List<EnchantedItem> items){}
 
-    @Getter private int id;
+    @Setter @Getter private int id;
     @Getter private Tribunal tribunal;
     @Getter private String name;
-    private int establishmentSeason;
+    @Getter private int establishmentSeason;
 
     @Getter private List<Character> playerCharacters;
     @Getter private List<Character> nonPlayerCharacters;
@@ -45,21 +46,21 @@ public class Covenant {
         covenant.tribunal = Tribunal.valueOf(stringMap.get("tribunal"));
         covenant.establishmentSeason = intMap.get("establishSeason");
 
-        covenant.visStores.put(Art.CREO, intMap.get("CrVis"));
-        covenant.visStores.put(Art.INTELLEGO, intMap.get("InVis"));
-        covenant.visStores.put(Art.MUTO, intMap.get("MuVis"));
-        covenant.visStores.put(Art.PERDO, intMap.get("PeVis"));
-        covenant.visStores.put(Art.REGO, intMap.get("ReVis"));
-        covenant.visStores.put(Art.ANIMAL, intMap.get("AnVis"));
-        covenant.visStores.put(Art.AURAM, intMap.get("AuVis"));
-        covenant.visStores.put(Art.AQUAM, intMap.get("AqVis"));
-        covenant.visStores.put(Art.CORPUS, intMap.get("CoVis"));
-        covenant.visStores.put(Art.HERBAM, intMap.get("HeVis"));
-        covenant.visStores.put(Art.IGNEM, intMap.get("IgVis"));
-        covenant.visStores.put(Art.IMAGINEM, intMap.get("ImVis"));
-        covenant.visStores.put(Art.MENTEM, intMap.get("MeVis"));
-        covenant.visStores.put(Art.TERRAM, intMap.get("TeVis"));
-        covenant.visStores.put(Art.VIM, intMap.get("ViVis"));
+        covenant.visStores.put(Art.CREO, intMap.getOrDefault("CrVis", 0));
+        covenant.visStores.put(Art.INTELLEGO, intMap.getOrDefault("InVis", 0));
+        covenant.visStores.put(Art.MUTO, intMap.getOrDefault("MuVis", 0));
+        covenant.visStores.put(Art.PERDO, intMap.getOrDefault("PeVis", 0));
+        covenant.visStores.put(Art.REGO, intMap.getOrDefault("ReVis", 0));
+        covenant.visStores.put(Art.ANIMAL, intMap.getOrDefault("AnVis", 0));
+        covenant.visStores.put(Art.AURAM, intMap.getOrDefault("AuVis", 0));
+        covenant.visStores.put(Art.AQUAM, intMap.getOrDefault("AqVis", 0));
+        covenant.visStores.put(Art.CORPUS, intMap.getOrDefault("CoVis", 0));
+        covenant.visStores.put(Art.HERBAM, intMap.getOrDefault("HeVis", 0));
+        covenant.visStores.put(Art.IGNEM, intMap.getOrDefault("IgVis", 0));
+        covenant.visStores.put(Art.IMAGINEM, intMap.getOrDefault("ImVis", 0));
+        covenant.visStores.put(Art.MENTEM, intMap.getOrDefault("MeVis", 0));
+        covenant.visStores.put(Art.TERRAM, intMap.getOrDefault("TeVis", 0));
+        covenant.visStores.put(Art.VIM, intMap.getOrDefault("ViVis", 0));
 
         return covenant;
     }
@@ -116,6 +117,10 @@ public class Covenant {
         }
 
         return this.visStores.equals(other.visStores);
+    }
+
+    public int getVis(Art art){
+        return visStores.get(art);
     }
 
     public static List<String> tribunals(){

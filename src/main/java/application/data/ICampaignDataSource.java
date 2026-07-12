@@ -13,6 +13,11 @@ public interface ICampaignDataSource {
      */
     Optional<Campaign> loadCampaignFromName(String name);
 
+    /*
+    Due to the campaign name being the primary key, for now will not allow renaming of the campaign.
+
+    As such, the only thing that can be updated is the season the campaign is in.
+     */
     boolean updateCampaign(Campaign campaign);
 
     List<Campaign> getCampaigns();
