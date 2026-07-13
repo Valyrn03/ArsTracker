@@ -20,7 +20,7 @@ public class Covenant {
 
     private List<Book> books;
     private LabTexts labTexts;
-    private Map<Art, Integer> visStores;
+    @Setter @Getter private Map<Art, Integer> visStores;
     private List<CovenantFeature> features;
 
     public List<ArsCharacter> accessedCharacters;
@@ -45,22 +45,6 @@ public class Covenant {
         covenant.name = stringMap.get("name");
         covenant.tribunal = Tribunal.valueOf(stringMap.get("tribunal"));
         covenant.establishmentSeason = intMap.get("establishSeason");
-
-        covenant.visStores.put(Art.CREO, intMap.getOrDefault("CrVis", 0));
-        covenant.visStores.put(Art.INTELLEGO, intMap.getOrDefault("InVis", 0));
-        covenant.visStores.put(Art.MUTO, intMap.getOrDefault("MuVis", 0));
-        covenant.visStores.put(Art.PERDO, intMap.getOrDefault("PeVis", 0));
-        covenant.visStores.put(Art.REGO, intMap.getOrDefault("ReVis", 0));
-        covenant.visStores.put(Art.ANIMAL, intMap.getOrDefault("AnVis", 0));
-        covenant.visStores.put(Art.AURAM, intMap.getOrDefault("AuVis", 0));
-        covenant.visStores.put(Art.AQUAM, intMap.getOrDefault("AqVis", 0));
-        covenant.visStores.put(Art.CORPUS, intMap.getOrDefault("CoVis", 0));
-        covenant.visStores.put(Art.HERBAM, intMap.getOrDefault("HeVis", 0));
-        covenant.visStores.put(Art.IGNEM, intMap.getOrDefault("IgVis", 0));
-        covenant.visStores.put(Art.IMAGINEM, intMap.getOrDefault("ImVis", 0));
-        covenant.visStores.put(Art.MENTEM, intMap.getOrDefault("MeVis", 0));
-        covenant.visStores.put(Art.TERRAM, intMap.getOrDefault("TeVis", 0));
-        covenant.visStores.put(Art.VIM, intMap.getOrDefault("ViVis", 0));
 
         return covenant;
     }
@@ -92,6 +76,10 @@ public class Covenant {
 
     public void addVis(Art art, int valueChange){
         visStores.put(art, visStores.get(art) + valueChange);
+    }
+
+    public void updateVis(Art art, int newValue){
+        visStores.put(art, newValue);
     }
 
     @Override

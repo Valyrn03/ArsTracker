@@ -136,7 +136,7 @@ public class CampaignDataSource implements ICampaignDataSource{
                     }
                 }
 
-                covenants.add(Covenant.buildCovenantFromMap(stringMap, intMap));
+                covenants.add(Covenant.buildCovenantFromMap(stringMap, intMap)); //TODO
             }
         }catch (SQLException exp){
             log.error("Loading covenants from campaign {} failed with the following error: {}", campaign.getName(), exp.getMessage());

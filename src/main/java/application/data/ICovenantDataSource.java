@@ -32,7 +32,7 @@ public interface ICovenantDataSource {
      */
 //    boolean updateCovenant(Covenant covenant);
 
-    boolean updateCovenantVisStores(Covenant covenant, Art art, int change);
+    boolean updateCovenantVisStores(Covenant covenant, Art art);
 
     boolean addCovenant(Covenant covenant, Campaign campaign);
 

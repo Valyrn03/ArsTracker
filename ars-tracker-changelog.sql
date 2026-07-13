@@ -41,3 +41,51 @@ CREATE TABLE owned_book (covenant_id INTEGER, book_id INTEGER, PRIMARY KEY(coven
 
 -- changeset liquibase:add_back_covenant_table
 CREATE TABLE covenant (id INTEGER PRIMARY KEY ASC, name VARCHAR(64), tribunal VARCHAR(36), campaign_name VARCHAR(512), establishSeason INT, CrVis INT, InVis INT, MuVis INT, PeVis INT, ReVis INT, AnVis INT, AuVis INT, AqVis INT, CoVis INT, HeVis INT, IgVis INT, ImVis INT, MeVis INT, TeVis INT, ViVis INT)
+
+-- changeset liquibase:remove_creo_column
+ALTER TABLE covenant DROP COLUMN CrVis
+
+-- changeset liquibase:remove_intellego_column
+ALTER TABLE covenant DROP COLUMN InVis
+
+-- changeset liquibase:remove_muto_column
+ALTER TABLE covenant DROP COLUMN MuVis
+
+-- changeset liquibase:remove_perdo_column
+ALTER TABLE covenant DROP COLUMN PeVis
+
+-- changeset liquibase:remove_rego_column
+ALTER TABLE covenant DROP COLUMN ReVis
+
+-- changeset liquibase:remove_animal_column
+ALTER TABLE covenant DROP COLUMN AnVis
+
+-- changeset liquibase:remove_auram_column
+ALTER TABLE covenant DROP COLUMN AuVis
+
+-- changeset liquibase:remove_aquam_column
+ALTER TABLE covenant DROP COLUMN AqVis
+
+-- changeset liquibase:remove_corpus_column
+ALTER TABLE covenant DROP COLUMN CoVis
+
+-- changeset liquibase:remove_herbam_column
+ALTER TABLE covenant DROP COLUMN HeVis
+
+-- changeset liquibase:remove_ignem_column
+ALTER TABLE covenant DROP COLUMN IgVis
+
+-- changeset liquibase:remove_imaginum_column
+ALTER TABLE covenant DROP COLUMN ImVis
+
+-- changeset liquibase:remove_mentem_column
+ALTER TABLE covenant DROP COLUMN MeVis
+
+-- changeset liquibase:remove_terram_column
+ALTER TABLE covenant DROP COLUMN TeVis
+
+-- changeset liquibase:remove_vim_column
+ALTER TABLE covenant DROP COLUMN ViVis
+
+-- changeset liquibase:add_vis_table
+CREATE TABLE vis (covenant_id INT, art VARCHAR(16), value INT, PRIMARY KEY(covenant_id, vis))

@@ -5,7 +5,6 @@ import application.models.Campaign;
 import application.models.Covenant;
 import application.models.CovenantFeature;
 import application.models.enums.Art;
-import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -118,18 +117,19 @@ public class CovenantDataSource implements ICovenantDataSource{
 
     @Override
     public Optional<Covenant> loadCovenantFromId(int covenantID) {
-        ResultSet resultSet = null;
+        if(covenantID == 0){
+            return Optional.empty();
+        }
         Covenant covenant = null;
 
         try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM covenant WHERE id = ?")){
             statement.setInt(1, covenantID);
 
-            resultSet = statement.executeQuery();
+            ResultSet resultSet = statement.executeQuery();
 
             if(!resultSet.isBeforeFirst()){
                 log.info("Covenant with ID {} does not exist", covenantID);
             }
-            resultSet.first();
 
             Map<String, String> stringMap = new HashMap<>();
             Map<String, Integer> integerMap = new HashMap<>();
@@ -139,43 +139,50 @@ public class CovenantDataSource implements ICovenantDataSource{
 
             integerMap.put("id", resultSet.getInt("id"));
             integerMap.put("establishSeason", resultSet.getInt("establishSeason"));
-            integerMap.put("CrVis", resultSet.getInt("CrVis"));
-            integerMap.put("InVis", resultSet.getInt("InVis"));
-            integerMap.put("MuVis", resultSet.getInt("MuVis"));
-            integerMap.put("PeVis", resultSet.getInt("PeVis"));
-            integerMap.put("ReVis", resultSet.getInt("ReVis"));
-            integerMap.put("AnVis", resultSet.getInt("AnVis"));
-            integerMap.put("AuVis", resultSet.getInt("AuVis"));
-            integerMap.put("AqVis", resultSet.getInt("AqVis"));
-            integerMap.put("CoVis", resultSet.getInt("CoVis"));
-            integerMap.put("HeVis", resultSet.getInt("HeVis"));
-            integerMap.put("IgVis", resultSet.getInt("IgVis"));
-            integerMap.put("ImVis", resultSet.getInt("ImVis"));
-            integerMap.put("MeVis", resultSet.getInt("MeVis"));
-            integerMap.put("TeVis", resultSet.getInt("TeVis"));
-            integerMap.put("ViVis", resultSet.getInt("ViVis"));
 
             covenant = Covenant.buildCovenantFromMap(stringMap, integerMap);
         }catch (SQLException ex){
-            log.error("Failed to load covenant from ID {}", covenantID);
+            log.error("Failed to load covenant from ID {} with error {}", covenantID, ex.getMessage());
+            return Optional.empty();
         }
 
-        try{
-            if(resultSet != null){
-                resultSet.close();
+        Map<Art, Integer> visStores = loadCovenantVisStores(covenantID);
+        if(!visStores.isEmpty()){
+            covenant.setVisStores(visStores);
+        }
+
+        return Optional.of(covenant);
+    }
+
+    private Map<Art, Integer> loadCovenantVisStores(int covenantId){
+        Map<Art, Integer> map = new HashMap<>();
+        try(Connection connection = source.getConnection()){
+            for(Art art : Art.values()){
+                try(PreparedStatement statement = connection.prepareStatement("SELECT value FROM vis WHERE covenant_id = ? AND art = ?")){
+                    statement.setInt(1, covenantId);
+                    statement.setString(2, art.toString());
+
+                    ResultSet resultSet = statement.executeQuery();
+                    map.put(art, resultSet.getInt("value"));
+                }
             }
-        }catch (SQLException ex){
-            log.error("\tFailed to close result set");
+        }catch (SQLException exp){
+            log.error("Failed to load vis stores for covenant {} with error {}", covenantId, exp.getMessage());
+            return Collections.emptyMap();
         }
 
-        return Optional.ofNullable(covenant);
+        return map;
     }
 
     @Override
-    public boolean updateCovenantVisStores(Covenant covenant, Art art, int change) {
+    public boolean updateCovenantVisStores(Covenant covenant, Art art) {
         try(Connection connection = source.getConnection();
-            PreparedStatement statement = connection.prepareStatement("UPDATE covenant SET ")){
+            PreparedStatement statement = connection.prepareStatement("UPDATE vis SET value = ? WHERE covenant_id = ? AND art = ?")){
+            statement.setInt(1, covenant.getVis(art));
+            statement.setInt(2, covenant.getId());
+            statement.setString(3, art.toString());
 
+            statement.executeUpdate();
         }catch (SQLException exception){
             log.error("Updating covenant {} failed with the error {}", covenant.getName(), exception.getMessage());
             return false;
@@ -201,28 +208,14 @@ public class CovenantDataSource implements ICovenantDataSource{
         }
 
         try(Connection connection = source.getConnection();
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO covenant (name, tribunal, campaign_name, establishSeason, CrVis, InVis, MuVis, PeVis, ReVis, AnVis, AuVis, AqVis, CoVis, HeVis, IgVis, ImVis, MeVis, TeVis, ViVis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO covenant (name, tribunal, campaign_name, establishSeason) VALUES (?, ?, ?, ?)");
             PreparedStatement idStatement = connection.prepareStatement("SELECT last_insert_rowid()")){
             statement.setString(1, covenant.getName());
             statement.setString(2, covenant.getTribunal().toString());
             statement.setString(3, campaign.getName());
             statement.setInt(4, covenant.getEstablishmentSeason());
 
-            statement.setInt(5, covenant.getVis(Art.CREO));
-            statement.setInt(6, covenant.getVis(Art.INTELLEGO));
-            statement.setInt(7, covenant.getVis(Art.MUTO));
-            statement.setInt(8, covenant.getVis(Art.PERDO));
-            statement.setInt(9, covenant.getVis(Art.REGO));
-            statement.setInt(10, covenant.getVis(Art.ANIMAL));
-            statement.setInt(11, covenant.getVis(Art.AURAM));
-            statement.setInt(12, covenant.getVis(Art.AQUAM));
-            statement.setInt(13, covenant.getVis(Art.CORPUS));
-            statement.setInt(14, covenant.getVis(Art.HERBAM));
-            statement.setInt(15, covenant.getVis(Art.IGNEM));
-            statement.setInt(16, covenant.getVis(Art.IMAGINEM));
-            statement.setInt(17, covenant.getVis(Art.MENTEM));
-            statement.setInt(18, covenant.getVis(Art.TERRAM));
-            statement.setInt(19, covenant.getVis(Art.VIM));
+            //Need to add vis stores...
 
             statement.execute();
 

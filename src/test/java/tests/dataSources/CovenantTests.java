@@ -4,6 +4,7 @@ import application.data.*;
 import application.models.Campaign;
 import application.models.Covenant;
 import application.models.CovenantFeature;
+import application.models.enums.Art;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 
@@ -70,8 +71,46 @@ public class CovenantTests {
     @Nested
     class UpdateVisStores{
         @Test
-        void test(){
-            fail();
+        void incrementSingularArt(){
+            Covenant covenant = generateCovenant();
+            dataSource.addCovenant(covenant, campaign);
+
+            Random random = new Random();
+            Art art = Art.values()[random.nextInt(Art.values().length)];
+            covenant.addVis(art, random.nextInt(0, 20));
+            assertTrue(dataSource.updateCovenantVisStores(covenant, art));
+
+            Optional<Covenant> queriedCovenant = dataSource.loadCovenantFromId(covenant.getId());
+            assertEquals(Optional.of(covenant.getVisStores()), queriedCovenant.map(Covenant::getVisStores));
+        }
+
+        @Test
+        void decrementSingularArt(){
+            Covenant covenant = generateCovenant();
+            dataSource.addCovenant(covenant, campaign);
+
+            Random random = new Random();
+            Art art = Art.values()[random.nextInt(Art.values().length)];
+            covenant.addVis(art, random.nextInt(0, 20) * -1);
+            assertTrue(dataSource.updateCovenantVisStores(covenant, art));
+
+            Optional<Covenant> queriedCovenant = dataSource.loadCovenantFromId(covenant.getId());
+            assertEquals(Optional.of(covenant.getVisStores()), queriedCovenant.map(Covenant::getVisStores));
+        }
+
+        @Test
+        void incrementMultipleArts(){
+
+        }
+
+        @Test
+        void returnsFalseOnNonexistentCovenant(){
+
+        }
+
+        @Test
+        void returnsFalseIfArtNotSaved(){
+
         }
     }
 
@@ -264,7 +303,6 @@ public class CovenantTests {
         void returnsSingularCovenant(){
             Covenant covenant = generateCovenant();
 
-            campaignDataSource.addCampaign(campaign);
             dataSource.addCovenant(covenant, campaign);
             assertEquals(Optional.of(covenant), dataSource.loadCovenantFromId(covenant.getId()));
         }
