@@ -8,11 +8,13 @@ import application.models.enums.Art;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 
+
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static tests.utils.*;
 
+//loadCovenantVisStores implicitly tested by loading the covenant
 @Slf4j
 public class CovenantTests {
     IDataSource superSource;
@@ -55,8 +57,8 @@ public class CovenantTests {
 
             assertTrue(dataSource.addCovenant(covenant, campaignOne));
 
-            assertTrue(campaignDataSource.loadCovenantsFromCampaign(campaignOne).contains(covenant));
-            assertFalse(campaignDataSource.loadCovenantsFromCampaign(campaignTwo).contains(covenant));
+            assertTrue(campaignDataSource.loadCovenantIdsFromCampaign(campaignOne).contains(covenant.getId()));
+            assertFalse(campaignDataSource.loadCovenantIdsFromCampaign(campaignTwo).contains(covenant.getId()));
         }
 
         @Test

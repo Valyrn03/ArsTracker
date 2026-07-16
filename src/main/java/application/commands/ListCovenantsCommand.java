@@ -3,26 +3,32 @@ package application.commands;
 import application.Command;
 import application.CommandFramework;
 import application.data.ICampaignDataSource;
+import application.data.ICovenantDataSource;
 import application.models.Covenant;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ListCovenantsCommand implements Command {
     CommandFramework framework;
-    ICampaignDataSource dataSource;
+    ICampaignDataSource campaignDataSource;
+    ICovenantDataSource covenantDataSource;
 
-    public ListCovenantsCommand(CommandFramework fr, ICampaignDataSource src){
+    public ListCovenantsCommand(CommandFramework fr, ICampaignDataSource src, ICovenantDataSource csrc){
         this.framework = fr;
-        this.dataSource = src;
+        this.campaignDataSource = src;
+        this.covenantDataSource = csrc;
     }
 
     @Override
     public boolean execute() {
         List<Covenant> covenants = new ArrayList<>();
-        framework.getActiveCampaign().map(dataSource::loadCovenantsFromCampaign).map(covenants::addAll);
+        List<Integer> covenantIds = framework.getActiveCampaign().map(campaignDataSource::loadCovenantIdsFromCampaign).orElse(Collections.emptyList());
 
-        covenants.forEach((covenant -> {framework.put(covenant.getName());}));
+        for(int id : covenantIds){
+            covenantDataSource.loadCovenantFromId(id).ifPresent(covenants::add);
+        }
 
         return !covenants.isEmpty();
     }

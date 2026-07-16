@@ -1,6 +1,7 @@
 package application.data;
 
 import application.models.*;
+import application.models.enums.AbilityCategory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.Liquibase;
@@ -85,33 +86,6 @@ public class MockDataSource implements IDataSource{
     private void populateDefaultTable(){
         resetArts();
         resetAbilities();
-
-//        try(Connection connection = getConnection();
-//            PreparedStatement statement = connection.prepareStatement("SELECT * FROM sqlite_master WHERE type = 'table'");
-//            ResultSet resultSet = statement.executeQuery();){
-//
-//            ResultSetMetaData meta = resultSet.getMetaData();
-//            int columnCount = meta.getColumnCount();
-//
-//            StringBuilder builder = new StringBuilder();
-//            // print column headers
-//            for (int i = 1; i <= columnCount; i++) {
-//                builder.append(meta.getColumnName(i)).append("\t");
-//            }
-//            builder.append("\n");
-//
-//            // print each row
-//            while (resultSet.next()) {
-//                for (int i = 1; i <= columnCount; i++) {
-//                    builder.append(resultSet.getString(i)).append("\t");
-//                }
-//                builder.append("\n");
-//            }
-//            log.info(builder.toString());
-//
-//        }catch (SQLException e){
-//            log.error("Failed to open connection with the following error: {}", e.getMessage());
-//        }
     }
 
     private void resetArts() {

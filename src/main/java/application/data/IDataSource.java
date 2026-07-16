@@ -1,6 +1,7 @@
 package application.data;
 
 import application.models.*;
+import application.models.enums.AbilityCategory;
 
 import java.sql.Connection;
 import java.util.List;

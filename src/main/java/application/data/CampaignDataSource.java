@@ -2,6 +2,7 @@ package application.data;
 
 import application.models.Campaign;
 import application.models.Covenant;
+import application.models.enums.Art;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
@@ -112,38 +113,26 @@ public class CampaignDataSource implements ICampaignDataSource{
     }
 
     @Override
-    public List<Covenant> loadCovenantsFromCampaign(Campaign campaign) {
+    public List<Integer> loadCovenantIdsFromCampaign(Campaign campaign) {
         if(campaign == null){
             log.error("Campaign input is null");
             return Collections.emptyList();
         }
-        List<Covenant> covenants = new ArrayList<>();
+        List<Integer> covenantIds = new ArrayList<>();
         try(Connection connection = source.getConnection();
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM covenant WHERE campaign_name = ?")){
             statement.setString(1, campaign.getName());
 
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
-                ResultSetMetaData metaData = resultSet.getMetaData();
-                Map<String, String> stringMap = new HashMap<>();
-                Map<String, Integer> intMap = new HashMap<>();
-
-                for(int i = 1; i < metaData.getColumnCount() + 1; i++){
-                    if("name".equals(metaData.getColumnName(i)) || "tribunal".equals(metaData.getColumnName(i))){
-                        stringMap.put(metaData.getColumnName(i), resultSet.getString(i));
-                    }else{
-                        intMap.put(metaData.getColumnName(i), resultSet.getInt(i));
-                    }
-                }
-
-                covenants.add(Covenant.buildCovenantFromMap(stringMap, intMap)); //TODO
+                covenantIds.add(resultSet.getInt("id")); //TODO
             }
         }catch (SQLException exp){
             log.error("Loading covenants from campaign {} failed with the following error: {}", campaign.getName(), exp.getMessage());
             return Collections.emptyList();
         }
 
-        return covenants;
+        return covenantIds;
     }
 
     @Override

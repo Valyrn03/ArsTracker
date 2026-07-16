@@ -110,24 +110,4 @@ public class Covenant {
     public int getVis(Art art){
         return visStores.get(art);
     }
-
-    public static List<String> tribunals(){
-        List<String> tribunals = new ArrayList<>();
-
-        tribunals.add("Novgorod");
-        tribunals.add("Rhine");
-        tribunals.add("Loch Leglean");
-        tribunals.add("Hibernian");
-        tribunals.add("Stonehenge");
-        tribunals.add("Normandy");
-        tribunals.add("Provencal");
-        tribunals.add("Greater Alps");
-        tribunals.add("Transylvanian");
-        tribunals.add("Theban");
-        tribunals.add("Levant");
-        tribunals.add("Roman");
-        tribunals.add("Iberian");
-
-        return tribunals;
-    }
 }

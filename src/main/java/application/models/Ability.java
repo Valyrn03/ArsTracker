@@ -2,45 +2,35 @@ package application.models;
 
 import application.models.enums.AbilityCategory;
 import application.utils.CharacterUtils;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode
 public class Ability implements Comparable<Ability>{
-    private AbilityCategory category;
+    @Getter private AbilityCategory category;
     private String subtype;
     private String speciality;
-    private int experience;
+    @Setter @Getter private int experience;
 
-    private Ability(AbilityCategory category, String speciality, int experience){
+    public Ability(AbilityCategory category, String speciality, int experience){
         this.category = category;
         this.speciality = speciality;
         this.experience = experience;
     }
 
-    private Ability(AbilityCategory category, String type, String speciality, int experience){
+    public Ability(AbilityCategory category, String type, String speciality, int experience){
         this.category = category;
         this.subtype = type;
         this.speciality = speciality;
         this.experience = experience;
     }
 
-    public static Ability createAbility(String abilityCategory, String type, String speciality, int experience){
-        try{
-            AbilityCategory category = AbilityCategory.valueOf(abilityCategory);
-
-            return new Ability(category, type, speciality, experience);
-        }catch (IllegalArgumentException exp){
-            return null;
-        }
-    }
-
     public int increment(int increment){
         experience += increment;
-        return experience;
-    }
-
-    public int getExperience(){
         return experience;
     }
 
@@ -53,9 +43,9 @@ public class Ability implements Comparable<Ability>{
 
     @Override
     public int compareTo(Ability o) {
-        if(this.getExperience() >= o.getExperience()){
+        if(this.getExperience() > o.getExperience()){
             return 1;
-        }else if(this.getExperience() <= o.getExperience()){
+        }else if(this.getExperience() < o.getExperience()){
             return -1;
         }else{
             return this.getAbility().compareTo(o.getAbility());
@@ -74,21 +64,6 @@ public class Ability implements Comparable<Ability>{
         builder.append(" ").append(CharacterUtils.abilityExperienceToScore(experience)).append(" (").append(experience).append(")");
 
         return builder.toString();
-    }
-
-    @Override
-    public boolean equals(Object o){
-        if(!o.getClass().equals(this.getClass())){
-            return false;
-        }
-
-        Ability other = (Ability) o;
-
-        return this.getAbility().equals(other.getAbility());
-    }
-
-    public AbilityCategory getCategory() {
-        return category;
     }
 
     public static List<String> generalAbilities(){
@@ -191,5 +166,19 @@ public class Ability implements Comparable<Ability>{
         list.add("Wilderness Sense");
 
         return list;
+    }
+
+    public static boolean isAbilityCategorical(AbilityCategory category) {
+        switch (category){
+            case AREA_LORE -> {return true;}
+            case CRAFT -> {return true;}
+            case LIVING_LANGUAGE -> {return true;}
+            case MYSTERY_CULT_LORE -> {return true;}
+            case ORGANIZATION_LORE -> {return true;}
+            case PROFESSION -> {return true;}
+            case DEAD_LANGUAGE -> {return true;}
+            case ENCHANTING -> {return true;}
+            default -> {return false;}
+        }
     }
 }

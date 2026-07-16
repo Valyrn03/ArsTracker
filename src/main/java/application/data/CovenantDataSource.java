@@ -154,7 +154,7 @@ public class CovenantDataSource implements ICovenantDataSource{
         return Optional.of(covenant);
     }
 
-    private Map<Art, Integer> loadCovenantVisStores(int covenantId){
+    public Map<Art, Integer> loadCovenantVisStores(int covenantId){
         Map<Art, Integer> map = new HashMap<>();
         try(Connection connection = source.getConnection()){
             for(Art art : Art.values()){
@@ -215,14 +215,27 @@ public class CovenantDataSource implements ICovenantDataSource{
             statement.setString(3, campaign.getName());
             statement.setInt(4, covenant.getEstablishmentSeason());
 
-            //Need to add vis stores...
-
             statement.execute();
 
             ResultSet resultSet = idStatement.executeQuery();
             covenant.setId(resultSet.getInt(1));
         }catch (SQLException exp){
             log.error("Failed to add covenant {} with error {}", covenant.getName(), exp.getMessage());
+            return false;
+        }
+
+        try(Connection connection = source.getConnection()){
+            for(Art art : Art.values()){
+                try(PreparedStatement statement = connection.prepareStatement("INSERT INTO vis VALUES (?, ?, ?)")){
+                    statement.setInt(1, covenant.getId());
+                    statement.setString(2, art.toString());
+                    statement.setInt(3, covenant.getVis(art));
+
+                    statement.execute();
+                }
+            }
+        }catch (SQLException exp){
+            log.error("Failed to add vis to covenant {} with error {}", covenant.getId(), exp.getMessage());
             return false;
         }
 

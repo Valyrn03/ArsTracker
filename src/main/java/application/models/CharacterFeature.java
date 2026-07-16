@@ -1,20 +1,23 @@
 package application.models;
 
+import application.models.enums.Attribute;
 import lombok.Getter;
+import lombok.Setter;
 
-import java.util.HashMap;
+import java.util.*;
 
 public class CharacterFeature implements Comparable<CharacterFeature> {
-    private HashMap<String, Integer> attributes;
+    @Setter @Getter private int id;
     @Getter private FeatureType type;
     @Getter private String name;
-    @Getter private String description;
+    @Getter private String description; //Purely a flavor descriptor
     @Getter private boolean isMajor;
+    @Getter private List<Ability> abilities;
+    @Getter private List<String> rules;
 
     public CharacterFeature(String name, String description, boolean isVirtue, boolean isMajor){
         this.name = name;
         this.description = description;
-        attributes = deriveAttribute(description);
 
         if(isVirtue){
             type = FeatureType.VIRTUE;
@@ -22,6 +25,8 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
             type = FeatureType.FLAW;
         }
         this.isMajor = isMajor;
+        abilities = new ArrayList<>();
+        rules = new ArrayList<>();
     }
 
     public enum FeatureType{
@@ -29,15 +34,12 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
         FLAW
     }
 
-    public int getAttribute(String attribute){
-        if(!attributes.containsKey(attribute)){
-            return Integer.MAX_VALUE;
-        }
-        return attributes.get(attribute);
+    public void addAbility(Ability ability){
+        this.abilities.add(ability);
     }
 
-    public HashMap<String, Integer> deriveAttribute(String description){
-        return null;
+    public void addRule(String rule){
+        this.rules.add(rule);
     }
 
     @Override

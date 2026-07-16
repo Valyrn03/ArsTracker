@@ -3,6 +3,9 @@ package application.data;
 import application.models.Ability;
 import application.models.ArsCharacter;
 import application.models.CharacterFeature;
+import application.models.Covenant;
+import application.models.enums.Attribute;
+import application.models.enums.ExtraneousAttribute;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,12 +25,12 @@ public class CharacterDataSource implements ICharacterDataSource{
 
 
     @Override
-    public Optional<ArsCharacter> loadCharacterFromId(String characterID){
+    public Optional<ArsCharacter> loadBaseCharacterFromId(int characterID){
         ResultSet resultSet = null;
         ResultSetMetaData metadata = null;
         Map<String, String> characterDetails = new HashMap<>();
         try(Connection connection = source.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM character WHERE id = ?")){
-            statement.setString(0, characterID);
+            statement.setInt(1, characterID);
 
             resultSet = statement.executeQuery();
 
@@ -36,10 +39,9 @@ public class CharacterDataSource implements ICharacterDataSource{
                 resultSet.close();
                 return Optional.empty();
             }
-            resultSet.first();
 
             metadata = resultSet.getMetaData();
-            for(int i = 0; i < metadata.getColumnCount(); i++){
+            for(int i = 1; i < metadata.getColumnCount(); i++){
                 characterDetails.put(metadata.getColumnName(i), resultSet.getString(i));
             }
         }catch (SQLException exp){
@@ -55,14 +57,19 @@ public class CharacterDataSource implements ICharacterDataSource{
         }
 
         if(characterDetails != null){
-            return Optional.of(ArsCharacter.buildCharacterFromMap(characterDetails, null)); //Need to remember why I passed in a Campaign object
+            switch(characterDetails.get("character_type")){
+                case "0" -> {characterDetails.put("character_type", ArsCharacter.CharacterType.MAGUS.toString());}
+                case "1" -> {characterDetails.put("character_type", ArsCharacter.CharacterType.COMPANION.toString());}
+                case "2" -> {characterDetails.put("character_type", ArsCharacter.CharacterType.GROG.toString());}
+            }
+            return Optional.of(ArsCharacter.buildCharacterFromMap(characterDetails));
         }else{
             return Optional.empty();
         }
     }
 
     @Override
-    public boolean updateCharacter(ArsCharacter character) {
+    public boolean updateCharacterCharacteristics(ArsCharacter character) {
         return false;
     }
 
@@ -85,5 +92,65 @@ public class CharacterDataSource implements ICharacterDataSource{
     @Override
     public List<CharacterFeature> loadFeaturesFromCharacter(ArsCharacter character) {
         return List.of();
+    }
+
+    @Override
+    public Optional<CharacterFeature> loadFeatureFromId(int featureId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean addBaseCharacterToCovenant(Covenant covenant, ArsCharacter character) {
+        if(covenant == null || character == null || covenant.getId() == 0){
+            return false;
+        }
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO character (name, covenant_id, birth_season, character_type, intelligence, perception, strength, stamina, presence, communication, dexterity, quickness) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement idStatement = connection.prepareStatement("SELECT last_insert_rowid()")){
+            statement.setString(1, character.getName());
+            statement.setInt(2, covenant.getId());
+            statement.setInt(3, character.getAttribute(ExtraneousAttribute.BIRTH_SEASON));
+            statement.setInt(4, character.getCharacterType().id());
+
+            statement.setInt(5, character.getAttribute(Attribute.INTELLIGENCE));
+            statement.setInt(6, character.getAttribute(Attribute.PERCEPTION));
+            statement.setInt(7, character.getAttribute(Attribute.STRENGTH));
+            statement.setInt(8, character.getAttribute(Attribute.STAMINA));
+            statement.setInt(9, character.getAttribute(Attribute.PRESENCE));
+            statement.setInt(10, character.getAttribute(Attribute.COMMUNICATION));
+            statement.setInt(11, character.getAttribute(Attribute.DEXTERITY));
+            statement.setInt(12, character.getAttribute(Attribute.QUICKNESS));
+
+            statement.execute();
+
+            int newId = idStatement.executeQuery().getInt(1);
+            character.setId(newId);
+        }catch (SQLException exception){
+            log.error("Failed to add character {} to covenant {} with error {}", character.getName(), covenant.getName(), exception.getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean addAbilityToCharacter(ArsCharacter character, Ability ability) {
+        return false;
+    }
+
+    @Override
+    public boolean addFeatureToCharacter(ArsCharacter character, CharacterFeature feature) {
+        return false;
+    }
+
+    /*
+    In order to save a new feature need to:
+        Add it to "feature"
+        For each ability, add a ability_feature_rule
+        For each
+     */
+    @Override
+    public boolean saveNewFeature(CharacterFeature feature) {
+        return false;
     }
 }

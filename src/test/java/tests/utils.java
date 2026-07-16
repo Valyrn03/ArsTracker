@@ -1,9 +1,9 @@
 package tests;
 
-import application.models.Campaign;
-import application.models.Covenant;
-import application.models.CovenantFeature;
+import application.models.*;
+import application.models.enums.AbilityCategory;
 import application.models.enums.Art;
+import application.models.enums.Attribute;
 import application.models.enums.Tribunal;
 
 import java.io.ByteArrayOutputStream;
@@ -68,5 +68,40 @@ public class utils {
         feature.setDescription(feature.getName());
 
         return feature;
+    }
+
+    public static ArsCharacter generateCharacter(){
+        Map<String, String> characterMap = new HashMap<>();
+        Random random = new Random();
+        characterMap.put("id", String.valueOf(random.nextInt()));
+        characterMap.put("name", characterMap.get("id"));
+        characterMap.put("birth_season", String.valueOf(random.nextInt(1, 5000)));
+        for(Attribute attribute : Attribute.values()){
+            characterMap.put(attribute.toString().toLowerCase(), String.valueOf(random.nextInt(-3, 4)));
+        }
+        characterMap.put("character_type", String.valueOf(ArsCharacter.CharacterType.values()[random.nextInt(0, 3)]));
+
+        return ArsCharacter.buildCharacterFromMap(characterMap);
+    }
+
+    //Need to add rules :sob:
+    public static CharacterFeature generateCharacterFeature(){
+        Random random = new Random();
+        String name = UUID.randomUUID().toString();
+        return new CharacterFeature(name, name, random.nextBoolean(), random.nextBoolean());
+    }
+
+    public static Ability generateAbility(){
+        Random random = new Random();
+
+        AbilityCategory category = AbilityCategory.values()[random.nextInt(AbilityCategory.values().length)];
+        String speciality = UUID.randomUUID().toString();
+        int exp = random.nextInt(1000);
+        if(Ability.isAbilityCategorical(category)){
+            return new Ability(category, speciality, exp);
+        }
+
+        String type = UUID.randomUUID().toString();
+        return new Ability(category, type, speciality, exp);
     }
 }

@@ -22,7 +22,7 @@ public interface ICampaignDataSource {
 
     List<Campaign> getCampaigns();
 
-    List<Covenant> loadCovenantsFromCampaign(Campaign campaign);
+    List<Integer> loadCovenantIdsFromCampaign(Campaign campaign);
 
     boolean addCampaign(String name, int seasons);
 

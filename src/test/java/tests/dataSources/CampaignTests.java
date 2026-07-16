@@ -184,8 +184,7 @@ public class CampaignTests {
     }
 
     @Nested
-    @DisplayName("loadCovenantsFromCampaign")
-    class LoadCovenantsFromCampaign {
+    class LoadCovenantsIdsFromCampaign {
         private boolean addCovenant(Covenant covenant, String campaignName){
             try(Connection connection = superSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement("INSERT INTO covenant (name, tribunal, campaign_name, establishSeason) VALUES (?, ?, ?, ?)");
@@ -210,29 +209,29 @@ public class CampaignTests {
         @DisplayName("returns the singular covenant associated with the campaign")
         void returnsSingularCovenant() {
             Campaign campaign = generateCampaign();
-            Covenant covenant = generateCovenantMinusArts();
+            Covenant covenant = generateCovenant();
 
             dataSource.addCampaign(campaign);
             assertTrue(addCovenant(covenant, campaign.getName()));
 
-            assertEquals(1, dataSource.loadCovenantsFromCampaign(campaign).size());
-            assertEquals(covenant, dataSource.loadCovenantsFromCampaign(campaign).getFirst());
+            assertEquals(1, dataSource.loadCovenantIdsFromCampaign(campaign).size());
+            assertEquals(covenant.getId(), dataSource.loadCovenantIdsFromCampaign(campaign).getFirst());
         }
 
         @Test
         @DisplayName("returns the covenants associated with a campaign")
         void returnsMultipleCovenants(){
             Campaign campaign = generateCampaign();
-            Covenant covenantOne = generateCovenantMinusArts();
-            Covenant covenantTwo = generateCovenantMinusArts();
+            Covenant covenantOne = generateCovenant();
+            Covenant covenantTwo = generateCovenant();
 
             dataSource.addCampaign(campaign);
             assertTrue(addCovenant(covenantOne, campaign.getName()));
             assertTrue(addCovenant(covenantTwo, campaign.getName()));
 
-            assertEquals(2, dataSource.loadCovenantsFromCampaign(campaign).size());
-            assertTrue(dataSource.loadCovenantsFromCampaign(campaign).contains(covenantOne));
-            assertTrue(dataSource.loadCovenantsFromCampaign(campaign).contains(covenantTwo));
+            assertEquals(2, dataSource.loadCovenantIdsFromCampaign(campaign).size());
+            assertTrue(dataSource.loadCovenantIdsFromCampaign(campaign).contains(covenantOne.getId()));
+            assertTrue(dataSource.loadCovenantIdsFromCampaign(campaign).contains(covenantTwo.getId()));
         }
 
         @Test
@@ -241,13 +240,13 @@ public class CampaignTests {
             Campaign campaign = generateCampaign();
             dataSource.addCampaign(campaign);
 
-            assertTrue(dataSource.loadCovenantsFromCampaign(campaign).isEmpty());
+            assertTrue(dataSource.loadCovenantIdsFromCampaign(campaign).isEmpty());
         }
 
         @Test
         @DisplayName("returns an empty list for a null campaign")
         void returnsEmptyListForNullCampaign() {
-            assertTrue(dataSource.loadCovenantsFromCampaign(null).isEmpty());
+            assertTrue(dataSource.loadCovenantIdsFromCampaign(null).isEmpty());
         }
 
         @Test
@@ -255,18 +254,18 @@ public class CampaignTests {
         void returnOnlyChildren(){
             Campaign campaignOne = generateCampaign();
             Campaign campaignTwo = generateCampaign();
-            Covenant covenantOne = generateCovenantMinusArts();
-            Covenant covenantTwo = generateCovenantMinusArts();
+            Covenant covenantOne = generateCovenant();
+            Covenant covenantTwo = generateCovenant();
 
             dataSource.addCampaign(campaignOne);
             dataSource.addCampaign(campaignTwo);
             assertTrue(addCovenant(covenantOne, campaignOne.getName()));
             assertTrue(addCovenant(covenantTwo, campaignTwo.getName()));
 
-            assertEquals(1, dataSource.loadCovenantsFromCampaign(campaignOne).size());
-            assertEquals(covenantOne, dataSource.loadCovenantsFromCampaign(campaignOne).getFirst());
-            assertEquals(1, dataSource.loadCovenantsFromCampaign(campaignTwo).size());
-            assertEquals(covenantTwo, dataSource.loadCovenantsFromCampaign(campaignTwo).getFirst());
+            assertEquals(1, dataSource.loadCovenantIdsFromCampaign(campaignOne).size());
+            assertEquals(covenantOne.getId(), dataSource.loadCovenantIdsFromCampaign(campaignOne).getFirst());
+            assertEquals(1, dataSource.loadCovenantIdsFromCampaign(campaignTwo).size());
+            assertEquals(covenantTwo.getId(), dataSource.loadCovenantIdsFromCampaign(campaignTwo).getFirst());
         }
     }
 

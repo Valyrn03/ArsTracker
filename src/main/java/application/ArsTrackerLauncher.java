@@ -1,9 +1,6 @@
 package application;
 
-import application.data.CampaignDataSource;
-import application.data.DataSource;
-import application.data.IDataSource;
-import application.data.MockDataSource;
+import application.data.*;
 import application.gui.LaunchGUI;
 import application.commands.*;
 import application.terminal.HelpView;
@@ -101,7 +98,7 @@ public class ArsTrackerLauncher {
         commands.entrySet().removeIf(entry -> !entry.getKey().equals("openGUI") && !entry.getKey().equals("close") && !entry.getKey().equals("help"));
 
         commands.put("back", new ReturnCommand(framework));
-        commands.put("list", new ListCharacterCommand(framework));
+        commands.put("list", new ListCovenantsCommand(framework, new CampaignDataSource(dataSource), new CovenantDataSource(dataSource)));
         commands.put("select", new CharacterSelectionCommand(framework));
         commands.put("create", new CharacterCreationCommand(framework));
         commands.put("delete", new CampaignDeletionCommand(framework));

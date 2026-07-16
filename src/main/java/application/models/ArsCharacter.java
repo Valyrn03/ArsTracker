@@ -1,22 +1,24 @@
 package application.models;
 
 import application.models.enums.Attribute;
+import application.models.enums.ExtraneousAttribute;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.*;
 
+@EqualsAndHashCode
 public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
-
+    @Setter @Getter private int id;
     @Getter private String name;
     private Map<Attribute, Integer> baseAttributes;
     //Ability <-> XP
     @Getter private List<Ability> abilities;
     private Map<ExtraneousAttribute, Integer> attributes;
-    private String campaign;
     @Getter private CharacterType characterType;
     @Getter ArrayList<CharacterFeature> features;
-    @Getter UUID id;
 
     private ArsCharacter(){
         baseAttributes = new HashMap<>();
@@ -32,14 +34,13 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
 
     There must be a campaign for the character to exist
      */
-    public static ArsCharacter buildCharacterFromMap(Map<String, String> map, Campaign campaign){
+    public static ArsCharacter buildCharacterFromMap(Map<String, String> map){
         ArsCharacter character = new ArsCharacter();
 
-        character.id = UUID.fromString(map.get("id"));
+        character.id = Integer.parseInt(map.get("id"));
         character.name = map.get("name");
-        character.campaign = map.get("campaign");
 
-        character.attributes.put(ExtraneousAttribute.AGE, campaign.currentSeason - Integer.parseInt(map.get("birth_season")));
+        character.attributes.put(ExtraneousAttribute.BIRTH_SEASON, Integer.parseInt(map.get("birth_season")));
         character.characterType = CharacterType.valueOf(map.get("character_type"));
 
         for(Attribute attribute: Attribute.values()){
@@ -53,10 +54,19 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
         return null;
     }
 
-    public static enum CharacterType {
-        MAGUS,
-        COMPANION,
-        GROG
+    public enum CharacterType {
+        MAGUS (0),
+        COMPANION (1),
+        GROG (2);
+
+        private final int id;
+        CharacterType(int i) {
+            this.id = i;
+        }
+
+        public int id(){
+            return this.id;
+        }
     }
 
     private void setDefaultAttributes(){
@@ -65,11 +75,8 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
         }
     }
 
-    public void setAttributes(ArrayList<Integer> characteristics){
-        Attribute[] attributes = Attribute.values();
-        for(int i = 0; i < characteristics.size(); i++){
-            baseAttributes.put(attributes[i], characteristics.get(i));
-        }
+    public void setAttributes(Map<Attribute, Integer> map){
+        baseAttributes.putAll(map);
     }
 
     public int getAttribute(Attribute attribute){
@@ -85,8 +92,8 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
         StringBuilder builder = new StringBuilder();
         //Name, Type, Age, Characteristics, Abilities, Virtues & Flaws
         builder.append(name).append("\n\n").append(characterType.toString());
-        if(attributes.containsKey(ExtraneousAttribute.AGE)){
-            builder.append("(").append(attributes.get(ExtraneousAttribute.AGE).toString()).append(")\n\n");
+        if(attributes.containsKey(ExtraneousAttribute.BIRTH_SEASON)){
+            builder.append("(").append(attributes.get(ExtraneousAttribute.BIRTH_SEASON).toString()).append(")\n\n");
         }
 
         builder.append("CHARACTERISTICS\n");

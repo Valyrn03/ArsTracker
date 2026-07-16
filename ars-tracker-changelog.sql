@@ -7,7 +7,7 @@ CREATE TABLE character (id INTEGER PRIMARY KEY ASC, name VARCHAR(50), campaign_i
 CREATE TABLE ability_tracker (id INTEGER PRIMARY KEY ASC, player_id VARCHAR(36), ability_id VARCHAR(36), category_id VARCHAR(32), experience INT)
 
 -- changeset liquibase:3
-CREATE TABLE ability (id INTEGER PRIMARY KEY ASC, name VARCHAR(32), speciality VARCHAR(36), description VARCHAR (1024))
+CREATE TABLE ability (id INTEGER PRIMARY KEY ASC, name VARCHAR(32), speciality VARCHAR(36), description VARCHAR (1024)) --name is an FK to ability_category
 
 -- changeset liquibase:4
 CREATE TABLE ability_category (name VARCHAR(32), overarchingType VARCHAR(16), isCategorical INT, PRIMARY KEY (name))
@@ -88,4 +88,10 @@ ALTER TABLE covenant DROP COLUMN TeVis
 ALTER TABLE covenant DROP COLUMN ViVis
 
 -- changeset liquibase:add_vis_table
-CREATE TABLE vis (covenant_id INT, art VARCHAR(16), value INT, PRIMARY KEY(covenant_id, vis))
+CREATE TABLE vis (covenant_id INT, art VARCHAR(16), value INT, PRIMARY KEY(covenant_id, art))
+
+-- changeset liquibase:remove_campaign_col_from_character
+ALTER TABLE character DROP COLUMN campaign_id
+
+-- changeset liquibase:add_covenant_id_col_to_character
+ALTER TABLE character ADD COLUMN covenant_id INTEGER

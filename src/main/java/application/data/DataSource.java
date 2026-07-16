@@ -1,5 +1,6 @@
 package application.data;
 
+import application.models.enums.AbilityCategory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.Liquibase;
