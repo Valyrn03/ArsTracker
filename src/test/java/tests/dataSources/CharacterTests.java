@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.sql.*;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -222,7 +223,7 @@ public class CharacterTests {
 
             Optional<CharacterFeature> loadedFeature = dataSource.loadFeatureFromId(feature.getId());
             assertEquals(Optional.of(feature), loadedFeature,
-                    () -> feature.toString() + "\nvs\n" + loadedFeature.map(CharacterFeature::toString));
+                    () -> Optional.of(feature).toString() + "\nvs\n" + loadedFeature.map(CharacterFeature::toString));
         }
 
         @Test
@@ -232,29 +233,72 @@ public class CharacterTests {
             assertEquals(Optional.empty(), dataSource.loadFeatureFromId(feature.getId()));
         }
 
+        //TODO already using a connection to an actual ability...
         @Test
         void returnsAbilityFeature(){
+            CharacterFeature feature = generateCharacterFeature();
+            feature.addAbility(generateAbility());
 
+            dataSource.saveNewFeature(feature);
+
+            Optional<CharacterFeature> loadedFeature = dataSource.loadFeatureFromId(feature.getId());
+            assertEquals(Optional.of(feature), loadedFeature,
+                    () -> Optional.of(feature).toString() + "\nvs\n" + loadedFeature.map(CharacterFeature::toString));
         }
 
         @Test
         void returnsMultipleAbilityFeature(){
+            CharacterFeature feature = generateCharacterFeature();
 
+            for(int i = 0; i < 2; i++){
+                feature.addAbility(generateAbility());
+            }
+
+            dataSource.saveNewFeature(feature);
+
+            Optional<CharacterFeature> loadedFeature = dataSource.loadFeatureFromId(feature.getId());
+            assertEquals(Optional.of(feature), loadedFeature,
+                    () -> Optional.of(feature).toString() + "\nvs\n" + loadedFeature.map(CharacterFeature::toString));
         }
 
         @Test
         void returnsSingularRuleFeature(){
+            CharacterFeature feature = generateCharacterFeature();
+            feature.addRule(UUID.randomUUID().toString());
 
+            dataSource.saveNewFeature(feature);
+
+            Optional<CharacterFeature> loadedFeature = dataSource.loadFeatureFromId(feature.getId());
+            assertEquals(Optional.of(feature), loadedFeature,
+                    () -> Optional.of(feature).toString() + "\nvs\n" + loadedFeature.map(CharacterFeature::toString));
         }
 
         @Test
         void returnsMultipleRuleFeature(){
+            CharacterFeature feature = generateCharacterFeature();
 
+            for(int i = 0; i < 2; i++){
+                feature.addRule(UUID.randomUUID().toString());
+            }
+
+            dataSource.saveNewFeature(feature);
+
+            Optional<CharacterFeature> loadedFeature = dataSource.loadFeatureFromId(feature.getId());
+            assertEquals(Optional.of(feature), loadedFeature,
+                    () -> Optional.of(feature).toString() + "\nvs\n" + loadedFeature.map(CharacterFeature::toString));
         }
 
         @Test
         void returnsAbilityAndRuleFeature(){
+            CharacterFeature feature = generateCharacterFeature();
+            feature.addAbility(generateAbility());
+            feature.addRule(UUID.randomUUID().toString());
 
+            dataSource.saveNewFeature(feature);
+
+            Optional<CharacterFeature> loadedFeature = dataSource.loadFeatureFromId(feature.getId());
+            assertEquals(Optional.of(feature), loadedFeature,
+                    () -> Optional.of(feature).toString() + "\nvs\n" + loadedFeature.map(CharacterFeature::toString));
         }
     }
 

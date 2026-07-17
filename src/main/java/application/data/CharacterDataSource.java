@@ -4,6 +4,7 @@ import application.models.Ability;
 import application.models.ArsCharacter;
 import application.models.CharacterFeature;
 import application.models.Covenant;
+import application.models.enums.AbilityCategory;
 import application.models.enums.Attribute;
 import application.models.enums.ExtraneousAttribute;
 import com.zaxxer.hikari.HikariDataSource;
@@ -96,7 +97,49 @@ public class CharacterDataSource implements ICharacterDataSource{
 
     @Override
     public Optional<CharacterFeature> loadFeatureFromId(int featureId) {
-        return Optional.empty();
+        CharacterFeature feature = null;
+        try(Connection connection = source.getConnection()){
+            try(PreparedStatement statement = connection.prepareStatement("SELECT * FROM feature WHERE id = ?")){
+                statement.setInt(1, featureId);
+
+                try(ResultSet resultSet = statement.executeQuery()){
+                    feature = new CharacterFeature(
+                            featureId,
+                            resultSet.getString("name"),
+                            resultSet.getString("description"),
+                            resultSet.getInt("isVirtue") == 1,
+                            resultSet.getInt("isMajor") == 1
+                    );
+                }
+            }
+
+            try(PreparedStatement statement = connection.prepareStatement("SELECT description FROM feature_rule WHERE feature_id = ?")){
+                statement.setInt(1, featureId);
+
+                try(ResultSet resultSet = statement.executeQuery()){
+                    while(resultSet.next()){
+                        feature.addRule(resultSet.getString("description"));
+                    }
+                }
+            }
+
+            //TODO handling categorical abilities here <- maybe instead of an FK to ability_category an FK to the ability table itself?
+            try(PreparedStatement statement = connection.prepareStatement("SELECT ability, value FROM ability_feature_rule WHERE feature_id = ?")){
+                statement.setInt(1, featureId);
+
+                try(ResultSet resultSet = statement.executeQuery()){
+                    while(resultSet.next()){
+                        AbilityCategory category = AbilityCategory.valueOf(resultSet.getString("ability"));
+                        feature.addAbility(new Ability(category, null, resultSet.getInt("value")));
+                    }
+                }
+            }
+        }catch (SQLException exp){
+            log.error("Failed to find feature {} due to error {}", featureId, exp.getMessage());
+            feature = null;
+        }
+
+        return Optional.ofNullable(feature);
     }
 
     @Override
@@ -146,11 +189,82 @@ public class CharacterDataSource implements ICharacterDataSource{
     /*
     In order to save a new feature need to:
         Add it to "feature"
-        For each ability, add a ability_feature_rule
-        For each
+        For each ability, add it to ability_feature_rule
+        For each rule, add it to feature_rule
      */
     @Override
     public boolean saveNewFeature(CharacterFeature feature) {
-        return false;
+        if(feature == null){
+            return false;
+        }
+        try(Connection connection = source.getConnection()){
+            connection.setAutoCommit(false);
+            try(PreparedStatement statement = connection.prepareStatement("INSERT INTO feature (name, description, isVirtue, isMajor) VALUES (?, ?, ?, ?)");
+                PreparedStatement idStatement = connection.prepareStatement("SELECT last_insert_rowid()")){
+                statement.setString(1, feature.getName());
+                statement.setString(2, feature.getDescription());
+
+                if(feature.getType().equals(CharacterFeature.FeatureType.VIRTUE)){
+                    statement.setInt(3, 1);
+                }else{
+                    statement.setInt(3, 0);
+                }
+
+                if(feature.isMajor()){
+                    statement.setInt(4, 1);
+                }else{
+                    statement.setInt(4, 0);
+                }
+
+                statement.execute();
+
+                ResultSet resultSet = idStatement.executeQuery();
+                feature.setId(resultSet.getInt(1));
+            }catch (SQLException ex){
+                log.error("Failed to add feature {} to table with error {}", feature.getName(), ex.getMessage());
+                connection.rollback();
+                if(feature.getId() != 0){
+                    feature.setId(0);
+                }
+                throw ex;
+            }
+            log.info("Added feature {} to base table", feature.getName());
+
+            for(Ability ability : feature.getAbilities()){
+                try(PreparedStatement statement = connection.prepareStatement("INSERT INTO ability_feature_rule VALUES (?, ?, ?)")){
+                    statement.setInt(1, feature.getId());
+                    statement.setString(2, ability.toString());
+                    statement.setInt(3, ability.getExperience());
+
+                    statement.execute();
+                }catch (SQLException ex){
+                    log.error("Failed to add ability {} to feature {} with error {}", ability.toString(), feature.getName(), ex.getMessage());
+                    connection.rollback();
+                    throw ex;
+                }
+            }
+            log.info("Added feature abilities");
+
+            for(String rule : feature.getRules()){
+                try(PreparedStatement statement = connection.prepareStatement("INSERT INTO feature_rule VALUES (?, ?)")){
+                    statement.setInt(1, feature.getId());
+                    statement.setString(2, rule);
+
+                    statement.execute();
+                }catch (SQLException ex){
+                    log.error("Failed to add rule to feature {} with error {}", feature.getName(), ex.getMessage());
+                    connection.rollback();
+                    throw ex;
+                }
+            }
+            log.info("Added feature rules");
+
+            connection.commit();
+        }catch (SQLException exp){
+            log.error("Failed to add feature with error {}", exp.getMessage());
+            return false;
+        }
+
+        return true;
     }
 }

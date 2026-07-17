@@ -1,11 +1,15 @@
 package application.models;
 
 import application.models.enums.Attribute;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.*;
 
+@ToString
+@EqualsAndHashCode
 public class CharacterFeature implements Comparable<CharacterFeature> {
     @Setter @Getter private int id;
     @Getter private FeatureType type;
@@ -16,6 +20,21 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
     @Getter private List<String> rules;
 
     public CharacterFeature(String name, String description, boolean isVirtue, boolean isMajor){
+        this.name = name;
+        this.description = description;
+
+        if(isVirtue){
+            type = FeatureType.VIRTUE;
+        }else{
+            type = FeatureType.FLAW;
+        }
+        this.isMajor = isMajor;
+        abilities = new ArrayList<>();
+        rules = new ArrayList<>();
+    }
+
+    public CharacterFeature(int id, String name, String description, boolean isVirtue, boolean isMajor){
+        this.id = id;
         this.name = name;
         this.description = description;
 
@@ -40,11 +59,6 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
 
     public void addRule(String rule){
         this.rules.add(rule);
-    }
-
-    @Override
-    public String toString(){
-        return name;
     }
 
     /*
