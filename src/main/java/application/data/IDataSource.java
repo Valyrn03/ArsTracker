@@ -11,4 +11,8 @@ public interface IDataSource {
     void close();
 
     public Connection getConnection();
+
+    List<Ability> loadAbilitiesById(int id);
+
+    boolean addAbility(int id, Ability ability);
 }

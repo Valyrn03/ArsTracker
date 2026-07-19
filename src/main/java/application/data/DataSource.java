@@ -1,5 +1,6 @@
 package application.data;
 
+import application.models.Ability;
 import application.models.enums.AbilityCategory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -79,6 +80,42 @@ public class DataSource implements IDataSource{
         }
     }
 
+    @Override
+    public List<Ability> loadAbilitiesById(int id) {
+        List<Ability> abilities = new ArrayList<>();
+
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM ability WHERE owner_id = ?")){
+            statement.setInt(1, id);
+
+            try(ResultSet resultSet = statement.executeQuery()){
+                while(resultSet.next()){
+                    String abilitySubtype = resultSet.getString("ability");
+                    AbilityCategory category = AbilityCategory.valueOf(resultSet.getString("category"));
+                    String speciality = resultSet.getString("speciality");
+                    int exp = resultSet.getInt("experience");
+
+                    Ability ability = new Ability(category, abilitySubtype, speciality, exp);
+                    abilities.add(ability);
+                }
+            }
+        }catch (SQLException exp){
+            log.error("Failed to load abilities for id {} with error {}", id, exp.getMessage());
+            return Collections.emptyList();
+        }
+
+        if(abilities.isEmpty()){
+            log.info("No abilities were found in relation to id {}", id);
+        }
+
+        return abilities;
+    }
+
+    @Override
+    public boolean addAbility(int id, Ability ability) {
+        return false;
+    }
+
     private void populateTable(){
         resetArts();
         resetAbilities();
@@ -121,7 +158,7 @@ public class DataSource implements IDataSource{
     }
 
     private void resetAbilities(){
-        try(Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement("INSERT OR IGNORE INTO ability_category(name, overarchingType) VALUES (?, ?)")){
+        try(Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement("INSERT OR IGNORE INTO ability_category(ability, category) VALUES (?, ?)")){
             for(String ability : generalAbilities()){
                 statement.setString(1, ability);
                 statement.setString(2, "general");

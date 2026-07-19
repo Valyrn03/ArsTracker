@@ -70,36 +70,6 @@ public class CharacterDataSource implements ICharacterDataSource{
         return false;
     }
 
-    @Override
-    public List<Ability> loadAbilities(int id) {
-        List<String> abilityIds = new ArrayList<>();
-
-        try(Connection connection = source.getConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT ability FROM ability WHERE owner_id = ?")){
-            statement.setInt(1, id);
-
-            try(ResultSet resultSet = statement.executeQuery()){
-                while(resultSet.next()){
-                    abilityIds.add(resultSet.getString("ability"));
-                }
-            }
-        }catch (SQLException exp){
-            log.error("Failed to load abilities for id {} with error {}", id, exp.getMessage());
-            return Collections.emptyList();
-        }
-
-        if(abilityIds.isEmpty()){
-            log.info("No abilities were found in relation to id {}", id);
-            return Collections.emptyList();
-        }
-
-        List<Ability> abilities = new ArrayList<>();
-        for(String ability : abilityIds){
-            loadAbilityFromId(id, ability).ifPresent(abilities::add);
-        }
-        return abilities;
-    }
-
     /*
     Query `applied_feature` table to get the features the given character has
         Then the `feature` table to get the important information
@@ -143,7 +113,7 @@ public class CharacterDataSource implements ICharacterDataSource{
             return Optional.empty();
         }
 
-        for(Ability ability : loadAbilities(featureId)){
+        for(Ability ability : source.loadAbilitiesById(featureId)){
             feature.addAbility(ability);
         }
 
@@ -182,11 +152,6 @@ public class CharacterDataSource implements ICharacterDataSource{
         }
 
         return true;
-    }
-
-    @Override
-    public boolean addAbility(int id, Ability ability) {
-        return false;
     }
 
     @Override
@@ -274,34 +239,5 @@ public class CharacterDataSource implements ICharacterDataSource{
         }
 
         return true;
-    }
-
-    @Override
-    public Optional<Ability> loadAbilityFromId(int ownerId, String abilityName) {
-        Ability ability = null;
-        try(Connection connection = source.getConnection();
-            PreparedStatement categoryQuery = connection.prepareStatement("SELECT category FROM ability_category WHERE ability = ?");
-           PreparedStatement statement = connection.prepareStatement("SELECT * FROM ability WHERE owner_id = ? AND ability = ?")){
-            categoryQuery.setString(1, abilityName);
-            statement.setInt(1, ownerId);
-            statement.setString(2, abilityName);
-
-            AbilityCategory category = null;
-            try(ResultSet resultSet = categoryQuery.executeQuery()){
-                category = AbilityCategory.valueOf(resultSet.getString("category"));
-            }
-
-            try(ResultSet resultSet = statement.executeQuery()){
-                if(!resultSet.isBeforeFirst()){
-                    log.info("Failed to find ability ({}, {})", ownerId, abilityName);
-                }
-
-                ability = new Ability(category, resultSet.getString("ability"), resultSet.getString("speciality"), resultSet.getInt("experience"));
-            }
-        }catch (SQLException exp){
-            log.error("Failed to load ability ({}, {}) due to error {}", ownerId, abilityName, exp.getMessage());
-        }
-
-        return Optional.ofNullable(ability);
     }
 }

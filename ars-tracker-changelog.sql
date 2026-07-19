@@ -61,5 +61,8 @@ DROP TABLE IF EXISTS ability_feature_rule
 CREATE TABLE ability (owner_id INTEGER, ability VARCHAR(36), speciality VARCHAR(36), experience INTEGER, PRIMARY KEY(owner_id, ability))
 
 -- changeset liquibase:adding_categorical_information
-CREATE TABLE ability_category (ability VARCHAR(36) PRIMARY KEY, category VARCHAR(36))
+CREATE TABLE ability_category (ability VARCHAR(36) PRIMARY KEY, category VARCHAR(36)) --general/academic/martial/supernatural
     --Contains instances where ability and category will be nearly identical, to enable valueOf to work correctly
+
+-- changeset liquibase:forgot_structure_of_ability_table...
+ALTER TABLE ability ADD COLUMN category VARCHAR(36)

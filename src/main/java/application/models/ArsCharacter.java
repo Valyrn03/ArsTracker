@@ -156,6 +156,8 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
         features.add(feature);
     }
 
+    public void addAbility(Ability ability){abilities.add(ability);};
+
     public String serialize(){
         return null;
     }

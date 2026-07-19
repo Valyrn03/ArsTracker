@@ -2,6 +2,7 @@ package tests.dataSources;
 
 import application.data.*;
 import application.models.*;
+import application.models.enums.AbilityCategory;
 import application.models.enums.Attribute;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,17 +118,25 @@ public class CharacterTests {
     class LoadAbilitiesFromId{
         @Test
         @DisplayName("returns a singular ability from a singular character")
-        void returnsSingular(){
+        void returnSingularGeneralCharacterAbility(){
             ArsCharacter character = generateCharacter();
-            Ability ability = generateAbility();
+            Ability ability = generateAbility(false);
 
             dataSource.addBaseCharacterToCovenant(covenant, character);
-            dataSource.addAbility(character.getId(), ability);
+            superSource.addAbility(character.getId(), ability);
 
-            List<Ability> abilities = dataSource.loadAbilities(character.getId());
+            List<Ability> abilities = superSource.loadAbilitiesById(character.getId());
 
             assertEquals(1, abilities.size());
             assertTrue(abilities.contains(ability));
+        }
+
+        @Test
+        void returnSingularCategoricalCharacterAbility(){
+            ArsCharacter character = generateCharacter();
+            Ability ability = generateAbility();
+
+
         }
 
         @Test
@@ -138,10 +147,10 @@ public class CharacterTests {
             Ability abilityTwo = generateAbility();
 
             dataSource.addBaseCharacterToCovenant(covenant, character);
-            dataSource.addAbility(character.getId(), abilityOne);
-            dataSource.addAbility(character.getId(), abilityTwo);
+            superSource.addAbility(character.getId(), abilityOne);
+            superSource.addAbility(character.getId(), abilityTwo);
 
-            List<Ability> abilities = dataSource.loadAbilities(character.getId());
+            List<Ability> abilities = superSource.loadAbilitiesById(character.getId());
 
             assertEquals(2, abilities.size());
             assertTrue(abilities.contains(abilityOne));
@@ -151,7 +160,33 @@ public class CharacterTests {
         @Test
         @DisplayName("returns an empty list on a nonexistent character")
         void returnsEmptyOnNonexistent(){
-            assertTrue(dataSource.loadAbilities(generateCharacter().getId()).isEmpty());
+            assertTrue(superSource.loadAbilitiesById(generateCharacter().getId()).isEmpty());
+        }
+
+        @Test
+        void returnsSingularGeneralFeatureAbility(){
+
+        }
+
+        @Test
+        void returnsSingularCategoricalFeatureAbility(){
+
+        }
+
+        @Test
+        @DisplayName("Given one ability that two characters have, return the correct one (difference would be XP and speciality)")
+        void returnsOnSharedAbility(){
+
+        }
+
+        @Test
+        void returnsTwoTypesOfCategoricalAbilities(){
+
+        }
+
+        @Test
+        void ignoresSubtypeOnNonCategorical(){
+
         }
     }
 
@@ -348,7 +383,7 @@ public class CharacterTests {
 
             dataSource.addBaseCharacterToCovenant(covenant, character);
 
-            assertTrue(dataSource.addAbility(character.getId(), ability));
+            assertTrue(superSource.addAbility(character.getId(), ability));
         }
 
         @Test
@@ -359,8 +394,8 @@ public class CharacterTests {
 
             dataSource.addBaseCharacterToCovenant(covenant, character);
 
-            assertTrue(dataSource.addAbility(character.getId(), abilityOne));
-            assertTrue(dataSource.addAbility(character.getId(), abilityTwo));
+            assertTrue(superSource.addAbility(character.getId(), abilityOne));
+            assertTrue(superSource.addAbility(character.getId(), abilityTwo));
         }
 
         @Test
@@ -368,12 +403,12 @@ public class CharacterTests {
             ArsCharacter character = generateCharacter();
             dataSource.addBaseCharacterToCovenant(covenant, character);
 
-            assertFalse(dataSource.addAbility(character.getId(), null));
+            assertFalse(superSource.addAbility(character.getId(), null));
         }
 
         @Test
         void returnsFalseOnNonexistentCharacter(){
-            assertFalse(dataSource.addAbility(generateCharacter().getId(), generateAbility()));
+            assertFalse(superSource.addAbility(generateCharacter().getId(), generateAbility()));
         }
     }
 
@@ -497,10 +532,5 @@ public class CharacterTests {
 
             assertTrue(dataSource.saveNewFeature(feature));
         }
-    }
-
-    @Nested
-    class LoadAbilityFromId{
-
     }
 }

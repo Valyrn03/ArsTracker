@@ -13,7 +13,7 @@ public interface ICharacterDataSource {
 
     boolean updateCharacterCharacteristics(ArsCharacter character);
 
-    List<Ability> loadAbilities(int id);
+
 
     List<CharacterFeature> loadFeaturesFromCharacter(ArsCharacter character);
 
@@ -21,11 +21,7 @@ public interface ICharacterDataSource {
 
     boolean addBaseCharacterToCovenant(Covenant covenant, ArsCharacter character);
 
-    boolean addAbility(int id, Ability ability);
-
     boolean addFeatureToCharacter(ArsCharacter character, CharacterFeature feature);
 
     boolean saveNewFeature(CharacterFeature feature);
-
-    Optional<Ability> loadAbilityFromId(int ownerId, String ability);
 }
