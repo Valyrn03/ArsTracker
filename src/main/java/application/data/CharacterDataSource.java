@@ -7,14 +7,10 @@ import application.models.Covenant;
 import application.models.enums.AbilityCategory;
 import application.models.enums.Attribute;
 import application.models.enums.ExtraneousAttribute;
-import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 public class CharacterDataSource implements ICharacterDataSource{
@@ -74,14 +70,34 @@ public class CharacterDataSource implements ICharacterDataSource{
         return false;
     }
 
-    /*
-    Load from the `ability_tracker` table to get which type of ability and the specific instance
-        `ability_category` stores which ability, as read from the list of abilities in the rulebook
-        `ability` stores a specific instance, for example if there's multiple options
-     */
     @Override
-    public List<Ability> loadAbilitiesFromCharacter(ArsCharacter character) {
-        return List.of();
+    public List<Ability> loadAbilities(int id) {
+        List<String> abilityIds = new ArrayList<>();
+
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT ability FROM ability WHERE owner_id = ?")){
+            statement.setInt(1, id);
+
+            try(ResultSet resultSet = statement.executeQuery()){
+                while(resultSet.next()){
+                    abilityIds.add(resultSet.getString("ability"));
+                }
+            }
+        }catch (SQLException exp){
+            log.error("Failed to load abilities for id {} with error {}", id, exp.getMessage());
+            return Collections.emptyList();
+        }
+
+        if(abilityIds.isEmpty()){
+            log.info("No abilities were found in relation to id {}", id);
+            return Collections.emptyList();
+        }
+
+        List<Ability> abilities = new ArrayList<>();
+        for(String ability : abilityIds){
+            loadAbilityFromId(id, ability).ifPresent(abilities::add);
+        }
+        return abilities;
     }
 
     /*
@@ -122,24 +138,16 @@ public class CharacterDataSource implements ICharacterDataSource{
                     }
                 }
             }
-
-            //TODO handling categorical abilities here <- maybe instead of an FK to ability_category an FK to the ability table itself?
-            try(PreparedStatement statement = connection.prepareStatement("SELECT ability, value FROM ability_feature_rule WHERE feature_id = ?")){
-                statement.setInt(1, featureId);
-
-                try(ResultSet resultSet = statement.executeQuery()){
-                    while(resultSet.next()){
-                        AbilityCategory category = AbilityCategory.valueOf(resultSet.getString("ability"));
-                        feature.addAbility(new Ability(category, null, resultSet.getInt("value")));
-                    }
-                }
-            }
         }catch (SQLException exp){
             log.error("Failed to find feature {} due to error {}", featureId, exp.getMessage());
-            feature = null;
+            return Optional.empty();
         }
 
-        return Optional.ofNullable(feature);
+        for(Ability ability : loadAbilities(featureId)){
+            feature.addAbility(ability);
+        }
+
+        return Optional.of(feature);
     }
 
     @Override
@@ -177,7 +185,7 @@ public class CharacterDataSource implements ICharacterDataSource{
     }
 
     @Override
-    public boolean addAbilityToCharacter(ArsCharacter character, Ability ability) {
+    public boolean addAbility(int id, Ability ability) {
         return false;
     }
 
@@ -266,5 +274,34 @@ public class CharacterDataSource implements ICharacterDataSource{
         }
 
         return true;
+    }
+
+    @Override
+    public Optional<Ability> loadAbilityFromId(int ownerId, String abilityName) {
+        Ability ability = null;
+        try(Connection connection = source.getConnection();
+            PreparedStatement categoryQuery = connection.prepareStatement("SELECT category FROM ability_category WHERE ability = ?");
+           PreparedStatement statement = connection.prepareStatement("SELECT * FROM ability WHERE owner_id = ? AND ability = ?")){
+            categoryQuery.setString(1, abilityName);
+            statement.setInt(1, ownerId);
+            statement.setString(2, abilityName);
+
+            AbilityCategory category = null;
+            try(ResultSet resultSet = categoryQuery.executeQuery()){
+                category = AbilityCategory.valueOf(resultSet.getString("category"));
+            }
+
+            try(ResultSet resultSet = statement.executeQuery()){
+                if(!resultSet.isBeforeFirst()){
+                    log.info("Failed to find ability ({}, {})", ownerId, abilityName);
+                }
+
+                ability = new Ability(category, resultSet.getString("ability"), resultSet.getString("speciality"), resultSet.getInt("experience"));
+            }
+        }catch (SQLException exp){
+            log.error("Failed to load ability ({}, {}) due to error {}", ownerId, abilityName, exp.getMessage());
+        }
+
+        return Optional.ofNullable(ability);
     }
 }

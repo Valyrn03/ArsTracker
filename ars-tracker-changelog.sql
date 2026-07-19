@@ -44,3 +44,22 @@ CREATE TABLE ability_feature_rule (feature_id INTEGER, ability VARCHAR(36), valu
 
 -- changeset liquibase:recreate_feature_rule
 CREATE TABLE feature_rule (feature_id INTEGER, description VARCHAR(512), PRIMARY KEY (feature_id, description))
+
+-- changeset liquibase:drop_all_abilities_1
+DROP TABLE IF EXISTS ability_tracker
+
+-- changeset liquibase:drop_all_abilities_2
+DROP TABLE IF EXISTS ability
+
+-- changeset liquibase:drop_all_abilities_3
+DROP TABLE IF EXISTS ability_category
+
+-- changeset liquibase:drop_all_abilities_4
+DROP TABLE IF EXISTS ability_feature_rule
+
+-- changeset liquibase:re_add_ability_table
+CREATE TABLE ability (owner_id INTEGER, ability VARCHAR(36), speciality VARCHAR(36), experience INTEGER, PRIMARY KEY(owner_id, ability))
+
+-- changeset liquibase:adding_categorical_information
+CREATE TABLE ability_category (ability VARCHAR(36) PRIMARY KEY, category VARCHAR(36))
+    --Contains instances where ability and category will be nearly identical, to enable valueOf to work correctly

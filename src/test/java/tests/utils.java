@@ -97,9 +97,6 @@ public class utils {
         AbilityCategory category = AbilityCategory.values()[random.nextInt(AbilityCategory.values().length)];
         String speciality = UUID.randomUUID().toString();
         int exp = random.nextInt(1000);
-        if(Ability.isAbilityCategorical(category)){
-            return new Ability(category, speciality, exp);
-        }
 
         String type = UUID.randomUUID().toString();
         return new Ability(category, type, speciality, exp);

@@ -8,25 +8,25 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @EqualsAndHashCode
 public class Ability implements Comparable<Ability>{
     @Getter private AbilityCategory category;
-    private String subtype;
+    @Setter private Optional<String> subtype;
     private String speciality;
     @Setter @Getter private int experience;
 
-    public Ability(AbilityCategory category, String speciality, int experience){
-        this.category = category;
-        this.speciality = speciality;
-        this.experience = experience;
-    }
-
     public Ability(AbilityCategory category, String type, String speciality, int experience){
         this.category = category;
-        this.subtype = type;
         this.speciality = speciality;
         this.experience = experience;
+
+        if(isAbilityCategorical(category)){
+            this.subtype = Optional.of(type);
+        }else{
+            this.subtype = Optional.empty();
+        }
     }
 
     public int increment(int increment){
@@ -35,10 +35,7 @@ public class Ability implements Comparable<Ability>{
     }
 
     public String getAbility(){
-        if(subtype == null){
-            return category.name();
-        }
-        return subtype.toUpperCase();
+        return subtype.orElseGet(() -> category.toString());
     }
 
     @Override
@@ -52,18 +49,9 @@ public class Ability implements Comparable<Ability>{
         }
     }
 
+    @Override
     public String toString(){
-        StringBuilder builder = new StringBuilder();
-
-        if(subtype == null){
-            builder.append(category.name());
-        }else{
-            builder.append(subtype.toUpperCase()).append(" (").append(category.name()).append(")");
-        }
-
-        builder.append(" ").append(CharacterUtils.abilityExperienceToScore(experience)).append(" (").append(experience).append(")");
-
-        return builder.toString();
+        return getAbility() + " " + CharacterUtils.abilityExperienceToScore(experience) + " (" + experience + ")";
     }
 
     public static List<String> generalAbilities(){

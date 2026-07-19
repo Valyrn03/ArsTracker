@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.sql.*;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -115,7 +114,7 @@ public class CharacterTests {
     }
 
     @Nested
-    class LoadAbilitiesFromCharacter{
+    class LoadAbilitiesFromId{
         @Test
         @DisplayName("returns a singular ability from a singular character")
         void returnsSingular(){
@@ -123,9 +122,9 @@ public class CharacterTests {
             Ability ability = generateAbility();
 
             dataSource.addBaseCharacterToCovenant(covenant, character);
-            dataSource.addAbilityToCharacter(character, ability);
+            dataSource.addAbility(character.getId(), ability);
 
-            List<Ability> abilities = dataSource.loadAbilitiesFromCharacter(character);
+            List<Ability> abilities = dataSource.loadAbilities(character.getId());
 
             assertEquals(1, abilities.size());
             assertTrue(abilities.contains(ability));
@@ -139,10 +138,10 @@ public class CharacterTests {
             Ability abilityTwo = generateAbility();
 
             dataSource.addBaseCharacterToCovenant(covenant, character);
-            dataSource.addAbilityToCharacter(character, abilityOne);
-            dataSource.addAbilityToCharacter(character, abilityTwo);
+            dataSource.addAbility(character.getId(), abilityOne);
+            dataSource.addAbility(character.getId(), abilityTwo);
 
-            List<Ability> abilities = dataSource.loadAbilitiesFromCharacter(character);
+            List<Ability> abilities = dataSource.loadAbilities(character.getId());
 
             assertEquals(2, abilities.size());
             assertTrue(abilities.contains(abilityOne));
@@ -150,15 +149,9 @@ public class CharacterTests {
         }
 
         @Test
-        @DisplayName("returns empty list on null character")
-        void returnsEmptyOnNull(){
-            assertTrue(dataSource.loadAbilitiesFromCharacter(null).isEmpty());
-        }
-
-        @Test
         @DisplayName("returns an empty list on a nonexistent character")
         void returnsEmptyOnNonexistent(){
-            assertTrue(dataSource.loadAbilitiesFromCharacter(generateCharacter()).isEmpty());
+            assertTrue(dataSource.loadAbilities(generateCharacter().getId()).isEmpty());
         }
     }
 
@@ -355,7 +348,7 @@ public class CharacterTests {
 
             dataSource.addBaseCharacterToCovenant(covenant, character);
 
-            assertTrue(dataSource.addAbilityToCharacter(character, ability));
+            assertTrue(dataSource.addAbility(character.getId(), ability));
         }
 
         @Test
@@ -366,13 +359,8 @@ public class CharacterTests {
 
             dataSource.addBaseCharacterToCovenant(covenant, character);
 
-            assertTrue(dataSource.addAbilityToCharacter(character, abilityOne));
-            assertTrue(dataSource.addAbilityToCharacter(character, abilityTwo));
-        }
-
-        @Test
-        void returnsFalseOnNullCharacter(){
-            assertFalse(dataSource.addAbilityToCharacter(null, generateAbility()));
+            assertTrue(dataSource.addAbility(character.getId(), abilityOne));
+            assertTrue(dataSource.addAbility(character.getId(), abilityTwo));
         }
 
         @Test
@@ -380,12 +368,12 @@ public class CharacterTests {
             ArsCharacter character = generateCharacter();
             dataSource.addBaseCharacterToCovenant(covenant, character);
 
-            assertFalse(dataSource.addAbilityToCharacter(character, null));
+            assertFalse(dataSource.addAbility(character.getId(), null));
         }
 
         @Test
         void returnsFalseOnNonexistentCharacter(){
-            assertFalse(dataSource.addAbilityToCharacter(generateCharacter(), generateAbility()));
+            assertFalse(dataSource.addAbility(generateCharacter().getId(), generateAbility()));
         }
     }
 
@@ -509,5 +497,10 @@ public class CharacterTests {
 
             assertTrue(dataSource.saveNewFeature(feature));
         }
+    }
+
+    @Nested
+    class LoadAbilityFromId{
+
     }
 }
