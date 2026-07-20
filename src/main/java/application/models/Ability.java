@@ -14,7 +14,7 @@ import java.util.Optional;
 public class Ability implements Comparable<Ability>{
     @Getter private AbilityCategory category;
     @Setter private Optional<String> subtype;
-    private String speciality;
+    @Getter private String speciality;
     @Setter @Getter private int experience;
 
     public Ability(AbilityCategory category, String type, String speciality, int experience){

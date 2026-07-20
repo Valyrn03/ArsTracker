@@ -73,7 +73,7 @@ public class utils {
     public static ArsCharacter generateCharacter(){
         Map<String, String> characterMap = new HashMap<>();
         Random random = new Random();
-        characterMap.put("id", String.valueOf(random.nextInt()));
+        characterMap.put("id", String.valueOf(0));
         characterMap.put("name", characterMap.get("id"));
         characterMap.put("birth_season", String.valueOf(random.nextInt(1, 5000)));
         for(Attribute attribute : Attribute.values()){

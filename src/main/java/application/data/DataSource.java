@@ -25,8 +25,15 @@ public class DataSource implements IDataSource{
     private HikariConfig config;
     private HikariDataSource source;
 
+    public DataSource(Properties props){
+        config = new HikariConfig(props);
+        source = new HikariDataSource(config);
+
+        updateFromLiquibase();
+        populateTable();
+    }
+
     public DataSource(){
-//        config = new HikariConfig(String.valueOf(DataSource.class.getResource("properties")));
         Properties props = new Properties();
         props.setProperty("dataSourceClassName", "org.sqlite.SQLiteDataSource");
         props.setProperty("dataSource.databaseName", "prodDB");
@@ -113,7 +120,24 @@ public class DataSource implements IDataSource{
 
     @Override
     public boolean addAbility(int id, Ability ability) {
-        return false;
+        if(ability == null || id == 0){
+            return false;
+        }
+
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO ability (owner_id, ability, category, speciality, experience) VALUES (?, ?, ?, ?, ?)")){
+            statement.setInt(1, id);
+            statement.setString(2, ability.getAbility());
+            statement.setString(3, ability.getCategory().toString());
+            statement.setString(4, ability.getSpeciality());
+            statement.setInt(5, ability.getExperience());
+
+            statement.execute();
+        }catch (SQLException exp){
+            log.error("Failed to add ability {} to {} with error {}", ability, id, exp.getMessage());
+            return false;
+        }
+        return true;
     }
 
     private void populateTable(){
@@ -141,7 +165,7 @@ public class DataSource implements IDataSource{
         forms.add("Vim");
 
         try(Connection conn = getConnection();
-            PreparedStatement statement = conn.prepareStatement("INSERT OR IGNORE INTO ability_category (name, overarchingType) VALUES (?, ?)")){
+            PreparedStatement statement = conn.prepareStatement("INSERT OR IGNORE INTO ability_category (ability, category) VALUES (?, ?)")){
             for(String ability : techniques){
                 statement.setString(1, ability);
                 statement.setString(2, "technique");

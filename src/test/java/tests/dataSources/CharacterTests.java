@@ -165,28 +165,78 @@ public class CharacterTests {
 
         @Test
         void returnsSingularGeneralFeatureAbility(){
+            CharacterFeature feature = generateCharacterFeature();
+            feature.addAbility(generateAbility(false));
 
+            dataSource.saveNewFeature(feature);
+            superSource.addAbility(feature.getId(), feature.getAbilities().getFirst());
+
+            assertEquals(feature.getAbilities(), superSource.loadAbilitiesById(feature.getId()));
         }
 
         @Test
         void returnsSingularCategoricalFeatureAbility(){
+            CharacterFeature feature = generateCharacterFeature();
+            feature.addAbility(generateAbility(true));
 
+            dataSource.saveNewFeature(feature);
+            superSource.addAbility(feature.getId(), feature.getAbilities().getFirst());
+
+            assertEquals(feature.getAbilities(), superSource.loadAbilitiesById(feature.getId()));
         }
 
         @Test
         @DisplayName("Given one ability that two characters have, return the correct one (difference would be XP and speciality)")
         void returnsOnSharedAbility(){
+            Random random = new Random();
+            Ability ability = generateAbility();
+            Ability altAbility = new Ability(ability.getCategory(), ability.getAbility(), ability.getSpeciality(), random.nextInt(1000));
 
+            ArsCharacter characterOne = generateCharacter();
+            ArsCharacter characterTwo = generateCharacter();
+
+            dataSource.addBaseCharacterToCovenant(covenant, characterOne);
+            characterOne.addAbility(ability);
+            superSource.addAbility(characterOne.getId(), ability);
+
+            dataSource.addBaseCharacterToCovenant(covenant, characterTwo);
+            characterTwo.addAbility(altAbility);
+            superSource.addAbility(characterTwo.getId(), characterTwo.getAbilities().getFirst());
+
+            assertEquals(characterOne.getAbilities(), superSource.loadAbilitiesById(characterOne.getId()));
+            assertNotEquals(characterTwo.getAbilities(), superSource.loadAbilitiesById(characterOne.getId()));
+
+            assertEquals(characterTwo.getAbilities(), superSource.loadAbilitiesById(characterTwo.getId()));
+            assertNotEquals(characterOne.getAbilities(), superSource.loadAbilitiesById(characterTwo.getId()));
         }
 
         @Test
         void returnsTwoTypesOfCategoricalAbilities(){
+            Ability ability = generateAbility(true);
+            Ability altAbility = new Ability(ability.getCategory(), UUID.randomUUID().toString(), ability.getSpeciality(), ability.getExperience());
 
+            ArsCharacter character = generateCharacter();
+            character.addAbility(ability);
+            character.addAbility(altAbility);
+
+            superSource.addAbility(character.getId(), ability);
+            superSource.addAbility(character.getId(), altAbility);
+
+            assertEquals(2, superSource.loadAbilitiesById(character.getId()).size());
+            assertTrue(superSource.loadAbilitiesById(character.getId()).contains(ability));
+            assertTrue(superSource.loadAbilitiesById(character.getId()).contains(altAbility));
         }
 
         @Test
         void ignoresSubtypeOnNonCategorical(){
+            Ability genericAbility = generateAbility(false);
+            Ability fakeAbility = new Ability(genericAbility.getCategory(), UUID.randomUUID().toString(), genericAbility.getSpeciality(), genericAbility.getExperience());
 
+            ArsCharacter character = generateCharacter();
+            character.addAbility(fakeAbility);
+
+            superSource.addAbility(character.getId(), fakeAbility);
+            assertEquals(genericAbility, superSource.loadAbilitiesById(character.getId()).getFirst());
         }
     }
 

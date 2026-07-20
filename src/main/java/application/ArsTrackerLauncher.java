@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 @Slf4j
 public class ArsTrackerLauncher {
@@ -40,6 +41,7 @@ public class ArsTrackerLauncher {
         }catch (IOException exp){
             log.error("Failed to open terminal with error {}", exp.getMessage());
         }
+
         dataSource = new DataSource();
         commands = new HashMap<>();
         assert addDefaultLauncherCommands() == 3;
@@ -52,6 +54,7 @@ public class ArsTrackerLauncher {
     public static ArsTrackerLauncher getMockLauncher(Terminal io, List<String> ids){
         ArsTrackerLauncher launcher = new ArsTrackerLauncher();
         launcher.commands = new HashMap<>();
+
         launcher.dataSource = new MockDataSource();
         launcher.framework = new CommandFramework(io);
 

@@ -37,7 +37,11 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
     public static ArsCharacter buildCharacterFromMap(Map<String, String> map){
         ArsCharacter character = new ArsCharacter();
 
-        character.id = Integer.parseInt(map.get("id"));
+        if(!map.get("id").equals("0")){
+            character.id = Integer.parseInt(map.get("id"));
+        }else{
+            character.id = 0;
+        }
         character.name = map.get("name");
 
         character.attributes.put(ExtraneousAttribute.BIRTH_SEASON, Integer.parseInt(map.get("birth_season")));
