@@ -38,7 +38,7 @@ public class CharacterDataSource implements ICharacterDataSource{
             }
 
             metadata = resultSet.getMetaData();
-            for(int i = 1; i < metadata.getColumnCount(); i++){
+            for(int i = 1; i < metadata.getColumnCount() + 1; i++){
                 characterDetails.put(metadata.getColumnName(i), resultSet.getString(i));
             }
         }catch (SQLException exp){
@@ -72,17 +72,42 @@ public class CharacterDataSource implements ICharacterDataSource{
 
     /*
     Query `applied_feature` table to get the features the given character has
-        Then the `feature` table to get the important information
-        And `feature_rule` or `ability_feature_rule` to get how it specifically effects the character
-            Numerically
+        Then run loadFeatureFromId lol
      */
     @Override
     public List<CharacterFeature> loadFeaturesFromCharacter(ArsCharacter character) {
-        return List.of();
+        if(character == null || character.getId() == 0){
+            return Collections.emptyList();
+        }
+        List<Integer> featureIds = new ArrayList<>();
+
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT feature_id FROM applied_feature WHERE player_id = ?")){
+            statement.setInt(1, character.getId());
+
+            try(ResultSet resultSet = statement.executeQuery()){
+                if(!resultSet.isBeforeFirst()){
+                    log.info("Failed to find any features for character {}", character.getId());
+                }
+                do{
+                    featureIds.add(resultSet.getInt(1));
+                }while (resultSet.next());
+            }
+        }catch (SQLException exp){
+            log.error("Failed to load features for character {} with error {}", character.getName(), exp.getMessage());
+            return Collections.emptyList();
+        }
+
+        log.info("Loaded all applicable IDs: {}", featureIds);
+        return featureIds.stream().map(this::loadFeatureFromId).filter(Optional::isPresent).map(Optional::get).toList();
     }
 
     @Override
     public Optional<CharacterFeature> loadFeatureFromId(int featureId) {
+        if(featureId == 0){
+            return Optional.empty();
+        }
+
         CharacterFeature feature = null;
         try(Connection connection = source.getConnection()){
             try(PreparedStatement statement = connection.prepareStatement("SELECT * FROM feature WHERE id = ?")){
@@ -117,6 +142,7 @@ public class CharacterDataSource implements ICharacterDataSource{
             feature.addAbility(ability);
         }
 
+        log.info("returning {}", Optional.of(feature));
         return Optional.of(feature);
     }
 
@@ -145,6 +171,7 @@ public class CharacterDataSource implements ICharacterDataSource{
             statement.execute();
 
             int newId = idStatement.executeQuery().getInt(1);
+            log.info("New ID: {}", newId);
             character.setId(newId);
         }catch (SQLException exception){
             log.error("Failed to add character {} to covenant {} with error {}", character.getName(), covenant.getName(), exception.getMessage());
@@ -156,7 +183,27 @@ public class CharacterDataSource implements ICharacterDataSource{
 
     @Override
     public boolean addFeatureToCharacter(ArsCharacter character, CharacterFeature feature) {
-        return false;
+        if(character == null || loadBaseCharacterFromId(character.getId()).isEmpty()){
+            log.info("Character has not been previously saved");
+            return false;
+        }
+        if(feature == null || feature.getId() == 0 || loadFeatureFromId(feature.getId()).isEmpty()){
+            log.info("Feature has not been previously saved");
+            return false;
+        }
+
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO applied_feature VALUES (?, ?)")){
+            statement.setInt(1, character.getId());
+            statement.setInt(2, feature.getId());
+        }catch(SQLException exp){
+            log.error("Failed to add feature {} to character {} with error {}", feature.getName(), character.getName(), exp.getMessage());
+            return false;
+        }
+
+        log.info("Added feature {} to character {}", feature.getName(), character.getId());
+        character.addFeature(feature);
+        return true;
     }
 
     /*
@@ -203,21 +250,6 @@ public class CharacterDataSource implements ICharacterDataSource{
             }
             log.info("Added feature {} to base table", feature.getName());
 
-            for(Ability ability : feature.getAbilities()){
-                try(PreparedStatement statement = connection.prepareStatement("INSERT INTO ability_feature_rule VALUES (?, ?, ?)")){
-                    statement.setInt(1, feature.getId());
-                    statement.setString(2, ability.toString());
-                    statement.setInt(3, ability.getExperience());
-
-                    statement.execute();
-                }catch (SQLException ex){
-                    log.error("Failed to add ability {} to feature {} with error {}", ability.toString(), feature.getName(), ex.getMessage());
-                    connection.rollback();
-                    throw ex;
-                }
-            }
-            log.info("Added feature abilities");
-
             for(String rule : feature.getRules()){
                 try(PreparedStatement statement = connection.prepareStatement("INSERT INTO feature_rule VALUES (?, ?)")){
                     statement.setInt(1, feature.getId());
@@ -237,6 +269,13 @@ public class CharacterDataSource implements ICharacterDataSource{
             log.error("Failed to add feature with error {}", exp.getMessage());
             return false;
         }
+
+        for(Ability ability : feature.getAbilities()){
+            if(!source.addAbility(feature.getId(), ability)){
+                return false;
+            }
+        }
+        log.info("Added feature abilities");
 
         return true;
     }

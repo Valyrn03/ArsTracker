@@ -5,10 +5,12 @@ import application.models.enums.ExtraneousAttribute;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.util.*;
 
+@Slf4j
 @EqualsAndHashCode
 public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
     @Setter @Getter private int id;

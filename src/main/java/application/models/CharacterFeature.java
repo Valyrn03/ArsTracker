@@ -55,10 +55,12 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
 
     public void addAbility(Ability ability){
         this.abilities.add(ability);
+        this.abilities.sort(null);
     }
 
     public void addRule(String rule){
         this.rules.add(rule);
+        this.rules.sort(null);
     }
 
     /*
@@ -91,4 +93,35 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
         }
         return this.name.compareTo(o.name);
     }
+
+//    @Override
+//    public boolean equals(Object o){
+//        if(!(o instanceof CharacterFeature otherFeature)){
+//            return false;
+//        }
+//
+//        if(this.id != otherFeature.id){
+//            return false;
+//        }
+//        if(this.type != otherFeature.type){
+//            return false;
+//        }
+//        if(!this.name.equals(otherFeature.name)){
+//            return false;
+//        }
+//        if(!this.description.equals(otherFeature.description)){
+//            return false;
+//        }
+//        if(this.isMajor != otherFeature.isMajor){
+//            return false;
+//        }
+//        if(!new HashSet<>(this.abilities).containsAll(otherFeature.abilities) || !new HashSet<>(otherFeature.abilities).containsAll(this.abilities)){
+//            return false;
+//        }
+//        if(!new HashSet<>(this.rules).containsAll(otherFeature.rules) || !new HashSet<>(otherFeature.rules).containsAll(this.rules)){
+//            return false;
+//        }
+//
+//        return true;
+//    }
 }
