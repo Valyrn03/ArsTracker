@@ -67,7 +67,28 @@ public class CharacterDataSource implements ICharacterDataSource{
 
     @Override
     public boolean updateCharacterCharacteristics(ArsCharacter character) {
-        return false;
+        if(character == null || character.getId() == 0){
+            return false;
+        }
+
+        String query = "UPDATE character SET %s = ? WHERE id = ?";
+        try(Connection connection = source.getConnection()){
+            for(Attribute attribute : Attribute.values()){
+                try(PreparedStatement statement = connection.prepareStatement(String.format(query, attribute.name().toLowerCase()))){
+                    statement.setInt(1, character.getAttribute(attribute));
+                    statement.setInt(2, character.getId());
+
+                    if(statement.executeUpdate() != 1){
+                        throw new SQLException("updated more than 1 row");
+                    }
+                }
+            }
+        }catch (SQLException exp){
+            log.error("Failed to update characteristics for character {} with error {}", character.getId(), exp.getMessage());
+            return false;
+        }
+
+        return true;
     }
 
     /*
@@ -89,9 +110,9 @@ public class CharacterDataSource implements ICharacterDataSource{
                 if(!resultSet.isBeforeFirst()){
                     log.info("Failed to find any features for character {}", character.getId());
                 }
-                do{
+                while (resultSet.next()){
                     featureIds.add(resultSet.getInt(1));
-                }while (resultSet.next());
+                }
             }
         }catch (SQLException exp){
             log.error("Failed to load features for character {} with error {}", character.getName(), exp.getMessage());
@@ -193,9 +214,11 @@ public class CharacterDataSource implements ICharacterDataSource{
         }
 
         try(Connection connection = source.getConnection();
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO applied_feature VALUES (?, ?)")){
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO applied_feature (player_id, feature_id) VALUES (?, ?)")){
             statement.setInt(1, character.getId());
             statement.setInt(2, feature.getId());
+
+            statement.execute();
         }catch(SQLException exp){
             log.error("Failed to add feature {} to character {} with error {}", feature.getName(), character.getName(), exp.getMessage());
             return false;

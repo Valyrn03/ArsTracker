@@ -107,7 +107,7 @@ public class utils {
 
         AbilityCategory category = null;
 
-        while(category == null || Ability.isAbilityCategorical(category) == categorical){
+        while(category == null || Ability.isAbilityCategorical(category) != categorical){
             category = AbilityCategory.values()[random.nextInt(AbilityCategory.values().length)];
         }
 

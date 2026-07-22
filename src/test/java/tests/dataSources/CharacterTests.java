@@ -134,9 +134,13 @@ public class CharacterTests {
         @Test
         void returnSingularCategoricalCharacterAbility(){
             ArsCharacter character = generateCharacter();
-            Ability ability = generateAbility();
+            Ability ability = generateAbility(true);
 
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+            superSource.addAbility(character.getId(), ability);
 
+            assertEquals(1, superSource.loadAbilitiesById(character.getId()).size());
+            assertEquals(ability, superSource.loadAbilitiesById(character.getId()).getFirst());
         }
 
         @Test
@@ -219,6 +223,7 @@ public class CharacterTests {
             character.addAbility(ability);
             character.addAbility(altAbility);
 
+            dataSource.addBaseCharacterToCovenant(covenant, character);
             superSource.addAbility(character.getId(), ability);
             superSource.addAbility(character.getId(), altAbility);
 
@@ -233,10 +238,11 @@ public class CharacterTests {
             Ability fakeAbility = new Ability(genericAbility.getCategory(), UUID.randomUUID().toString(), genericAbility.getSpeciality(), genericAbility.getExperience());
 
             ArsCharacter character = generateCharacter();
-            character.addAbility(fakeAbility);
+            character.addAbility(genericAbility);
 
+            dataSource.addBaseCharacterToCovenant(covenant, character);
             superSource.addAbility(character.getId(), fakeAbility);
-            assertEquals(genericAbility, superSource.loadAbilitiesById(character.getId()).getFirst());
+            assertEquals(fakeAbility, superSource.loadAbilitiesById(character.getId()).getFirst());
         }
     }
 
