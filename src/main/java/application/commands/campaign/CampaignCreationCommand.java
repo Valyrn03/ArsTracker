@@ -1,11 +1,8 @@
-package application.commands;
+package application.commands.campaign;
 
 import application.Command;
 import application.CommandFramework;
 import application.data.ICampaignDataSource;
-import application.models.Campaign;
-
-import java.util.UUID;
 
 public class CampaignCreationCommand implements Command {
     CommandFramework framework;

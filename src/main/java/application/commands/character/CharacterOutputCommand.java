@@ -1,4 +1,4 @@
-package application.commands;
+package application.commands.character;
 
 import application.models.Ability;
 import application.models.ArsCharacter;

@@ -5,18 +5,20 @@ import application.models.enums.AbilityCategory;
 import application.models.enums.Art;
 import application.models.enums.Attribute;
 import application.models.enums.Tribunal;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@Slf4j
 public class utils {
     public static final String startingLine = "In order to get the list of commands, type \"help\"\r\n\n";
 
-    public static String outputStreamToReadable(ByteArrayOutputStream stream, int inputLength){
-        byte[] outputMinusInput = Arrays.copyOfRange(stream.toByteArray(), inputLength + startingLine.length(), stream.size());
-        String output = new String(outputMinusInput, StandardCharsets.UTF_8);
-        return output.replace("\r\n", "\n").replace("\r", "").replace("\u001B[?2004h", "").replace("\u001B[?2004l", "");
+    public static String outputStreamToReadable(ByteArrayOutputStream stream, String simulatedInput){
+        String output = stream.toString(StandardCharsets.UTF_8);
+        output = output.replace("\u001B[?2004h", "").replace("\u001B[?2004l", "").replace("\r\n", "\n").replace("\r", "");
+        return output.substring(output.indexOf(startingLine) + startingLine.length() + simulatedInput.length() - 1);
     }
 
     /*

@@ -96,12 +96,17 @@ public class CommandFramework {
     public int getOptionsIndex(Stream<String> options){
         terminal.writer().println("Choose one of the following options:");
         AtomicInteger i = new AtomicInteger();
+        i.getAndIncrement();
         options.forEachOrdered((option) -> {
-            terminal.writer().println(String.format("\t%d: %s\n", i.get(), option));
+            if(i.get() == 1){
+                terminal.writer().println(String.format("\t%d. %s", i.get(), option));
+            }else{
+                terminal.writer().println(String.format("\t%d. %s", i.get(), option));
+            }
             i.getAndIncrement();
         });
 
-        return getInt(">");
+        return getInt(">") - 1;
     }
 
     public String getOptions(List<String> options){
@@ -111,7 +116,7 @@ public class CommandFramework {
             terminal.writer().println(String.format("\t%d: %s\n", i, options.get(i)));
         }
 
-        int index = getInt(">");
+        int index = getInt("> ");
         return options.get(index);
     }
 
@@ -124,13 +129,13 @@ public class CommandFramework {
             record.add(option);
         });
 
-        int index = getInt(">");
+        int index = getInt("> ");
         return record.get(index);
     }
 
     public String getString(String prompt){
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
-        return reader.readLine(prompt + ">");
+        return reader.readLine(prompt + ">> ");
     }
 
     public void put(String prompt, Object... args){
@@ -141,5 +146,11 @@ public class CommandFramework {
         for(Object obj : list){
             terminal.writer().println(obj.toString());
         }
+    }
+
+    public void put(Stream<Object> stream){
+        stream.forEach((obj) -> {
+            terminal.writer().println(String.format("\t%s", obj.toString()));
+        });
     }
 }

@@ -1,4 +1,4 @@
-package application.commands;
+package application.commands.covenant;
 
 import application.Command;
 import application.CommandFramework;

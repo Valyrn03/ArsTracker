@@ -16,4 +16,7 @@ module application {
     exports application.commands;
     exports application.data;
     exports application.models.enums;
+    exports application.commands.campaign;
+    exports application.commands.covenant;
+    exports application.commands.character;
 }

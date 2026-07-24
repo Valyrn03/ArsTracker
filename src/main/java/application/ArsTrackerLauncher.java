@@ -1,10 +1,16 @@
 package application;
 
+import application.commands.campaign.CampaignCreationCommand;
+import application.commands.campaign.CampaignDeletionCommand;
+import application.commands.campaign.SelectCampaignCommand;
+import application.commands.campaign.ShowCampaignCommand;
+import application.commands.character.*;
+import application.commands.covenant.CovenantDeletionCommand;
+import application.commands.covenant.ListCovenantsCommand;
 import application.data.*;
 import application.gui.LaunchGUI;
 import application.commands.*;
 import application.terminal.HelpView;
-import application.utils.CharacterUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.WriterOutputStream;
@@ -15,7 +21,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 @Slf4j
 public class ArsTrackerLauncher {
@@ -59,7 +64,7 @@ public class ArsTrackerLauncher {
         launcher.framework = new CommandFramework(io);
 
         assert launcher.addDefaultLauncherCommands() == 3;
-        assert launcher.addInitialCommands() == 5;
+        assert launcher.updateCommands() == 5;
 
         return launcher;
     }
@@ -101,6 +106,7 @@ public class ArsTrackerLauncher {
         commands.entrySet().removeIf(entry -> !entry.getKey().equals("openGUI") && !entry.getKey().equals("close") && !entry.getKey().equals("help"));
 
         commands.put("back", new ReturnCommand(framework));
+        commands.put("show", new ShowCampaignCommand(framework, new CampaignDataSource(dataSource), new CovenantDataSource(dataSource)));
         commands.put("list", new ListCovenantsCommand(framework, new CampaignDataSource(dataSource), new CovenantDataSource(dataSource)));
         commands.put("select", new CharacterSelectionCommand(framework));
         commands.put("create", new CharacterCreationCommand(framework));
@@ -146,12 +152,27 @@ public class ArsTrackerLauncher {
         return commands.size();
     }
 
+    public int updateCommands(){
+        if(framework.getActiveCharacter().isPresent()){
+            addCharacterCommands();
+        }else if(framework.getActiveCovenant().isPresent()){
+            addCovenantCommands();
+        }else if(framework.getActiveCampaign().isPresent()){
+            addCampaignCommands();
+        }else{
+            addInitialCommands();
+        }
+
+        return commands.size();
+    }
+
     public void coreLoop(){
         boolean result = false;
         framework.put("In order to get the list of commands, type \"help\"");
         do{
+            updateCommands();
             Command command = null;
-            String user = framework.getString(">");
+            String user = framework.getString("");
             if(user.isEmpty()){
                 log.info("Incorrect Command {}", user);
                 command = commands.get("close");
@@ -162,7 +183,6 @@ public class ArsTrackerLauncher {
             result = command.execute();
             log.info("Loop Result: {} on command {}", result, command.getClass().getSimpleName());
 
-            log.info(command.getClass().getName());
             if(command.getClass().getName().endsWith("CloseCommand")){
                 result = !result;
             }

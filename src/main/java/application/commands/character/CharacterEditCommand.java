@@ -1,12 +1,12 @@
-package application.commands;
+package application.commands.character;
 
 import application.Command;
 import application.CommandFramework;
 
-public class DeleteCharacterCommand implements Command {
+public class CharacterEditCommand implements Command {
     CommandFramework framework;
 
-    public DeleteCharacterCommand(CommandFramework framework){
+    public CharacterEditCommand(CommandFramework framework){
         this.framework = framework;
     }
 

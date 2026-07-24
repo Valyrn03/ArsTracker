@@ -1,12 +1,12 @@
-package application.commands;
+package application.commands.campaign;
 
 import application.Command;
 import application.CommandFramework;
 
-public class CharacterSelectionCommand implements Command {
+public class CampaignDeletionCommand implements Command {
     CommandFramework framework;
 
-    public CharacterSelectionCommand(CommandFramework framework){
+    public CampaignDeletionCommand(CommandFramework framework){
         this.framework = framework;
     }
 

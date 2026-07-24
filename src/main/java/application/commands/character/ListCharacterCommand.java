@@ -1,15 +1,14 @@
-package application.commands;
+package application.commands.character;
 
 import application.Command;
 import application.CommandFramework;
 
-public class CharacterCreationCommand implements Command {
+public class ListCharacterCommand implements Command {
     CommandFramework framework;
 
-    public CharacterCreationCommand(CommandFramework framework){
+    public ListCharacterCommand(CommandFramework framework){
         this.framework = framework;
     }
-
 
     @Override
     public boolean execute() {

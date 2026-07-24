@@ -30,6 +30,7 @@ public class Campaign implements Cloneable{
         campaign.name = map.get("name");
         campaign.currentSeason = Integer.parseInt(map.get("current_season"));
         campaign.covenants = new ArrayList<>();
+        campaign.accessedCovenants = new ArrayList<>();
 
         return campaign;
     }

@@ -1,8 +1,7 @@
-package application.commands;
+package application.commands.campaign;
 
 import application.Command;
 import application.CommandFramework;
-import application.data.DataSource;
 import application.data.ICampaignDataSource;
 import application.models.Campaign;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +32,7 @@ public class SelectCampaignCommand implements Command {
         int selection = framework.getOptionsIndex(campaigns.stream().map(Campaign::getName));
 
         framework.setActiveCampaign(campaigns.get(selection));
+        framework.put("Selected Campaign \"%s\"", framework.getActiveCampaign().get().getName());
         return true;
     }
 }

@@ -1,12 +1,12 @@
-package application.commands;
+package application.commands.character;
 
 import application.Command;
 import application.CommandFramework;
 
-public class ListCharacterCommand implements Command {
+public class CharacterSelectionCommand implements Command {
     CommandFramework framework;
 
-    public ListCharacterCommand(CommandFramework framework){
+    public CharacterSelectionCommand(CommandFramework framework){
         this.framework = framework;
     }
 
