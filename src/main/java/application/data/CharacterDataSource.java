@@ -178,7 +178,7 @@ public class CharacterDataSource implements ICharacterDataSource{
             statement.setString(1, character.getName());
             statement.setInt(2, covenant.getId());
             statement.setInt(3, character.getAttribute(ExtraneousAttribute.BIRTH_SEASON));
-            statement.setInt(4, character.getCharacterType().id());
+            statement.setString(4, character.getCharacterType().name());
 
             statement.setInt(5, character.getAttribute(Attribute.INTELLIGENCE));
             statement.setInt(6, character.getAttribute(Attribute.PERCEPTION));

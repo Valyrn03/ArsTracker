@@ -1,9 +1,6 @@
 package application.data;
 
-import application.models.Book;
-import application.models.Campaign;
-import application.models.Covenant;
-import application.models.CovenantFeature;
+import application.models.*;
 import application.models.enums.Art;
 
 import java.util.List;
@@ -46,4 +43,11 @@ public interface ICovenantDataSource {
 //    boolean addBookToCovenant(Covenant covenant, Book book);
 
     boolean updateCovenantLabTexts(Covenant covenant);
+
+    /*
+    To be precise, loads the basic character requirements (id, name, season, type, and characteristics).
+
+    Anything else will be handled by CharacterDataSource
+     */
+    List<ArsCharacter> loadCovenantCharacters(Covenant covenant);
 }

@@ -1,16 +1,10 @@
 package application.data;
 
-import application.models.Book;
-import application.models.Campaign;
-import application.models.Covenant;
-import application.models.CovenantFeature;
+import application.models.*;
 import application.models.enums.Art;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 @Slf4j
@@ -311,5 +305,39 @@ public class CovenantDataSource implements ICovenantDataSource{
     @Override
     public boolean updateCovenantLabTexts(Covenant covenant) {
         return false;
+    }
+
+    @Override
+    public List<ArsCharacter> loadCovenantCharacters(Covenant covenant) {
+        if(covenant == null || covenant.getId() == 0){
+            return Collections.emptyList();
+        }
+        List<ArsCharacter> characters = new ArrayList<>();
+
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM character WHERE covenant_id = ?")){
+            statement.setInt(1, covenant.getId());
+
+            try(ResultSet resultSet = statement.executeQuery()){
+                if(!resultSet.isBeforeFirst()){
+                    return Collections.emptyList();
+                }
+
+                ResultSetMetaData metaData = resultSet.getMetaData();
+                while (resultSet.next()){
+                    Map<String, String> map = new HashMap<>();
+                    for(int i = 1; i < metaData.getColumnCount() + 1; i++){
+                        map.put(metaData.getColumnName(i), resultSet.getString(i));
+                    }
+
+                    characters.add(ArsCharacter.buildCharacterFromMap(map));
+                }
+            }
+        }catch (SQLException exp){
+            log.error("Failed to load characters from covenant {} with error {}", covenant.getId(), exp.getMessage());
+            return Collections.emptyList();
+        }
+
+        return characters;
     }
 }

@@ -42,16 +42,17 @@ public class CommandAvailabilityTests {
         commandNames.add("HelpView");
         commandNames.add("ReturnCommand");
         commandNames.add("ListCovenantsCommand");
-        commandNames.add("CharacterSelectionCommand");
-        commandNames.add("CharacterCreationCommand");
+        commandNames.add("CovenantSelectionCommand");
+        commandNames.add("CovenantCreationCommand");
         commandNames.add("CampaignDeletionCommand");
+        commandNames.add("ShowCampaignCommand");
 
         Campaign campaign = utils.generateCampaign();
         CampaignDataSource dataSource = new CampaignDataSource(launcher.getDataSource());
         dataSource.addCampaign(campaign);
 
         launcher.getFramework().setActiveCampaign(campaign);
-        assertEquals(8, launcher.updateCommands());
+        assertEquals(9, launcher.updateCommands());
 
         List<String> loadedCommandNames = new ArrayList<>();
         launcher.getCommands().forEach((name, command) -> {

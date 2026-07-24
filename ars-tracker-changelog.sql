@@ -65,3 +65,9 @@ CREATE TABLE ability_category (ability VARCHAR(36) PRIMARY KEY, category VARCHAR
 
 -- changeset liquibase:forgot_structure_of_ability_table...
 ALTER TABLE ability ADD COLUMN category VARCHAR(36)
+
+-- changeset liquibase:type_ids_not_working
+ALTER TABLE character DROP COLUMN character_type
+
+-- changeset liquibase:readd_string_form
+ALTER TABLE character ADD COLUMN character_type VARCHAR(16)

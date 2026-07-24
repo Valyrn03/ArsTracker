@@ -5,7 +5,9 @@ import application.commands.campaign.CampaignDeletionCommand;
 import application.commands.campaign.SelectCampaignCommand;
 import application.commands.campaign.ShowCampaignCommand;
 import application.commands.character.*;
+import application.commands.covenant.CovenantCreationCommand;
 import application.commands.covenant.CovenantDeletionCommand;
+import application.commands.covenant.CovenantSelectionCommand;
 import application.commands.covenant.ListCovenantsCommand;
 import application.data.*;
 import application.gui.LaunchGUI;
@@ -108,8 +110,8 @@ public class ArsTrackerLauncher {
         commands.put("back", new ReturnCommand(framework));
         commands.put("show", new ShowCampaignCommand(framework, new CampaignDataSource(dataSource), new CovenantDataSource(dataSource)));
         commands.put("list", new ListCovenantsCommand(framework, new CampaignDataSource(dataSource), new CovenantDataSource(dataSource)));
-        commands.put("select", new CharacterSelectionCommand(framework));
-        commands.put("create", new CharacterCreationCommand(framework));
+        commands.put("select", new CovenantSelectionCommand(framework, new CovenantDataSource(dataSource)));
+        commands.put("create", new CovenantCreationCommand(framework, new CovenantDataSource(dataSource)));
         commands.put("delete", new CampaignDeletionCommand(framework));
 
         return commands.size();

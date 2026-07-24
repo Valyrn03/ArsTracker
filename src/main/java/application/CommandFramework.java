@@ -35,6 +35,9 @@ public class CommandFramework {
     public void setActiveCampaign(Campaign campaign){
         activeCampaign = Optional.of(campaign);
         accessedCampaigns.add(campaign);
+
+        activeCovenant = Optional.empty();
+        activeCharacter = Optional.empty();
     }
 
     public void setActiveCovenant(Covenant covenant){
@@ -44,6 +47,8 @@ public class CommandFramework {
         }catch (NoSuchElementException exp){
             log.error("Attempted to select covenant while no campaign was active");
         }
+
+        activeCharacter = Optional.empty();
     }
 
     public void setActiveCharacter(ArsCharacter character){

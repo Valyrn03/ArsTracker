@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class SelectAndShowCampaignTests {
-
     @Test
     void testEmptyCampaignSelection() throws IOException{
         String simulatedInput = "select\nclose\n";

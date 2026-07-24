@@ -9,6 +9,7 @@ import application.models.Covenant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class ListCovenantsCommand implements Command {
     CommandFramework framework;
@@ -23,13 +24,9 @@ public class ListCovenantsCommand implements Command {
 
     @Override
     public boolean execute() {
-        List<Covenant> covenants = new ArrayList<>();
         List<Integer> covenantIds = framework.getActiveCampaign().map(campaignDataSource::loadCovenantIdsFromCampaign).orElse(Collections.emptyList());
-
-        for(int id : covenantIds){
-            covenantDataSource.loadCovenantFromId(id).ifPresent(covenants::add);
-        }
-
-        return !covenants.isEmpty();
+        framework.put("Covenants:");
+        framework.put(covenantIds.stream().map(covenantDataSource::loadCovenantFromId).filter(Optional::isPresent).map(Optional::get).map(Covenant::getName));
+        return true;
     }
 }

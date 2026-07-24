@@ -13,8 +13,6 @@ public interface ICharacterDataSource {
 
     boolean updateCharacterCharacteristics(ArsCharacter character);
 
-
-
     List<CharacterFeature> loadFeaturesFromCharacter(ArsCharacter character);
 
     Optional<CharacterFeature> loadFeatureFromId(int featureId);

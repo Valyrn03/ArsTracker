@@ -15,19 +15,18 @@ public class Covenant {
     @Getter private String name;
     @Getter private int establishmentSeason;
 
-    @Getter private List<Character> playerCharacters;
-    @Getter private List<Character> nonPlayerCharacters;
+    @Getter private List<ArsCharacter> playerCharacters;
+//    @Getter private List<ArsCharacter> nonPlayerCharacters;
 
-    private List<Book> books;
+    @Getter private List<Book> books;
     private LabTexts labTexts;
     @Setter @Getter private Map<Art, Integer> visStores;
-    private List<CovenantFeature> features;
+    @Getter private List<CovenantFeature> features;
 
     public List<ArsCharacter> accessedCharacters;
 
     private Covenant(){
         this.playerCharacters = new ArrayList<>();
-        this.nonPlayerCharacters = new ArrayList<>();
         this.books = new ArrayList<>();
         this.labTexts = new LabTexts(new ArrayList<>(), new ArrayList<>());
 
@@ -80,6 +79,14 @@ public class Covenant {
 
     public void updateVis(Art art, int newValue){
         visStores.put(art, newValue);
+    }
+
+    public void updateCharacters(List<ArsCharacter> characters){
+        for(ArsCharacter character : characters){
+            if(!playerCharacters.contains(character)){
+                playerCharacters.add(character);
+            }
+        }
     }
 
     @Override
