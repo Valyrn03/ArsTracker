@@ -35,8 +35,8 @@ public class Campaign implements Cloneable{
         return campaign;
     }
 
-    public List<Character> getCharacters(){
-        List<Character> characters = new ArrayList<>();
+    public List<ArsCharacter> getCharacters(){
+        List<ArsCharacter> characters = new ArrayList<>();
 
         for(Covenant covenant : covenants){
             characters.addAll(covenant.getPlayerCharacters());

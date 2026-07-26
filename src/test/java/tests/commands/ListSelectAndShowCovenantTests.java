@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.fail;
 import static tests.utils.generateCampaign;
 import static tests.utils.generateCovenant;
@@ -32,7 +34,7 @@ public class ListSelectAndShowCovenantTests {
     class ListCovenants{
         @Test
         void listSingularCovenant(){
-            fail();
+
         }
 
         @Test

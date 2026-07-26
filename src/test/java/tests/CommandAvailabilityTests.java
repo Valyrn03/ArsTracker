@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class CommandAvailabilityTests {
     @Test
     void testInitialHelpCommand(){
-        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(null, null);
+        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(null);
 
         //Testing whether the initial commands are correctly loaded
         List<String> initialCommandNames = new ArrayList<>();
@@ -34,7 +34,7 @@ public class CommandAvailabilityTests {
 
     @Test
     void availableMethodsAfterSelectingCampaign(){
-        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(null, null);
+        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(null);
 
         List<String> commandNames = new ArrayList<>();
         commandNames.add("LaunchGUI");

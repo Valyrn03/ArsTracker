@@ -29,7 +29,7 @@ public class SelectAndShowCampaignTests {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
-        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, null);
+        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
         launcher.coreLoop();
         terminal.close();
 
@@ -39,14 +39,13 @@ public class SelectAndShowCampaignTests {
     @Test
     void testSelectSingleCampaign() throws IOException {
         Campaign testCampaign = utils.generateCampaign();
-        List<String> mockCampaignId = List.of(testCampaign.getName());
 
         String simulatedInput = "select\n1\nclose\n";
         ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
 
-        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, mockCampaignId);
+        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
         CampaignDataSource dataSource = new CampaignDataSource(launcher.getDataSource());
         dataSource.addCampaign(testCampaign.getName(), testCampaign.getCurrentSeason()); //trusting this works due to other tests...
 
@@ -68,14 +67,13 @@ public class SelectAndShowCampaignTests {
     void testSelectMultipleCampaigns() throws IOException {
         Campaign testCampaignOne = utils.generateCampaign();
         Campaign testCampaignTwo = utils.generateCampaign();
-        List<String> mockCampaignId = new ArrayList<>(List.of(new String[]{testCampaignOne.getName(), testCampaignTwo.getName()}));
 
         String simulatedInput = "select\n1\nclose\n";
         ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
 
-        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, mockCampaignId);
+        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
         CampaignDataSource dataSource = new CampaignDataSource(launcher.getDataSource());
         dataSource.addCampaign(testCampaignOne);
         dataSource.addCampaign(testCampaignTwo);
@@ -104,14 +102,13 @@ public class SelectAndShowCampaignTests {
     @Test
     void testSelectAndShowCampaignWithNoCovenants() throws IOException {
         Campaign testCampaign = utils.generateCampaign();
-        List<String> mockCampaignIds = List.of(testCampaign.getName());
 
         String simulatedInput = "select\n1\nshow\nclose\n";
         ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
 
-        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, mockCampaignIds);
+        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
         CampaignDataSource dataSource = new CampaignDataSource(launcher.getDataSource());
         dataSource.addCampaign(testCampaign);
 
@@ -137,14 +134,13 @@ public class SelectAndShowCampaignTests {
     void testSelectAndShowCampaignWithCovenants() throws IOException {
         Campaign campaign = utils.generateCampaign();
         Covenant covenant = utils.generateCovenant();
-        List<String> mockIds = List.of(campaign.getName());
 
         String simulatedInput = "select\n1\nshow\nclose\n";
         ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
 
-        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, mockIds);
+        ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
         CampaignDataSource dataSource = new CampaignDataSource(launcher.getDataSource());
         CovenantDataSource covenantDataSource = new CovenantDataSource(launcher.getDataSource());
         dataSource.addCampaign(campaign);

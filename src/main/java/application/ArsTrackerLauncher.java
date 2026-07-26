@@ -58,7 +58,7 @@ public class ArsTrackerLauncher {
 
     }
 
-    public static ArsTrackerLauncher getMockLauncher(Terminal io, List<String> ids){
+    public static ArsTrackerLauncher getMockLauncher(Terminal io){
         ArsTrackerLauncher launcher = new ArsTrackerLauncher();
         launcher.commands = new HashMap<>();
 
