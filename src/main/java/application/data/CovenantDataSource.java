@@ -121,10 +121,11 @@ public class CovenantDataSource implements ICovenantDataSource{
 
             ResultSet resultSet = statement.executeQuery();
 
-            if(!resultSet.isBeforeFirst()){
+            if(!resultSet.next()){
                 log.info("Covenant with ID {} does not exist", covenantID);
             }
 
+//            resultSet.next();
             Map<String, String> stringMap = new HashMap<>();
             Map<String, Integer> integerMap = new HashMap<>();
 

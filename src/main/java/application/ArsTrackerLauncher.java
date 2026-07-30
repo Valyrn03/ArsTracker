@@ -56,17 +56,21 @@ public class ArsTrackerLauncher {
 
     }
 
-    public static ArsTrackerLauncher getMockLauncher(Terminal io){
+    public static ArsTrackerLauncher getMockLauncher(Terminal io, IDataSource dataSource){
         ArsTrackerLauncher launcher = new ArsTrackerLauncher();
         launcher.commands = new HashMap<>();
 
-        launcher.dataSource = new MockDataSource();
+        launcher.dataSource = dataSource;
         launcher.framework = new CommandFramework(io);
 
         assert launcher.addDefaultLauncherCommands() == 3;
         assert launcher.updateCommands() == 5;
 
         return launcher;
+    }
+
+    public static ArsTrackerLauncher getMockLauncher(Terminal io){
+        return getMockLauncher(io, new MockDataSource());
     }
 
     /*

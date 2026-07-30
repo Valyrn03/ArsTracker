@@ -39,6 +39,7 @@ public class ListCovenantsCommand implements Command {
 
         Campaign campaign = framework.getActiveCampaign().get();
         List<Integer> covenantIds = campaignDataSource.loadCovenantIdsFromCampaign(campaign);
+//        log.info(campaignDataSource.loadCovenantIdsFromCampaign(campaign).toString());
 //        List<Integer> covenantIds = framework.getActiveCampaign().map(campaignDataSource::loadCovenantIdsFromCampaign).orElseThrow();
         covenantIds.removeAll(covenants.stream().map(Covenant::getId).toList());
 
@@ -46,7 +47,7 @@ public class ListCovenantsCommand implements Command {
             Optional<Covenant> covenant = covenantDataSource.loadCovenantFromId(id);
 
             covenant.ifPresent(covenants::add);
-            covenant.ifPresent(framework.getActiveCampaign().get()::addCovenant);
+//            covenant.ifPresent(framework.getActiveCampaign().get()::addCovenant);
         }
 
         covenants.sort(null);

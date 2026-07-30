@@ -79,7 +79,7 @@ public class ListSelectAndShowCovenantTests {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
 
-            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, superSource);
             covenantDataSource.addCovenant(covenant, campaign);
 
             launcher.getFramework().setActiveCampaign(campaign);
@@ -158,7 +158,7 @@ public class ListSelectAndShowCovenantTests {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
 
-            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, superSource);
             covenantDataSource.addCovenant(covenants.get(0), campaign);
             covenantDataSource.addCovenant(covenants.get(1), campaign);
 
@@ -179,8 +179,35 @@ public class ListSelectAndShowCovenantTests {
         }
 
         @Test
-        void listMultipleCovenantsLoadedAndFromQuery(){
-            fail();
+        void listMultipleCovenantsLoadedAndFromQuery() throws IOException {
+            List<Covenant> covenants = new ArrayList<>();
+            covenants.add(generateCovenant());
+            covenants.add(generateCovenant());
+            covenants.sort(null);
+
+            String simulatedInput = "list\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, superSource);
+            covenantDataSource.addCovenant(covenants.get(0), campaign);
+            campaign.addCovenant(covenants.get(1));
+
+            launcher.getFramework().setActiveCampaign(campaign);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = ">> list\n" +
+                    "Covenants:\n" +
+                    "\t%s\n" +
+                    "\t%s\n" +
+                    ">> close\n" +
+                    "Exiting...\n";
+            String idealOutput = String.format(idealOutputFormat, covenants.get(0).getName(), covenants.get(1).getName());
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
     }
 
