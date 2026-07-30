@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode
 public class Campaign implements Cloneable{
 //    private List<Character> playerCharacters;
-    private List<Covenant> covenants;
+    @Getter private List<Covenant> covenants;
     @Getter String name;
     @Getter int currentSeason;
     @EqualsAndHashCode.Exclude public List<Covenant> accessedCovenants;
@@ -22,7 +22,7 @@ public class Campaign implements Cloneable{
     }
 
     private Campaign(){
-
+        this.accessedCovenants = new ArrayList<>();
     }
 
     public static Campaign buildCampaign(Map<String, String> map){
@@ -43,6 +43,10 @@ public class Campaign implements Cloneable{
         }
 
         return characters;
+    }
+
+    public void addCovenant(Covenant covenant){
+        covenants.add(covenant);
     }
 
     public static Campaign createCampaign(String name, int season){

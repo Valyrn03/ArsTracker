@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.util.*;
 
-public class Covenant {
+public class Covenant implements Comparable<Covenant>{
     private record LabTexts(List<Spell> spells, List<EnchantedItem> items){}
 
     @Setter @Getter private int id;
@@ -89,6 +89,10 @@ public class Covenant {
         }
     }
 
+    public int getVis(Art art){
+        return visStores.get(art);
+    }
+
     @Override
     public boolean equals(Object o){
         if(!(o instanceof Covenant other)){
@@ -114,7 +118,23 @@ public class Covenant {
         return this.visStores.equals(other.visStores);
     }
 
-    public int getVis(Art art){
-        return visStores.get(art);
+    /**
+     * Natural ordering: by name (case-insensitive), then establishment season,
+     * then id, so that covenants sort in a sensible, stable order for
+     * automated sorting (e.g. Collections.sort, TreeSet, Stream.sorted()).
+     */
+    @Override
+    public int compareTo(Covenant other){
+        int nameCompare = String.CASE_INSENSITIVE_ORDER.compare(this.name, other.name);
+        if(nameCompare != 0){
+            return nameCompare;
+        }
+
+        int seasonCompare = Integer.compare(this.establishmentSeason, other.establishmentSeason);
+        if(seasonCompare != 0){
+            return seasonCompare;
+        }
+
+        return Integer.compare(this.id, other.id);
     }
 }

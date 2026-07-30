@@ -5,12 +5,16 @@ import application.models.enums.AbilityCategory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.Liquibase;
+import liquibase.Scope;
+import liquibase.UpdateSummaryEnum;
+import liquibase.UpdateSummaryOutputEnum;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
+import liquibase.ui.LoggerUIService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileNotFoundException;
@@ -67,15 +71,13 @@ public class DataSource implements IDataSource{
         log.debug("Began updating");
         try(Connection connection = getConnection();
         Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))){
-            log.info("Got database");
             Liquibase liquibase = new Liquibase(
                     "ars-tracker-changelog.sql",
                     new DirectoryResourceAccessor(Paths.get("")),
                     database
             );
-            log.info("Constructed liquibase instance");
-            liquibase.update("");
-            log.info("Updated");
+            Scope.enter(Map.of(Scope.Attr.ui.name(), new NullUIService()));
+            liquibase.update("--logLevel=OFF");
         }catch (SQLException exp){
             log.error("Failed to update from liquibase with error {}", exp.getMessage());
         }catch (DatabaseException exp){
@@ -84,6 +86,20 @@ public class DataSource implements IDataSource{
             log.error("Liquibase error {}", exp.getMessage());
         }catch (FileNotFoundException exp){
             log.error("Failed to find repo root, {}", exp.getMessage());
+        }catch (Exception exp){
+            log.error("Error, {}", exp.getMessage());
+        }
+    }
+
+    private static class NullUIService extends LoggerUIService {
+        @Override
+        public void sendMessage(String message){
+
+        }
+
+        @Override
+        public void sendErrorMessage(String message, Throwable exception){
+            log.error(message);
         }
     }
 
