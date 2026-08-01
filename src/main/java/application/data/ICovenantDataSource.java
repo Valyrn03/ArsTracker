@@ -50,4 +50,6 @@ public interface ICovenantDataSource {
     Anything else will be handled by CharacterDataSource
      */
     List<ArsCharacter> loadCovenantCharacters(Covenant covenant);
+
+    List<Integer> loadCovenantIdsFromCampaign(Campaign campaign);
 }

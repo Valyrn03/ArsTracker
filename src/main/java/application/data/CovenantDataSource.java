@@ -341,4 +341,27 @@ public class CovenantDataSource implements ICovenantDataSource{
 
         return characters;
     }
+
+    @Override
+    public List<Integer> loadCovenantIdsFromCampaign(Campaign campaign) {
+        if(campaign == null){
+            log.error("Campaign input is null");
+            return Collections.emptyList();
+        }
+        List<Integer> covenantIds = new ArrayList<>();
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM covenant WHERE campaign_name = ?")){
+            statement.setString(1, campaign.getName());
+
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                covenantIds.add(resultSet.getInt("id")); //TODO
+            }
+        }catch (SQLException exp){
+            log.error("Loading covenants from campaign {} failed with the following error: {}", campaign.getName(), exp.getMessage());
+            return Collections.emptyList();
+        }
+
+        return covenantIds;
+    }
 }

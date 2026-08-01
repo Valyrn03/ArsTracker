@@ -15,12 +15,10 @@ import java.util.Optional;
 @Slf4j
 public class ShowCampaignCommand implements Command {
     CommandFramework framework;
-    ICampaignDataSource campaignDataSource;
     ICovenantDataSource covenantDataSource;
 
-    public ShowCampaignCommand(CommandFramework fr, ICampaignDataSource cDataSrc, ICovenantDataSource oDataSrc){
+    public ShowCampaignCommand(CommandFramework fr, ICovenantDataSource oDataSrc){
         this.framework = fr;
-        this.campaignDataSource = cDataSrc;
         this.covenantDataSource = oDataSrc;
     }
 
@@ -32,7 +30,7 @@ public class ShowCampaignCommand implements Command {
         }
 
         Campaign campaign = framework.getActiveCampaign().get();
-        List<Integer> covenantIds = campaignDataSource.loadCovenantIdsFromCampaign(campaign);
+        List<Integer> covenantIds = covenantDataSource.loadCovenantIdsFromCampaign(campaign);
 
         framework.put("Name: %s", campaign.getName());
         framework.put("Season: %d", campaign.getCurrentSeason());

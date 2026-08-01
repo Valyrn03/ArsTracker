@@ -22,8 +22,6 @@ public interface ICampaignDataSource {
 
     List<Campaign> getCampaigns();
 
-    List<Integer> loadCovenantIdsFromCampaign(Campaign campaign);
-
     boolean addCampaign(String name, int seasons);
 
     boolean addCampaign(Campaign campaign);

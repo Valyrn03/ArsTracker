@@ -9,7 +9,10 @@ import application.models.enums.Art;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,8 +61,8 @@ public class CovenantTests {
 
             assertTrue(dataSource.addCovenant(covenant, campaignOne));
 
-            assertTrue(campaignDataSource.loadCovenantIdsFromCampaign(campaignOne).contains(covenant.getId()));
-            assertFalse(campaignDataSource.loadCovenantIdsFromCampaign(campaignTwo).contains(covenant.getId()));
+            assertTrue(dataSource.loadCovenantIdsFromCampaign(campaignOne).contains(covenant.getId()));
+            assertFalse(dataSource.loadCovenantIdsFromCampaign(campaignTwo).contains(covenant.getId()));
         }
 
         @Test
@@ -412,6 +415,92 @@ public class CovenantTests {
             assertEquals(1, dataSource.loadCovenantCharacters(covenantOne).size());
             assertEquals(character, dataSource.loadCovenantCharacters(covenantOne).getFirst());
             assertEquals(0, dataSource.loadCovenantCharacters(covenantTwo).size());
+        }
+    }
+
+    @Nested
+    class LoadCovenantsIdsFromCampaign {
+        private boolean addCovenant(Covenant covenant, String campaignName){
+            try(Connection connection = superSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement("INSERT INTO covenant (name, tribunal, campaign_name, establishSeason) VALUES (?, ?, ?, ?)");
+                PreparedStatement statement1 = connection.prepareStatement("SELECT last_insert_rowid()")){
+                statement.setString(1, covenant.getName());
+                statement.setString(2, covenant.getTribunal().toString());
+                statement.setString(3, campaignName);
+                statement.setInt(4, covenant.getEstablishmentSeason());
+
+                statement.execute();
+
+                ResultSet resultSet = statement1.executeQuery();
+                covenant.setId(resultSet.getInt(1));
+            }catch (SQLException exception){
+                log.error("{}", exception.getMessage());
+                return false;
+            }
+
+            return true;
+        }
+        @Test
+        @DisplayName("returns the singular covenant associated with the campaign")
+        void returnsSingularCovenant() {
+            Campaign campaign = generateCampaign();
+            Covenant covenant = generateCovenant();
+
+            campaignDataSource.addCampaign(campaign);
+            assertTrue(addCovenant(covenant, campaign.getName()));
+
+            assertEquals(1, dataSource.loadCovenantIdsFromCampaign(campaign).size());
+            assertEquals(covenant.getId(), dataSource.loadCovenantIdsFromCampaign(campaign).getFirst());
+        }
+
+        @Test
+        @DisplayName("returns the covenants associated with a campaign")
+        void returnsMultipleCovenants(){
+            Campaign campaign = generateCampaign();
+            Covenant covenantOne = generateCovenant();
+            Covenant covenantTwo = generateCovenant();
+
+            campaignDataSource.addCampaign(campaign);
+            assertTrue(addCovenant(covenantOne, campaign.getName()));
+            assertTrue(addCovenant(covenantTwo, campaign.getName()));
+
+            assertEquals(2, dataSource.loadCovenantIdsFromCampaign(campaign).size());
+            assertTrue(dataSource.loadCovenantIdsFromCampaign(campaign).contains(covenantOne.getId()));
+            assertTrue(dataSource.loadCovenantIdsFromCampaign(campaign).contains(covenantTwo.getId()));
+        }
+
+        @Test
+        @DisplayName("returns an empty list when no covenants exist for the campaign")
+        void returnsEmptyListForNoCovenants() {
+            Campaign campaign = generateCampaign();
+            campaignDataSource.addCampaign(campaign);
+
+            assertTrue(dataSource.loadCovenantIdsFromCampaign(campaign).isEmpty());
+        }
+
+        @Test
+        @DisplayName("returns an empty list for a null campaign")
+        void returnsEmptyListForNullCampaign() {
+            assertTrue(dataSource.loadCovenantIdsFromCampaign(null).isEmpty());
+        }
+
+        @Test
+        @DisplayName("Returns only the covenants that belong to the selected campaign")
+        void returnOnlyChildren(){
+            Campaign campaignOne = generateCampaign();
+            Campaign campaignTwo = generateCampaign();
+            Covenant covenantOne = generateCovenant();
+            Covenant covenantTwo = generateCovenant();
+
+            campaignDataSource.addCampaign(campaignOne);
+            campaignDataSource.addCampaign(campaignTwo);
+            assertTrue(addCovenant(covenantOne, campaignOne.getName()));
+            assertTrue(addCovenant(covenantTwo, campaignTwo.getName()));
+
+            assertEquals(1, dataSource.loadCovenantIdsFromCampaign(campaignOne).size());
+            assertEquals(covenantOne.getId(), dataSource.loadCovenantIdsFromCampaign(campaignOne).getFirst());
+            assertEquals(1, dataSource.loadCovenantIdsFromCampaign(campaignTwo).size());
+            assertEquals(covenantTwo.getId(), dataSource.loadCovenantIdsFromCampaign(campaignTwo).getFirst());
         }
     }
 }

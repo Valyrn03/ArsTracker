@@ -84,23 +84,6 @@ public class ListSelectAndShowCovenantTests {
 
             launcher.getFramework().setActiveCampaign(campaign);
 
-//            StringBuilder builder = new StringBuilder();
-//            try(Connection connection = superSource.getConnection(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM covenant")){
-//                try(ResultSet resultSet = statement.executeQuery()){
-//                    ResultSetMetaData metaData = resultSet.getMetaData();
-//
-//                    while(resultSet.next()){
-//                        for(int i = 1; i < metaData.getColumnCount() + 1; i++){
-//                            builder.append(metaData.getColumnName(i)).append(": ").append(resultSet.getString(i)).append("\t");
-//                        }
-//                        builder.append("\n");
-//                    }
-//                }
-//            }catch (SQLException exception){
-//                log.error("man");
-//            }
-//            log.info(builder.toString());
-
             launcher.coreLoop();
             terminal.close();
 
@@ -209,23 +192,137 @@ public class ListSelectAndShowCovenantTests {
 
             assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
+
+        @Test
+        void saveSingleQueryCovenantToCampaign() throws IOException{
+            Covenant covenant = generateCovenant();
+
+            String simulatedInput = "list\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, superSource);
+            covenantDataSource.addCovenant(covenant, campaign);
+
+            launcher.getFramework().setActiveCampaign(campaign);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            assertTrue(launcher.getFramework().getActiveCampaign().isPresent());
+            assertTrue(launcher.getFramework().getActiveCampaign().get().getCovenants().contains(covenant));
+        }
+
+        @Test
+        void saveMultipleQueriedCovenantsToCampaign() throws IOException {
+            List<Covenant> covenants = new ArrayList<>();
+            covenants.add(generateCovenant());
+            covenants.add(generateCovenant());
+            covenants.sort(null);
+
+            String simulatedInput = "list\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, superSource);
+            covenantDataSource.addCovenant(covenants.get(0), campaign);
+            covenantDataSource.addCovenant(covenants.get(1), campaign);
+
+            launcher.getFramework().setActiveCampaign(campaign);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            assertTrue(launcher.getFramework().getActiveCampaign().isPresent());
+            assertTrue(launcher.getFramework().getActiveCampaign().get().getCovenants().containsAll(covenants));
+        }
     }
 
     @Nested
     class SelectCovenant{
         @Test
-        void selectOnZeroCovenants(){
-            fail();
+        void selectOnZeroCovenants() throws IOException {
+            String simulatedInput = "select\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = ">> select\n" +
+                    "0 Covenants Loaded\n" +
+                    ">> close\n" +
+                    "Exiting...\n";
+            String idealOutput = String.format(idealOutputFormat);
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void selectSingularCovenant(){
-            fail();
+        void selectSingularCovenant() throws IOException {
+            Covenant covenant = generateCovenant();
+            campaign.addCovenant(covenant);
+
+            String simulatedInput = "select\n1\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = ">> select\n" +
+                    "Choose one of the following options:\n" +
+                    "\t1. %s\n" +
+                    ">> 1\n" +
+                    "Selected Covenant %s\n" +
+                    ">> close\n" +
+                    "Exiting...\n";
+            String idealOutput = String.format(idealOutputFormat, covenant.getName(), covenant.getName());
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void selectFromMultipleCovenants(){
-            fail();
+        void selectFromMultipleCovenants() throws IOException {
+            List<Covenant> covenants = new ArrayList<>();
+            for (int i = 0; i < 2; i++){
+                covenants.add(generateCovenant());
+                campaign.addCovenant(covenants.getLast());
+            }
+            covenants.sort(null);
+
+            String simulatedInput = "select\n1\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = ">> select\n" +
+                    "Choose one of the following options:\n" +
+                    "\t1. %s\n" +
+                    "\t2. %s\n" +
+                    ">> 1\n" +
+                    "Selected Covenant %s\n" +
+                    ">> close\n" +
+                    "Exiting...\n";
+            String idealOutput = String.format(idealOutputFormat, covenants.get(0).getName(), covenants.get(1).getName(), covenants.get(0).getName());
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
     }
 
