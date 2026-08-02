@@ -6,11 +6,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Map;
-import java.util.UUID;
 
 @ToString
 @EqualsAndHashCode
-public class CovenantFeature {
+public class CovenantFeature implements Comparable<CovenantFeature>{
     @Getter @Setter int id;
     @Getter @Setter String name;
     @Getter @Setter FeatureType type;
@@ -41,8 +40,43 @@ public class CovenantFeature {
         this.id = 0;
     }
 
+    @Override
+    public int compareTo(CovenantFeature o) {
+        if(this.type.equals(FeatureType.BOON) && o.type.equals(FeatureType.HOOK)){
+            return 1;
+        }else if(this.type.equals(FeatureType.HOOK) && o.type.equals(FeatureType.BOON)){
+            return -1;
+        }else if(this.isMajor && !o.isMajor){
+            return 1;
+        }else if(!this.isMajor && o.isMajor){
+            return -1;
+        }else{
+            return this.name.compareTo(o.name);
+        }
+    }
+
     public enum FeatureType{
         BOON,
         HOOK
+    }
+
+    public String toStringShortened(){
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(name).append(" (");
+
+        if(isMajor){
+            builder.append("Major ");
+        }else{
+            builder.append("Minor ");
+        }
+
+        if(type.equals(FeatureType.BOON)){
+            builder.append("Boon)");
+        }else{
+            builder.append("Hook)");
+        }
+
+        return builder.toString();
     }
 }

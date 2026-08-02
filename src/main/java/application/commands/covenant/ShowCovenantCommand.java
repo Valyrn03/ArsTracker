@@ -2,12 +2,14 @@ package application.commands.covenant;
 
 import application.Command;
 import application.CommandFramework;
-import application.commands.campaign.ShowCampaignCommand;
 import application.data.ICovenantDataSource;
 import application.models.ArsCharacter;
 import application.models.Covenant;
+import application.models.CovenantFeature;
 import application.models.enums.Art;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ShowCovenantCommand implements Command {
     CommandFramework framework;
     ICovenantDataSource covenantDataSource;
@@ -24,6 +26,7 @@ public class ShowCovenantCommand implements Command {
     @Override
     public boolean execute() {
         if(framework.getActiveCovenant().isEmpty()){
+            log.error("Framework covenant is not set");
             return false;
         }
 
@@ -34,6 +37,17 @@ public class ShowCovenantCommand implements Command {
         int currentSeason = framework.getActiveCampaign().orElseThrow().getCurrentSeason();
         framework.put("Age: %d years, %d seasons", (currentSeason - covenant.getEstablishmentSeason()) / 4, (currentSeason - covenant.getEstablishmentSeason()) % 4);
 
+        covenant.addCharacter(covenantDataSource.loadCovenantCharacters(covenant));
+        if(!covenant.getPlayerCharacters().isEmpty()){
+            framework.put("Characters:");
+            framework.put(covenant.getPlayerCharacters().stream().map(ArsCharacter::toStringShortened));
+        }
+
+        if(!covenant.getFeatures().isEmpty()){
+            framework.put("Features:");
+            framework.put(covenant.getFeatures().stream().map(CovenantFeature::toStringShortened));
+        }
+
         if(!covenant.getBooks().isEmpty()){
             framework.put("Books:");
             framework.put(covenant.getBooks().stream().map(Object::toString));
@@ -42,17 +56,6 @@ public class ShowCovenantCommand implements Command {
         framework.put("Vis Stores:");
         for(Art art : Art.values()){
             framework.put("\t%s: %d", capitalization(art.name()), covenant.getVis(art));
-        }
-
-        covenant.updateCharacters(covenantDataSource.loadCovenantCharacters(covenant));
-        if(!covenant.getPlayerCharacters().isEmpty()){
-            framework.put("Characters: ");
-            framework.put(covenant.getPlayerCharacters().stream().map(ArsCharacter::getName));
-        }
-
-        if(!covenant.getFeatures().isEmpty()){
-            framework.put("Features: ");
-            framework.put(covenant.getFeatures().stream().map(Object::toString));
         }
 
         return true;

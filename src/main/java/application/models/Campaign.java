@@ -47,6 +47,7 @@ public class Campaign implements Cloneable{
 
     public void addCovenant(Covenant covenant){
         covenants.add(covenant);
+        covenants.sort(null);
     }
 
     public static Campaign createCampaign(String name, int season){

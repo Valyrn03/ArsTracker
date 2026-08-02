@@ -8,7 +8,6 @@ import lombok.ToString;
 
 import java.util.*;
 
-@ToString
 @EqualsAndHashCode
 public class CharacterFeature implements Comparable<CharacterFeature> {
     @Setter @Getter private int id;
@@ -94,34 +93,24 @@ public class CharacterFeature implements Comparable<CharacterFeature> {
         return this.name.compareTo(o.name);
     }
 
-//    @Override
-//    public boolean equals(Object o){
-//        if(!(o instanceof CharacterFeature otherFeature)){
-//            return false;
-//        }
-//
-//        if(this.id != otherFeature.id){
-//            return false;
-//        }
-//        if(this.type != otherFeature.type){
-//            return false;
-//        }
-//        if(!this.name.equals(otherFeature.name)){
-//            return false;
-//        }
-//        if(!this.description.equals(otherFeature.description)){
-//            return false;
-//        }
-//        if(this.isMajor != otherFeature.isMajor){
-//            return false;
-//        }
-//        if(!new HashSet<>(this.abilities).containsAll(otherFeature.abilities) || !new HashSet<>(otherFeature.abilities).containsAll(this.abilities)){
-//            return false;
-//        }
-//        if(!new HashSet<>(this.rules).containsAll(otherFeature.rules) || !new HashSet<>(otherFeature.rules).containsAll(this.rules)){
-//            return false;
-//        }
-//
-//        return true;
-//    }
+    @Override
+    public String toString(){
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(name).append(" (");
+
+        if(isMajor){
+            builder.append("Major ");
+        }else{
+            builder.append("Minor ");
+        }
+
+        if(type.equals(FeatureType.VIRTUE)){
+            builder.append("Virtue)");
+        }else{
+            builder.append("Flaw)");
+        }
+
+        return builder.toString();
+    }
 }

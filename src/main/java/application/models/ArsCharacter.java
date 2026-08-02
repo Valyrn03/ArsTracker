@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.*;
 
 @Slf4j
+//@ToString
 @EqualsAndHashCode
 public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
     @Setter @Getter private int id;
@@ -94,8 +95,7 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
         return attributes.getOrDefault(attribute, Integer.MAX_VALUE);
     }
 
-    @Override
-    public String toString(){
+    public String toStringFormatted(){
         StringBuilder builder = new StringBuilder();
         //Name, Type, Age, Characteristics, Abilities, Virtues & Flaws
         builder.append(name).append("\n\n").append(characterType.toString());
@@ -153,6 +153,10 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
         }
 
         return map;
+    }
+
+    public String toStringShortened(){
+        return this.name + "(" + this.characterType.toString() + ")";
     }
 
     public void addFeature(String feature, boolean isVirtue, boolean isMajor){

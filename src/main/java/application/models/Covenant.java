@@ -36,6 +36,7 @@ public class Covenant implements Comparable<Covenant>{
         }
 
         this.accessedCharacters = new ArrayList<>();
+        this.features = new ArrayList<>();
     }
 
     public static Covenant buildCovenantFromMap(Map<String, String> stringMap, Map<String, Integer> intMap){
@@ -59,18 +60,14 @@ public class Covenant implements Comparable<Covenant>{
         return covenant;
     }
 
-    public static Covenant buildCovenant(String id){
-        Covenant covenant = new Covenant();
-
-        return covenant;
-    }
-
     public void addFeature(CovenantFeature feature){
         this.features.add(feature);
+        this.features.sort(null);
     }
 
     public void addFeature(List<CovenantFeature> feature){
         this.features.addAll(feature);
+        this.features.sort(null);
     }
 
     public void addVis(Art art, int valueChange){
@@ -81,12 +78,22 @@ public class Covenant implements Comparable<Covenant>{
         visStores.put(art, newValue);
     }
 
-    public void updateCharacters(List<ArsCharacter> characters){
+    public void addCharacter(List<ArsCharacter> characters){
         for(ArsCharacter character : characters){
             if(!playerCharacters.contains(character)){
                 playerCharacters.add(character);
             }
         }
+
+        playerCharacters.sort(null);
+    }
+
+    public void addCharacter(ArsCharacter character){
+        if(!playerCharacters.contains(character)){
+            playerCharacters.add(character);
+        }
+
+        playerCharacters.sort(null);
     }
 
     public int getVis(Art art){

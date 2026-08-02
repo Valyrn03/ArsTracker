@@ -5,23 +5,18 @@ import application.commands.campaign.CampaignDeletionCommand;
 import application.commands.campaign.SelectCampaignCommand;
 import application.commands.campaign.ShowCampaignCommand;
 import application.commands.character.*;
-import application.commands.covenant.CovenantCreationCommand;
-import application.commands.covenant.CovenantDeletionCommand;
-import application.commands.covenant.CovenantSelectionCommand;
-import application.commands.covenant.ListCovenantsCommand;
+import application.commands.covenant.*;
 import application.data.*;
 import application.gui.LaunchGUI;
 import application.commands.*;
 import application.terminal.HelpView;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.output.WriterOutputStream;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -93,10 +88,9 @@ public class ArsTrackerLauncher {
         Select from listed campaigns
         Create new campaign
      */
-    public int addInitialCommands(){
+    public void addInitialCommands(){
         commands.put("select", new SelectCampaignCommand(framework, new CampaignDataSource(dataSource)));
         commands.put("create", new CampaignCreationCommand(framework, new CampaignDataSource(dataSource)));
-        return commands.size();
     }
 
     /*
@@ -106,7 +100,7 @@ public class ArsTrackerLauncher {
         Create new covenant
         Delete campaign
      */
-    public int addCampaignCommands(){
+    public void addCampaignCommands(){
         commands.entrySet().removeIf(entry -> !entry.getKey().equals("openGUI") && !entry.getKey().equals("close") && !entry.getKey().equals("help"));
 
         commands.put("back", new ReturnCommand(framework));
@@ -116,7 +110,6 @@ public class ArsTrackerLauncher {
         commands.put("create", new CovenantCreationCommand(framework, new CovenantDataSource(dataSource)));
         commands.put("delete", new CampaignDeletionCommand(framework));
 
-        return commands.size();
     }
 
     /*
@@ -126,16 +119,16 @@ public class ArsTrackerLauncher {
         Create new character
         Delete covenant
      */
-    public int addCovenantCommands(){
+    public void addCovenantCommands(){
         commands.entrySet().removeIf(entry -> !entry.getKey().equals("openGUI") && !entry.getKey().equals("close") && !entry.getKey().equals("help"));
 
         commands.put("back", new ReturnCommand(framework));
+        commands.put("show", new ShowCovenantCommand(framework, new CovenantDataSource(dataSource)));
         commands.put("list", new ListCharacterCommand(framework));
         commands.put("select", new CharacterSelectionCommand(framework));
         commands.put("create", new CharacterCreationCommand(framework));
         commands.put("delete", new CovenantDeletionCommand(framework));
 
-        return commands.size();
     }
 
     /*
@@ -145,7 +138,7 @@ public class ArsTrackerLauncher {
         Edit character
         Delete character
      */
-    public int addCharacterCommands(){
+    public void addCharacterCommands(){
         commands.entrySet().removeIf(entry -> !entry.getKey().equals("openGUI") && !entry.getKey().equals("close") && !entry.getKey().equals("help"));
 
         commands.put("back", new ReturnCommand(framework));
@@ -153,7 +146,6 @@ public class ArsTrackerLauncher {
         commands.put("edit", new CharacterEditCommand(framework));
         commands.put("delete", new DeleteCharacterCommand(framework));
 
-        return commands.size();
     }
 
     public int updateCommands(){
