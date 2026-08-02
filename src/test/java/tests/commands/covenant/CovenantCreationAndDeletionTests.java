@@ -1,4 +1,4 @@
-package tests.commands;
+package tests.commands.covenant;
 
 public class CovenantCreationAndDeletionTests {
 }

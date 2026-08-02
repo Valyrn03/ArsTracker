@@ -1,4 +1,4 @@
-package tests.commands;
+package tests.commands.campaign;
 
 import application.ArsTrackerLauncher;
 import application.data.CampaignDataSource;
@@ -14,9 +14,6 @@ import tests.utils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
