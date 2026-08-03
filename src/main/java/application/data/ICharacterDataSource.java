@@ -22,4 +22,11 @@ public interface ICharacterDataSource {
     boolean addFeatureToCharacter(ArsCharacter character, CharacterFeature feature);
 
     boolean saveNewFeature(CharacterFeature feature);
+
+    /*
+    To be precise, loads the basic character requirements (id, name, season, type, and characteristics).
+
+    Anything else will be handled by CharacterDataSource
+     */
+    List<ArsCharacter> loadCovenantCharacters(Covenant covenant);
 }

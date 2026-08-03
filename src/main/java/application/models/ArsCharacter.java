@@ -1,5 +1,6 @@
 package application.models;
 
+import application.models.enums.Art;
 import application.models.enums.Attribute;
 import application.models.enums.ExtraneousAttribute;
 import lombok.EqualsAndHashCode;
@@ -22,6 +23,7 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
     private Map<ExtraneousAttribute, Integer> attributes;
     @Getter private CharacterType characterType;
     @Getter ArrayList<CharacterFeature> features;
+    private Map<Art, Integer> arts;
 
     private ArsCharacter(){
         baseAttributes = new HashMap<>();
@@ -30,6 +32,7 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
         setDefaultAttributes();
         abilities = new ArrayList<>();
         features = new ArrayList<>();
+        arts = new HashMap<>();
     }
 
     /*
@@ -156,7 +159,7 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
     }
 
     public String toStringShortened(){
-        return this.name + "(" + this.characterType.toString() + ")";
+        return this.name + " (" + this.characterType.toString() + ")";
     }
 
     public void addFeature(String feature, boolean isVirtue, boolean isMajor){
@@ -168,6 +171,30 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
     }
 
     public void addAbility(Ability ability){abilities.add(ability);};
+
+    public void setArts(Map<Art, Integer> map){
+        if(!characterType.equals(CharacterType.MAGUS)){
+            return;
+        }
+
+        arts.putAll(map);
+    }
+
+    public void incrementArt(Art art, int increment){
+        if(!characterType.equals(CharacterType.MAGUS)){
+            return;
+        }
+
+        arts.put(art, arts.get(art) + increment);
+    }
+
+    public int getArt(Art art){
+        if(!characterType.equals(CharacterType.MAGUS)){
+            return 0;
+        }
+
+        return arts.get(art);
+    }
 
     public String serialize(){
         return null;

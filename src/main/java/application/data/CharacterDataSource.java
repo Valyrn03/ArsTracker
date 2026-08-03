@@ -302,4 +302,38 @@ public class CharacterDataSource implements ICharacterDataSource{
 
         return true;
     }
+
+    @Override
+    public List<ArsCharacter> loadCovenantCharacters(Covenant covenant) {
+        if(covenant == null || covenant.getId() == 0){
+            return Collections.emptyList();
+        }
+        List<ArsCharacter> characters = new ArrayList<>();
+
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM character WHERE covenant_id = ?")){
+            statement.setInt(1, covenant.getId());
+
+            try(ResultSet resultSet = statement.executeQuery()){
+                if(!resultSet.isBeforeFirst()){
+                    return Collections.emptyList();
+                }
+
+                ResultSetMetaData metaData = resultSet.getMetaData();
+                while (resultSet.next()){
+                    Map<String, String> map = new HashMap<>();
+                    for(int i = 1; i < metaData.getColumnCount() + 1; i++){
+                        map.put(metaData.getColumnName(i), resultSet.getString(i));
+                    }
+
+                    characters.add(ArsCharacter.buildCharacterFromMap(map));
+                }
+            }
+        }catch (SQLException exp){
+            log.error("Failed to load characters from covenant {} with error {}", covenant.getId(), exp.getMessage());
+            return Collections.emptyList();
+        }
+
+        return characters;
+    }
 }

@@ -123,9 +123,9 @@ public class ArsTrackerLauncher {
         commands.entrySet().removeIf(entry -> !entry.getKey().equals("openGUI") && !entry.getKey().equals("close") && !entry.getKey().equals("help"));
 
         commands.put("back", new ReturnCommand(framework));
-        commands.put("show", new ShowCovenantCommand(framework, new CovenantDataSource(dataSource)));
-        commands.put("list", new ListCharacterCommand(framework));
-        commands.put("select", new CharacterSelectionCommand(framework));
+        commands.put("show", new ShowCovenantCommand(framework, new CharacterDataSource(dataSource)));
+        commands.put("list", new ListCharactersCommand(framework, new CharacterDataSource(dataSource)));
+        commands.put("select", new CharacterSelectionCommand(framework, new CharacterDataSource(dataSource)));
         commands.put("create", new CharacterCreationCommand(framework));
         commands.put("delete", new CovenantDeletionCommand(framework));
 

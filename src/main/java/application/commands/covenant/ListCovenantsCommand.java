@@ -44,6 +44,11 @@ public class ListCovenantsCommand implements Command {
             covenant.ifPresent(covenants::add);
         }
 
+        if(covenants.isEmpty()){
+            framework.put("0 Covenants Found");
+            return true;
+        }
+
         covenants.sort(null);
         framework.put("Covenants:");
         framework.put(covenants.stream().map(Covenant::getName));

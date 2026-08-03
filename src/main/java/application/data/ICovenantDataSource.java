@@ -44,12 +44,5 @@ public interface ICovenantDataSource {
 
     boolean updateCovenantLabTexts(Covenant covenant);
 
-    /*
-    To be precise, loads the basic character requirements (id, name, season, type, and characteristics).
-
-    Anything else will be handled by CharacterDataSource
-     */
-    List<ArsCharacter> loadCovenantCharacters(Covenant covenant);
-
     List<Integer> loadCovenantIdsFromCampaign(Campaign campaign);
 }

@@ -25,7 +25,7 @@ import static tests.utils.*;
 @Slf4j
 public class ListSelectAndShowCovenantTests {
     IDataSource superSource;
-    ICharacterDataSource dataSource;
+    ICharacterDataSource characterDataSource;
     ICovenantDataSource covenantDataSource;
     ICampaignDataSource campaignDataSource;
     Campaign campaign;
@@ -33,7 +33,7 @@ public class ListSelectAndShowCovenantTests {
     @BeforeEach
     void setUp(){
         superSource = new MockDataSource();
-        dataSource = new CharacterDataSource(superSource);
+        characterDataSource = new CharacterDataSource(superSource);
         covenantDataSource = new CovenantDataSource(superSource);
         campaignDataSource = new CampaignDataSource(superSource);
 
@@ -44,6 +44,29 @@ public class ListSelectAndShowCovenantTests {
     @Nested
     @DisplayName("List covenants belonging to the active campaign")
     class ListCovenants{
+        @Test
+        void listNoCovenants() throws IOException {
+            String simulatedInput = "list\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, superSource);
+
+            launcher.getFramework().setActiveCampaign(campaign);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = ">> list\n" +
+                    "0 Covenants Found\n" +
+                    ">> close\n" +
+                    "Exiting...\n";
+            String idealOutput = String.format(idealOutputFormat);
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
+        }
+
         @Test
         void listSingularCovenantAlreadyLoaded() throws IOException {
             Covenant covenant = generateCovenant();
@@ -256,7 +279,7 @@ public class ListSelectAndShowCovenantTests {
             terminal.close();
 
             String idealOutputFormat = ">> select\n" +
-                    "0 Covenants Loaded\n" +
+                    "0 Covenants Found\n" +
                     ">> close\n" +
                     "Exiting...\n";
             String idealOutput = String.format(idealOutputFormat);

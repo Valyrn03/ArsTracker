@@ -10,11 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 
 @Slf4j
-public class CharacterSelectionCommand implements Command {
+public class ListCharactersCommand implements Command {
     CommandFramework framework;
     ICharacterDataSource dataSource;
 
-    public CharacterSelectionCommand(CommandFramework framework, ICharacterDataSource characterDataSource){
+    public ListCharactersCommand(CommandFramework framework, ICharacterDataSource characterDataSource){
         this.framework = framework;
         this.dataSource = characterDataSource;
     }
@@ -22,12 +22,13 @@ public class CharacterSelectionCommand implements Command {
     @Override
     public boolean execute() {
         if(framework.getActiveCovenant().isEmpty()){
-            log.error("Framework does not have covenant set");
+            log.error("Active covenant is not set");
             return false;
         }
 
         Covenant covenant = framework.getActiveCovenant().get();
         List<ArsCharacter> queriedCharacters = dataSource.loadCovenantCharacters(covenant);
+
         queriedCharacters.forEach(character -> {
             if(!covenant.getPlayerCharacters().contains(character)){
                 covenant.addCharacter(character);
@@ -39,14 +40,8 @@ public class CharacterSelectionCommand implements Command {
             return true;
         }
 
-        int chosenCharacter = framework.getOptionsIndex(covenant.getPlayerCharacters().stream().map(ArsCharacter::toStringShortened));
-        framework.setActiveCharacter(covenant.getPlayerCharacters().get(chosenCharacter));
-
-        if(framework.getActiveCharacter().isEmpty()){
-            log.error("Active character was not set");
-            return false;
-        }
-        framework.put("Selected Character %s", framework.getActiveCharacter().get().getName());
+        framework.put("Characters:");
+        framework.put(covenant.getPlayerCharacters().stream().map(ArsCharacter::toStringShortened));
         return true;
     }
 }

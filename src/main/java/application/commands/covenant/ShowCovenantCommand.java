@@ -2,6 +2,7 @@ package application.commands.covenant;
 
 import application.Command;
 import application.CommandFramework;
+import application.data.ICharacterDataSource;
 import application.data.ICovenantDataSource;
 import application.models.ArsCharacter;
 import application.models.Covenant;
@@ -12,9 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ShowCovenantCommand implements Command {
     CommandFramework framework;
-    ICovenantDataSource covenantDataSource;
+    ICharacterDataSource covenantDataSource;
 
-    public ShowCovenantCommand(CommandFramework fr, ICovenantDataSource cds){
+    public ShowCovenantCommand(CommandFramework fr, ICharacterDataSource cds){
         framework = fr;
         covenantDataSource = cds;
     }

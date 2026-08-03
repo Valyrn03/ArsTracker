@@ -589,4 +589,83 @@ public class CharacterTests {
             assertTrue(dataSource.saveNewFeature(feature));
         }
     }
+
+    @Nested
+    class LoadCovenantCharacters{
+        ICharacterDataSource characterDataSource;
+        @BeforeEach
+        void setUpCDS(){
+            characterDataSource = new CharacterDataSource(superSource);
+        }
+
+        @Test
+        void returnsSingularCharacter(){
+            Covenant covenant = generateCovenant();
+            ArsCharacter character = generateCharacter();
+
+            covenantDataSource.addCovenant(covenant, campaign);
+            characterDataSource.addBaseCharacterToCovenant(covenant, character);
+
+            assertEquals(1, dataSource.loadCovenantCharacters(covenant).size());
+            assertEquals(character, dataSource.loadCovenantCharacters(covenant).getFirst());
+        }
+
+        @Test
+        void returnsEmptyListOnNoCharacters(){
+            Covenant covenant = generateCovenant();
+
+            covenantDataSource.addCovenant(covenant, campaign);
+
+            assertEquals(0, dataSource.loadCovenantCharacters(covenant).size());
+            assertEquals(Collections.emptyList(), dataSource.loadCovenantCharacters(covenant));
+        }
+
+        @Test
+        void returnsEmptyListOnUnloadedCovenant(){
+            Covenant covenant = generateCovenant();
+            ArsCharacter character = generateCharacter();
+
+//            dataSource.addCovenant(covenant, campaign);
+            characterDataSource.addBaseCharacterToCovenant(covenant, character);
+
+            assertEquals(0, dataSource.loadCovenantCharacters(covenant).size());
+            assertEquals(Collections.emptyList(), dataSource.loadCovenantCharacters(covenant));
+        }
+
+        @Test
+        void returnsEmptyListOnNullCovenant(){
+            assertEquals(0, dataSource.loadCovenantCharacters(null).size());
+            assertEquals(Collections.emptyList(), dataSource.loadCovenantCharacters(null));
+        }
+
+        @Test
+        void returnsMultipleCharacters(){
+            Covenant covenant = generateCovenant();
+            ArsCharacter characterOne = generateCharacter();
+            ArsCharacter characterTwo = generateCharacter();
+
+            covenantDataSource.addCovenant(covenant, campaign);
+            characterDataSource.addBaseCharacterToCovenant(covenant, characterOne);
+            characterDataSource.addBaseCharacterToCovenant(covenant, characterTwo);
+
+            assertEquals(2, dataSource.loadCovenantCharacters(covenant).size());
+            assertTrue(dataSource.loadCovenantCharacters(covenant).contains(characterOne));
+            assertTrue(dataSource.loadCovenantCharacters(covenant).contains(characterTwo));
+        }
+
+        @Test
+        void returnsCorrectCharacterIfMultipleCovenants(){
+            Covenant covenantOne = generateCovenant();
+            Covenant covenantTwo = generateCovenant();
+            ArsCharacter character = generateCharacter();
+
+            covenantDataSource.addCovenant(covenantOne, campaign);
+            covenantDataSource.addCovenant(covenantTwo, campaign);
+            characterDataSource.addBaseCharacterToCovenant(covenantOne, character);
+
+            assertEquals(1, dataSource.loadCovenantCharacters(covenantOne).size());
+            assertEquals(character, dataSource.loadCovenantCharacters(covenantOne).getFirst());
+            assertEquals(0, dataSource.loadCovenantCharacters(covenantTwo).size());
+        }
+    }
 }

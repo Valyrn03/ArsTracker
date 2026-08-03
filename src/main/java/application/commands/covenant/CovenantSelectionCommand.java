@@ -33,7 +33,7 @@ public class CovenantSelectionCommand implements Command {
         }
 
         if(covenantList.isEmpty()){
-            framework.put("0 Covenants Loaded");
+            framework.put("0 Covenants Found");
             return true;
         }
 
