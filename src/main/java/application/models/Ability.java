@@ -51,7 +51,7 @@ public class Ability implements Comparable<Ability>{
 
     @Override
     public String toString(){
-        return getAbility() + " " + CharacterUtils.abilityExperienceToScore(experience) + " (" + experience + ")";
+        return getAbility() + " (" + getSpeciality() + ") lvl" + CharacterUtils.abilityExperienceToScore(getExperience());
     }
 
     public static List<String> generalAbilities(){

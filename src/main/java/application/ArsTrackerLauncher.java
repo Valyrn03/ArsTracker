@@ -142,7 +142,7 @@ public class ArsTrackerLauncher {
         commands.entrySet().removeIf(entry -> !entry.getKey().equals("openGUI") && !entry.getKey().equals("close") && !entry.getKey().equals("help"));
 
         commands.put("back", new ReturnCommand(framework));
-        commands.put("show", new CharacterOutputCommand(framework));
+        commands.put("show", new ShowCharacterCommand(framework, dataSource));
         commands.put("edit", new CharacterEditCommand(framework));
         commands.put("delete", new DeleteCharacterCommand(framework));
 

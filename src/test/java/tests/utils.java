@@ -93,6 +93,12 @@ public class utils {
         return new CharacterFeature(name, name, random.nextBoolean(), random.nextBoolean());
     }
 
+    public static CharacterFeature generateCharacterFeature(boolean isVirtue){
+        Random random = new Random();
+        String name = UUID.randomUUID().toString();
+        return new CharacterFeature(name, name, isVirtue, random.nextBoolean());
+    }
+
     public static Ability generateAbility(){
         Random random = new Random();
 

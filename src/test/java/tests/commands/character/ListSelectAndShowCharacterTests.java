@@ -2,9 +2,8 @@ package tests.commands.character;
 
 import application.ArsTrackerLauncher;
 import application.data.*;
-import application.models.ArsCharacter;
-import application.models.Campaign;
-import application.models.Covenant;
+import application.models.*;
+import application.models.enums.Attribute;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static application.utils.CharacterUtils.format;
+import static org.junit.jupiter.api.Assertions.*;
 import static tests.utils.*;
 
 public class ListSelectAndShowCharacterTests {
@@ -327,83 +327,676 @@ public class ListSelectAndShowCharacterTests {
     @Nested
     class ShowCharacter{
         @Test
-        void showBaseCharacter(){
+        void showBaseCharacterNoAbilities() throws IOException {
+            ArsCharacter character = generateCharacter();
+            covenant.addCharacter(character);
 
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS));
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
+        }
+
+        /*
+        >> show
+        %s (%s)
+        Attributes:
+        \tIntelligence: %d
+        \tPerception: %d
+        \tStrength: %d
+        \tStamina: %d
+        \tPresence: %d
+        \tCommunication: %d
+        \tDexterity: %d
+        \tQuickness: %d
+        Virtues: ...
+        Flaws: ...
+        Abilities:
+        \t%s (%s) lvl%d...
+        Arts: ...
+        >> close
+        Exiting...
+         */
+        @Test
+        void showWithOneAbilityAlreadyLoaded() throws IOException {
+            ArsCharacter character = generateCharacter();
+            character.addAbility(generateAbility());
+
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Abilities:
+                    \t%s
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    character.getAbilities().getFirst().toString());
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void showBaseMagus(){
+        void showWithOneAbilityFromQuery() throws IOException {
+            ArsCharacter character = generateCharacter();
+            Ability ability = generateAbility();
 
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, superSource);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+            assertTrue(superSource.addAbility(character.getId(), ability));
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Abilities:
+                    \t%s
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    ability.toString());
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void showWithOneAbilityAlreadyLoaded(){
+        void showWithMultipleAbilitiesAlreadyLoaded() throws IOException {
+            ArsCharacter character = generateCharacter();
+            List<Ability> abilities = new ArrayList<>(List.of(new Ability[]{generateAbility(), generateAbility()}));
+            character.addAbility(abilities.get(0));
+            character.addAbility(abilities.get(1));
+            abilities.sort(null);
 
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Abilities:
+                    \t%s
+                    \t%s
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    character.getAbilities().get(0).toString(), character.getAbilities().get(1).toString());
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void showWithOneAbilityFromQuery(){
+        void showWithMultipleAbilitiesFromQuery() throws IOException {
+            ArsCharacter character = generateCharacter();
+            List<Ability> abilities = new ArrayList<>(List.of(new Ability[]{generateAbility(), generateAbility()}));
+            abilities.sort(null);
 
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, superSource);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+            superSource.addAbility(character.getId(), abilities.get(0));
+            superSource.addAbility(character.getId(), abilities.get(1));
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Abilities:
+                    \t%s
+                    \t%s
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    character.getAbilities().get(0).toString(), character.getAbilities().get(1).toString());
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void showWithMultipleAbilitiesAlreadyLoaded(){
+        void showWithOneVirtueAlreadyLoaded() throws IOException {
+            ArsCharacter character = generateCharacter();
+            character.addFeature(generateCharacterFeature(true));
 
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Virtues:
+                    \t%s
+                    Flaws:
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    character.getFeatures().getFirst());
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void showWithMultipleAbilitiesFromQuery(){
+        void showWithOneFlawAlreadyLoaded() throws IOException {
+            ArsCharacter character = generateCharacter();
+            character.addFeature(generateCharacterFeature(false));
 
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Virtues:
+                    Flaws:
+                    \t%s
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    character.getFeatures().getFirst());
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void showWithOneFeatureAlreadyLoaded(){
+        void showWithOneFlawFromQuery() throws IOException {
+            ArsCharacter character = generateCharacter();
+            CharacterFeature feature = generateCharacterFeature(false);
 
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, superSource);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.saveNewFeature(feature);
+            dataSource.addFeatureToCharacter(character, feature);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Virtues:
+                    Flaws:
+                    \t%s
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    feature);
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void showWithOneFeatureFromQuery(){
+        void showWithMultipleVirtuesAlreadyLoaded() throws IOException {
+            ArsCharacter character = generateCharacter();
+            List<CharacterFeature> features = new ArrayList<>(List.of(new CharacterFeature[]{generateCharacterFeature(true), generateCharacterFeature(true)}));
+            character.addFeature(features.get(0));
+            character.addFeature(features.get(1));
+            features.sort(null);
 
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Virtues:
+                    \t%s
+                    \t%s
+                    Flaws:
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    features.get(0), features.get(1));
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void showWithMultipleFeaturesAlreadyLoaded(){
+        void showWithMultipleFlawsAlreadyLoaded() throws IOException {
+            ArsCharacter character = generateCharacter();
+            List<CharacterFeature> features = new ArrayList<>(List.of(new CharacterFeature[]{generateCharacterFeature(false), generateCharacterFeature(false)}));
+            character.addFeature(features.get(0));
+            character.addFeature(features.get(1));
+            features.sort(null);
 
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Virtues:
+                    Flaws:
+                    \t%s
+                    \t%s
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    features.get(0), features.get(1));
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void showWithMultipleFeaturesFromQuery(){
+        void showWithBothVirtuesAndFlawsAlreadyLoaded() throws IOException {
+            ArsCharacter character = generateCharacter();
+            CharacterFeature virtue = generateCharacterFeature(true);
+            CharacterFeature flaw = generateCharacterFeature(false);
 
+            character.addFeature(virtue);
+            character.addFeature(flaw);
+
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Virtues:
+                    \t%s
+                    Flaws:
+                    \t%s
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    virtue, flaw);
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
+        }
+
+        @Test
+        void showWithVirtueAndFlawFromQuery() throws IOException {
+            ArsCharacter character = generateCharacter();
+            CharacterFeature virtue = generateCharacterFeature(true);
+            CharacterFeature flaw = generateCharacterFeature(false);
+
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, superSource);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.saveNewFeature(virtue);
+            dataSource.saveNewFeature(flaw);
+            dataSource.addFeatureToCharacter(character, virtue);
+            dataSource.addFeatureToCharacter(character, flaw);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Virtues:
+                    \t%s
+                    Flaws:
+                    \t%s
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    virtue, flaw);
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
+        }
+
+        @Test
+        void showWithMultipleVirtuesFromQuery() throws IOException {
+            ArsCharacter character = generateCharacter();
+            List<CharacterFeature> features = new ArrayList<>(List.of(new CharacterFeature[]{generateCharacterFeature(true), generateCharacterFeature(true)}));
+            features.sort(null);
+
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, superSource);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+            features.forEach((feature) -> {
+                dataSource.saveNewFeature(feature);
+                dataSource.addFeatureToCharacter(character, feature);
+            });
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Virtues:
+                    \t%s
+                    \t%s
+                    Flaws:
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    features.get(0), features.get(1));
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
+        }
+
+        @Test
+        void showCharacterWithAbilitiesAndFeatures(){
+            fail();
         }
 
         @Test
         void showWithNoArtsSet(){
-
+            fail();
         }
 
         @Test
         void showWithOneArtSetFromQuery(){
-
+            fail();
         }
 
         @Test
         void showWithOneArtSetAlreadyLoaded(){
-
+            fail();
         }
 
         @Test
         void showWithMultipleArtsFromQuery(){
-
+            fail();
         }
 
         @Test
         void showWithMultipleArtsAlreadyLoaded(){
-
+            fail();
         }
 
         @Test
         void ignoreArtsIfNotMagus(){
-
+            fail();
         }
     }
 }

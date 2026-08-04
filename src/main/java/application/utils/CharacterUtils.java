@@ -1,5 +1,6 @@
 package application.utils;
 
+import application.models.enums.Attribute;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -62,5 +63,9 @@ public class CharacterUtils{
             return null;
         }
         return costs;
+    }
+
+    public static String format(Object obj){
+        return obj.toString().substring(0, 1).toUpperCase() + obj.toString().substring(1).toLowerCase();
     }
 }

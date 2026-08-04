@@ -98,55 +98,6 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
         return attributes.getOrDefault(attribute, Integer.MAX_VALUE);
     }
 
-    public String toStringFormatted(){
-        StringBuilder builder = new StringBuilder();
-        //Name, Type, Age, Characteristics, Abilities, Virtues & Flaws
-        builder.append(name).append("\n\n").append(characterType.toString());
-        if(attributes.containsKey(ExtraneousAttribute.BIRTH_SEASON)){
-            builder.append("(").append(attributes.get(ExtraneousAttribute.BIRTH_SEASON).toString()).append(")\n\n");
-        }
-
-        builder.append("CHARACTERISTICS\n");
-        for(Map.Entry<String, Integer> attribute : getAttributes().entrySet()){
-            builder.append("\t")
-                    .append(attribute.getKey())
-                    .append(": ")
-                    .append(attribute.getValue().toString())
-                    .append("\n");
-        }
-
-        builder.append("\nABILITIES\n");
-        for(Ability ability: abilities){
-            builder.append("\t").append(ability.toString());
-        }
-
-        if(features.isEmpty()){
-            return "ERROR: Character Features Not Found";
-        }
-
-        ArrayList<CharacterFeature> flaws = new ArrayList<>();
-
-        builder.append("\nVIRTUES\n");
-        for(CharacterFeature feature : features){
-            if(feature.getType() == CharacterFeature.FeatureType.VIRTUE){
-                builder.append("\t")
-                        .append(feature.toString())
-                        .append("\n");
-            }else{
-                flaws.add(feature);
-            }
-        }
-
-        builder.append("FLAWS\n");
-        for(CharacterFeature feature : flaws){
-            builder.append("\t")
-                    .append(feature.toString())
-                    .append("\n");
-        }
-
-        return builder.toString();
-    }
-
     public HashMap<String, Integer> getAttributes(){
         HashMap<String, Integer> map = new HashMap<>();
 
@@ -170,7 +121,10 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
         features.add(feature);
     }
 
-    public void addAbility(Ability ability){abilities.add(ability);};
+    public void addAbility(Ability ability){
+        abilities.add(ability);
+        abilities.sort(null);
+    }
 
     public void setArts(Map<Art, Integer> map){
         if(!characterType.equals(CharacterType.MAGUS)){
