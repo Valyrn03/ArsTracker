@@ -34,6 +34,24 @@ public class CharacterUtils{
         return score;
     }
 
+    public static int artExperienceToScore(int experience){
+        Logger logger = Logger.getLogger(CharacterUtils.class.getName());
+        logger.info("Experience: " + experience);
+        int score = 0;
+
+        while(experience > 0){
+            experience -= (score + 1);
+            score++;
+            logger.info("Experience: " + experience + " with a score of " + score);
+        }
+
+        logger.info("Returning " + score);
+        if(experience < 0){
+            score--;
+        }
+        return score;
+    }
+
     /**
      Method to verify if the given set of characteristics fits the requirements. As per RoP:I, the point values of
      characteristics are equivalent to that of arts. According to the base book the progression is that of arithmetic

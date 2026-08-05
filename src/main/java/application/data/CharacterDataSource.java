@@ -4,7 +4,7 @@ import application.models.Ability;
 import application.models.ArsCharacter;
 import application.models.CharacterFeature;
 import application.models.Covenant;
-import application.models.enums.AbilityCategory;
+import application.models.enums.Art;
 import application.models.enums.Attribute;
 import application.models.enums.ExtraneousAttribute;
 import lombok.extern.slf4j.Slf4j;
@@ -335,5 +335,65 @@ public class CharacterDataSource implements ICharacterDataSource{
         }
 
         return characters;
+    }
+
+    @Override
+    public boolean updateCharacterArts(ArsCharacter character) {
+        if(character == null || character.getId() == 0){
+            log.error("Character is null");
+            return false;
+        }
+        if(!character.getCharacterType().equals(ArsCharacter.CharacterType.MAGUS)){
+            log.error("Character is not a magus");
+            return true;
+        }
+
+        try(Connection connection = source.getConnection();
+           PreparedStatement statement = connection.prepareStatement("INSERT OR REPLACE INTO arts (character_id, art, experience) VALUES (?, ?, ?)")){
+            for(Art art : Art.values()){
+                if(character.getArt(art) > 0){
+                    statement.setInt(1, character.getId());
+                    statement.setString(2, art.name());
+                    statement.setInt(3, character.getArt(art));
+
+                    statement.execute();
+                }
+            }
+        }catch (SQLException exp){
+            log.error("Failed to update characters arts with error {}", exp.getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int loadCharacterArt(ArsCharacter character, Art art) {
+        if(character == null || character.getId() == 0){
+            log.error("Character is null or id is 0");
+            return -1;
+        }
+        if(!character.getCharacterType().equals(ArsCharacter.CharacterType.MAGUS)){
+            log.error("Character is not a magus");
+            return -1;
+        }
+
+        int result = 0;
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT experience FROM arts WHERE character_id = ? AND art = ?")){
+            statement.setInt(1, character.getId());
+            statement.setString(2, art.name());
+
+            try(ResultSet resultSet = statement.executeQuery()){
+                if(resultSet.isBeforeFirst()){
+                    result = resultSet.getInt(1);
+                }
+            }
+        }catch (SQLException exp){
+            log.error("Failed to load art {} from character {}", art, character.getName());
+            return -1;
+        }
+
+        return result;
     }
 }

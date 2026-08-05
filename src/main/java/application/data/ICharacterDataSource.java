@@ -1,9 +1,9 @@
 package application.data;
 
-import application.models.Ability;
 import application.models.ArsCharacter;
 import application.models.CharacterFeature;
 import application.models.Covenant;
+import application.models.enums.Art;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,4 +29,8 @@ public interface ICharacterDataSource {
     Anything else will be handled by CharacterDataSource
      */
     List<ArsCharacter> loadCovenantCharacters(Covenant covenant);
+
+    public boolean updateCharacterArts(ArsCharacter character);
+
+    public int loadCharacterArt(ArsCharacter character, Art art);
 }

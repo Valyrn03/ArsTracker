@@ -139,7 +139,11 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
             return;
         }
 
-        arts.put(art, arts.get(art) + increment);
+        if(arts.containsKey(art)){
+            arts.put(art, arts.get(art) + increment);
+        }else{
+            arts.put(art, increment);
+        }
     }
 
     public int getArt(Art art){
@@ -147,7 +151,7 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
             return 0;
         }
 
-        return arts.get(art);
+        return arts.getOrDefault(art, 0);
     }
 
     public String serialize(){

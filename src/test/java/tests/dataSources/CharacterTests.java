@@ -3,6 +3,7 @@ package tests.dataSources;
 import application.data.*;
 import application.models.*;
 import application.models.enums.AbilityCategory;
+import application.models.enums.Art;
 import application.models.enums.Attribute;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -666,6 +667,128 @@ public class CharacterTests {
             assertEquals(1, dataSource.loadCovenantCharacters(covenantOne).size());
             assertEquals(character, dataSource.loadCovenantCharacters(covenantOne).getFirst());
             assertEquals(0, dataSource.loadCovenantCharacters(covenantTwo).size());
+        }
+    }
+
+    @Nested
+    class UpdateCharacterArts{
+        @Test
+        void returnsTrueOnSingularUpdate(){
+            ArsCharacter character = generateCharacter(ArsCharacter.CharacterType.MAGUS);
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+
+            Random random = new Random();
+            character.incrementArt(Art.values()[random.nextInt(Art.values().length)], random.nextInt(1000));
+
+            assertTrue(dataSource.updateCharacterArts(character));
+        }
+
+        @Test
+        void returnsTrueOnMultipleUpdates(){
+            ArsCharacter character = generateCharacter(ArsCharacter.CharacterType.MAGUS);
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+
+            Random random = new Random();
+            List<Art> arts = new ArrayList<>();
+
+            for(int i = 0; i < 2; i++){
+                arts.add(Art.values()[random.nextInt(Art.values().length)]);
+            }
+
+            while(arts.get(0).equals(arts.get(1))){
+                arts.removeLast();
+                arts.add(Art.values()[random.nextInt(Art.values().length)]);
+            }
+
+            for(Art art : arts){
+                character.incrementArt(art, random.nextInt(1000));
+            }
+
+            assertTrue(dataSource.updateCharacterArts(character));
+        }
+
+        @Test
+        void returnsFalseOnNonexistentCharacter(){
+            assertFalse(dataSource.updateCharacterCharacteristics(generateCharacter()));
+        }
+    }
+
+    @Nested
+    class LoadCharacterArt{
+        @Test
+        void loadsSingularArt(){
+            ArsCharacter character = generateCharacter(ArsCharacter.CharacterType.MAGUS);
+            Random random = new Random();
+            Art art = Art.values()[random.nextInt(Art.values().length)];
+
+            character.incrementArt(art, random.nextInt(1000));
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.updateCharacterArts(character); //Should refactor later to make this unnecessary
+
+            assertEquals(character.getArt(art), dataSource.loadCharacterArt(character, art));
+        }
+
+        @Test
+        void loadsMultipleArts(){
+            ArsCharacter character = generateCharacter(ArsCharacter.CharacterType.MAGUS);
+            Random random = new Random();
+
+            List<Art> arts = new ArrayList<>();
+            for (int i = 0; i < 2; i++){
+                arts.add(Art.values()[random.nextInt(Art.values().length)]);
+            }
+            while (arts.get(0).equals(arts.get(1))){
+                arts.removeLast();
+                arts.add(Art.values()[random.nextInt(Art.values().length)]);
+            }
+
+            for(Art art : arts){
+                character.incrementArt(art, random.nextInt(1000));
+            }
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.updateCharacterArts(character); //Should refactor later to make this unnecessary
+
+            for(Art art : arts){
+                assertEquals(character.getArt(art), dataSource.loadCharacterArt(character, art));
+            }
+        }
+
+        @Test
+        void failsOnNonexistentCharacter(){
+            Random random = new Random();
+            Art art = Art.values()[random.nextInt(Art.values().length)];
+            assertEquals(-1, dataSource.loadCharacterArt(generateCharacter(), art));
+        }
+
+        @Test
+        void returnsZeroOnArtIfNoArtSet(){
+            ArsCharacter character = generateCharacter(ArsCharacter.CharacterType.MAGUS);
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+
+            Random random = new Random();
+            assertEquals(0, dataSource.loadCharacterArt(character, Art.values()[random.nextInt(Art.values().length)]));
+        }
+
+        //TODO: loadCharacterArts should update the character object
+        @Test
+        void returnsZeroOnArtIfOtherArtSet(){
+            ArsCharacter character = generateCharacter(ArsCharacter.CharacterType.MAGUS);
+            Random random = new Random();
+
+            List<Art> arts = new ArrayList<>();
+            for (int i = 0; i < 2; i++){
+                arts.add(Art.values()[random.nextInt(Art.values().length)]);
+            }
+            while (arts.get(0).equals(arts.get(1))){
+                arts.removeLast();
+                arts.add(Art.values()[random.nextInt(Art.values().length)]);
+            }
+
+            character.incrementArt(arts.getFirst(), random.nextInt(1000));
+            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.updateCharacterArts(character); //Should refactor later to make this unnecessary
+
+            assertEquals(0, dataSource.loadCharacterArt(character, arts.getLast()));
         }
     }
 }

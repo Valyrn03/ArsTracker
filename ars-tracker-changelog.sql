@@ -71,3 +71,6 @@ ALTER TABLE character DROP COLUMN character_type
 
 -- changeset liquibase:readd_string_form
 ALTER TABLE character ADD COLUMN character_type VARCHAR(16)
+
+-- changeset liquibase:add_arts_table_for_magi
+CREATE TABLE arts (character_id INTEGER, art VARCHAR(16), experience INTEGER, PRIMARY KEY(character_id, art))

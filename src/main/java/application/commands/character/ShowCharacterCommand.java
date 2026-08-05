@@ -8,12 +8,14 @@ import application.models.ArsCharacter;
 import application.models.CharacterFeature;
 import application.Command;
 import application.CommandFramework;
+import application.models.enums.Art;
 import application.models.enums.Attribute;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static application.utils.CharacterUtils.artExperienceToScore;
 import static application.utils.CharacterUtils.format;
 
 public class ShowCharacterCommand implements Command {
@@ -70,6 +72,16 @@ public class ShowCharacterCommand implements Command {
 
             for(CharacterFeature feature: flaws){
                 framework.put("\t%s", feature.toString());
+            }
+        }
+
+        if(character.getCharacterType().equals(ArsCharacter.CharacterType.MAGUS)){
+            framework.put("Arts:");
+
+            for(Art art : Art.values()){
+                if(character.getArt(art) > 0){
+                    framework.put("\t%s: %d", format(art), artExperienceToScore(character.getArt(art)));
+                }
             }
         }
 
