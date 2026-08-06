@@ -23,7 +23,7 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
     private Map<ExtraneousAttribute, Integer> attributes;
     @Getter private CharacterType characterType;
     @Getter ArrayList<CharacterFeature> features;
-    private Map<Art, Integer> arts;
+    @Getter private Map<Art, Integer> arts;
 
     private ArsCharacter(){
         baseAttributes = new HashMap<>();
@@ -152,6 +152,10 @@ public class ArsCharacter implements Serializable, Comparable<ArsCharacter> {
         }
 
         return arts.getOrDefault(art, 0);
+    }
+
+    public void setArt(Art art, int newValue){
+        arts.put(art, newValue);
     }
 
     public String serialize(){

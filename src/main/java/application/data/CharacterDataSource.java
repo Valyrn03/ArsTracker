@@ -168,7 +168,7 @@ public class CharacterDataSource implements ICharacterDataSource{
     }
 
     @Override
-    public boolean addBaseCharacterToCovenant(Covenant covenant, ArsCharacter character) {
+    public boolean addCharacterToCovenant(Covenant covenant, ArsCharacter character) {
         if(covenant == null || character == null || covenant.getId() == 0){
             return false;
         }
@@ -197,6 +197,10 @@ public class CharacterDataSource implements ICharacterDataSource{
         }catch (SQLException exception){
             log.error("Failed to add character {} to covenant {} with error {}", character.getName(), covenant.getName(), exception.getMessage());
             return false;
+        }
+
+        if(character.getCharacterType().equals(ArsCharacter.CharacterType.MAGUS)){
+            return updateCharacterArts(character);
         }
 
         return true;
@@ -394,6 +398,7 @@ public class CharacterDataSource implements ICharacterDataSource{
             return -1;
         }
 
+        character.setArt(art, result);
         return result;
     }
 }

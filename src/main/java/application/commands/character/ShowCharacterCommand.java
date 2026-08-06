@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static application.utils.CharacterUtils.artExperienceToScore;
 import static application.utils.CharacterUtils.format;
+import static java.lang.Math.max;
 
 public class ShowCharacterCommand implements Command {
     private CommandFramework framework;
@@ -55,6 +56,8 @@ public class ShowCharacterCommand implements Command {
             }
         });
         if(!character.getFeatures().isEmpty()){
+            character.getFeatures().sort(null);
+
             framework.put("Virtues:");
 
             List<CharacterFeature> flaws = new ArrayList<>();
@@ -76,11 +79,18 @@ public class ShowCharacterCommand implements Command {
         }
 
         if(character.getCharacterType().equals(ArsCharacter.CharacterType.MAGUS)){
-            framework.put("Arts:");
-
+            int highest = 0;
             for(Art art : Art.values()){
-                if(character.getArt(art) > 0){
-                    framework.put("\t%s: %d", format(art), artExperienceToScore(character.getArt(art)));
+                characterDataSource.loadCharacterArt(character, art);
+                highest = max(highest, character.getArt(art));
+            }
+            if(highest > 0){
+                framework.put("Arts:");
+
+                for(Art art : Art.values()){
+                    if(character.getArt(art) > 0){
+                        framework.put("\t%s: %d", format(art), artExperienceToScore(character.getArt(art)));
+                    }
                 }
             }
         }

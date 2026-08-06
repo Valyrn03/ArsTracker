@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -103,7 +104,7 @@ public class ListSelectAndShowCharacterTests {
         @Test
         void listOneCharacterFromQuery() throws IOException {
             ArsCharacter character = generateCharacter();
-            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(covenant, character);
 
             String simulatedInput = "list\nclose\n";
             ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
@@ -168,7 +169,7 @@ public class ListSelectAndShowCharacterTests {
             List<ArsCharacter> characters = new ArrayList<>();
             for(int i = 0; i < 2; i++){
                 characters.add(generateCharacter());
-                dataSource.addBaseCharacterToCovenant(covenant, characters.getLast());
+                dataSource.addCharacterToCovenant(covenant, characters.getLast());
             }
             characters.sort(null);
 
@@ -204,7 +205,7 @@ public class ListSelectAndShowCharacterTests {
             characters.add(generateCharacter());
 
             covenant.addCharacter(characters.getFirst());
-            dataSource.addBaseCharacterToCovenant(covenant, characters.getLast());
+            dataSource.addCharacterToCovenant(covenant, characters.getLast());
             characters.sort(null);
 
             String simulatedInput = "list\nclose\n";
@@ -447,7 +448,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(covenant, character);
             assertTrue(superSource.addAbility(character.getId(), ability));
 
             launcher.coreLoop();
@@ -496,7 +497,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(covenant, character);
 
             launcher.coreLoop();
             terminal.close();
@@ -543,7 +544,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(covenant, character);
             superSource.addAbility(character.getId(), abilities.get(0));
             superSource.addAbility(character.getId(), abilities.get(1));
 
@@ -679,7 +680,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(covenant, character);
             dataSource.saveNewFeature(feature);
             dataSource.addFeatureToCharacter(character, feature);
 
@@ -730,7 +731,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(covenant, character);
 
             launcher.coreLoop();
             terminal.close();
@@ -780,7 +781,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(covenant, character);
 
             launcher.coreLoop();
             terminal.close();
@@ -831,7 +832,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(covenant, character);
 
             launcher.coreLoop();
             terminal.close();
@@ -879,7 +880,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(covenant, character);
             dataSource.saveNewFeature(virtue);
             dataSource.saveNewFeature(flaw);
             dataSource.addFeatureToCharacter(character, virtue);
@@ -931,7 +932,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(covenant, character);
             features.forEach((feature) -> {
                 dataSource.saveNewFeature(feature);
                 dataSource.addFeatureToCharacter(character, feature);
@@ -988,7 +989,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(covenant, character);
 
             launcher.coreLoop();
             terminal.close();
@@ -1084,12 +1085,14 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addBaseCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(covenant, character);
             dataSource.updateCharacterArts(character);
 
             launcher.coreLoop();
             terminal.close();
 
+            character.setArt(art, 0);
+            dataSource.loadCharacterArt(character, art);
             String idealOutputFormat = """
                     >> show
                     %s (%s), of %s
@@ -1110,7 +1113,7 @@ public class ListSelectAndShowCharacterTests {
             String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
                     character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
                     character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
-                    format(art.name()), dataSource.loadCharacterArt(character, art));
+                    format(art.name()), artExperienceToScore(character.getArt(art)));
 
             assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
@@ -1172,18 +1175,154 @@ public class ListSelectAndShowCharacterTests {
         }
 
         @Test
-        void showWithMultipleArtsFromQuery(){
-            fail();
+        void showWithMultipleArtsFromQuery() throws IOException {
+            ArsCharacter character = generateCharacter(ArsCharacter.CharacterType.MAGUS);
+            Random random = new Random();
+            List<Art> arts = new ArrayList<>(List.of(new Art[]{Art.values()[random.nextInt(Art.values().length)], Art.values()[random.nextInt(Art.values().length)]}));
+            while (arts.get(0).equals(arts.get(1))){
+                arts.removeLast();
+                arts.add(Art.values()[random.nextInt(Art.values().length)]);
+            }
+
+            for(Art art : arts){
+                character.incrementArt(art, random.nextInt(1000));
+            }
+            arts.sort(null);
+
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal, superSource);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.updateCharacterArts(character);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            for(Art art : arts){
+                character.setArt(art, 0);
+                dataSource.loadCharacterArt(character, art);
+            }
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Arts:
+                    \t%s: %d
+                    \t%s: %d
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    format(arts.get(0)), artExperienceToScore(character.getArt(arts.get(0))), format(arts.get(1)), artExperienceToScore(character.getArt(arts.get(1))));
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void ignoreArtsIfNotMagus(){
-            fail();
+        void ignoreArtsIfNotMagus() throws IOException {
+            ArsCharacter character = generateCharacter(ArsCharacter.CharacterType.COMPANION);
+            Random random = new Random();
+            Art art = Art.values()[random.nextInt(Art.values().length)];
+            character.incrementArt(art, random.nextInt(1000));
+
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS));
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
 
         @Test
-        void showAbilitiesAndArts(){
+        void showAbilitiesAndArts() throws IOException {
+            Random random = new Random();
+            ArsCharacter character = generateCharacter(ArsCharacter.CharacterType.MAGUS);
+            character.addAbility(generateAbility());
+            Art art = Art.values()[random.nextInt(Art.values().length)];
+            character.incrementArt(art, random.nextInt(1000));
 
+            String simulatedInput = "show\nclose\n";
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Terminal terminal = TerminalBuilder.builder().system(false).dumb(true).streams(inputStream, outputStream).build();
+
+            ArsTrackerLauncher launcher = ArsTrackerLauncher.getMockLauncher(terminal);
+            launcher.getFramework().setActiveCampaign(campaign);
+            launcher.getFramework().setActiveCovenant(covenant);
+            launcher.getFramework().setActiveCharacter(character);
+
+            launcher.coreLoop();
+            terminal.close();
+
+            String idealOutputFormat = """
+                    >> show
+                    %s (%s), of %s
+                    Attributes:
+                    \tIntelligence: %d
+                    \tPerception: %d
+                    \tStrength: %d
+                    \tStamina: %d
+                    \tPresence: %d
+                    \tCommunication: %d
+                    \tDexterity: %d
+                    \tQuickness: %d
+                    Arts:
+                    \t%s: %d
+                    Abilities:
+                    \t%s
+                    >> close
+                    Exiting...
+                    """;
+            String idealOutput = String.format(idealOutputFormat, character.getName(), format(character.getCharacterType()), covenant.getName(),
+                    character.getAttribute(Attribute.INTELLIGENCE), character.getAttribute(Attribute.PERCEPTION), character.getAttribute(Attribute.STRENGTH), character.getAttribute(Attribute.STAMINA),
+                    character.getAttribute(Attribute.PRESENCE), character.getAttribute(Attribute.COMMUNICATION), character.getAttribute(Attribute.DEXTERITY), character.getAttribute(Attribute.QUICKNESS),
+                    format(art), artExperienceToScore(character.getArt(art)), character.getAbilities().getFirst().toString());
+
+            assertEquals(idealOutput, outputStreamToReadable(outputStream, simulatedInput));
         }
     }
 }
