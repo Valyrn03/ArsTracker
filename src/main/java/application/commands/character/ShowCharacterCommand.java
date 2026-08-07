@@ -13,10 +13,9 @@ import application.models.enums.Attribute;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import static application.utils.CharacterUtils.artExperienceToScore;
-import static application.utils.CharacterUtils.format;
+import static application.utils.artExperienceToScore;
+import static application.utils.format;
 import static java.lang.Math.max;
 
 public class ShowCharacterCommand implements Command {

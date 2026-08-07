@@ -451,7 +451,7 @@ public class ListSelectAndShowCovenantTests {
             launcher.coreLoop();
             terminal.close();
 
-            log.info(covenant.getFeatures().toString());
+            log.info(covenant.getCovenantFeatures().toString());
             int seasons = campaign.getCurrentSeason() - covenant.getEstablishmentSeason();
             String idealOutputFormat = ">> show\n" +
                     "Name: %s\n" +
@@ -477,7 +477,7 @@ public class ListSelectAndShowCovenantTests {
                     "\tVim: %d\n" +
                     ">> close\n" +
                     "Exiting...\n";
-            String idealOutput = String.format(idealOutputFormat, covenant.getName(), covenant.getTribunal(), seasons / 4, seasons % 4, covenant.getFeatures().getFirst().toStringShortened(),
+            String idealOutput = String.format(idealOutputFormat, covenant.getName(), covenant.getTribunal(), seasons / 4, seasons % 4, covenant.getCovenantFeatures().getFirst().toStringShortened(),
                     covenant.getVis(Art.CREO), covenant.getVis(Art.INTELLEGO), covenant.getVis(Art.MUTO), covenant.getVis(Art.PERDO), covenant.getVis(Art.REGO),
                     covenant.getVis(Art.ANIMAL), covenant.getVis(Art.AQUAM), covenant.getVis(Art.AURAM), covenant.getVis(Art.CORPUS), covenant.getVis(Art.HERBAM),
                     covenant.getVis(Art.IGNEM), covenant.getVis(Art.IMAGINEM), covenant.getVis(Art.MENTEM), covenant.getVis(Art.TERRAM), covenant.getVis(Art.VIM));
@@ -504,7 +504,7 @@ public class ListSelectAndShowCovenantTests {
             launcher.coreLoop();
             terminal.close();
 
-            log.info(covenant.getFeatures().toString());
+            log.info(covenant.getCovenantFeatures().toString());
             int seasons = campaign.getCurrentSeason() - covenant.getEstablishmentSeason();
             String idealOutputFormat = ">> show\n" +
                     "Name: %s\n" +
@@ -532,7 +532,7 @@ public class ListSelectAndShowCovenantTests {
                     ">> close\n" +
                     "Exiting...\n";
             String idealOutput = String.format(idealOutputFormat, covenant.getName(), covenant.getTribunal(), seasons / 4, seasons % 4,
-                    covenant.getFeatures().get(0).toStringShortened(), covenant.getFeatures().get(1).toStringShortened(),
+                    covenant.getCovenantFeatures().get(0).toStringShortened(), covenant.getCovenantFeatures().get(1).toStringShortened(),
                     covenant.getVis(Art.CREO), covenant.getVis(Art.INTELLEGO), covenant.getVis(Art.MUTO), covenant.getVis(Art.PERDO), covenant.getVis(Art.REGO),
                     covenant.getVis(Art.ANIMAL), covenant.getVis(Art.AQUAM), covenant.getVis(Art.AURAM), covenant.getVis(Art.CORPUS), covenant.getVis(Art.HERBAM),
                     covenant.getVis(Art.IGNEM), covenant.getVis(Art.IMAGINEM), covenant.getVis(Art.MENTEM), covenant.getVis(Art.TERRAM), covenant.getVis(Art.VIM));
@@ -558,7 +558,7 @@ public class ListSelectAndShowCovenantTests {
             launcher.coreLoop();
             terminal.close();
 
-            log.info(covenant.getFeatures().toString());
+            log.info(covenant.getCovenantFeatures().toString());
             int seasons = campaign.getCurrentSeason() - covenant.getEstablishmentSeason();
             String idealOutputFormat = ">> show\n" +
                     "Name: %s\n" +
@@ -611,7 +611,7 @@ public class ListSelectAndShowCovenantTests {
             launcher.coreLoop();
             terminal.close();
 
-            log.info(covenant.getFeatures().toString());
+            log.info(covenant.getCovenantFeatures().toString());
             int seasons = campaign.getCurrentSeason() - covenant.getEstablishmentSeason();
             String idealOutputFormat = ">> show\n" +
                     "Name: %s\n" +
@@ -666,7 +666,7 @@ public class ListSelectAndShowCovenantTests {
             launcher.coreLoop();
             terminal.close();
 
-            log.info(covenant.getFeatures().toString());
+            log.info(covenant.getCovenantFeatures().toString());
             int seasons = campaign.getCurrentSeason() - covenant.getEstablishmentSeason();
             String idealOutputFormat = ">> show\n" +
                     "Name: %s\n" +
@@ -695,7 +695,7 @@ public class ListSelectAndShowCovenantTests {
                     ">> close\n" +
                     "Exiting...\n";
             String idealOutput = String.format(idealOutputFormat, covenant.getName(), covenant.getTribunal(), seasons / 4, seasons % 4,
-                    covenant.getPlayerCharacters().getFirst().toStringShortened(), covenant.getFeatures().getFirst().toStringShortened(),
+                    covenant.getPlayerCharacters().getFirst().toStringShortened(), covenant.getCovenantFeatures().getFirst().toStringShortened(),
                     covenant.getVis(Art.CREO), covenant.getVis(Art.INTELLEGO), covenant.getVis(Art.MUTO), covenant.getVis(Art.PERDO), covenant.getVis(Art.REGO),
                     covenant.getVis(Art.ANIMAL), covenant.getVis(Art.AQUAM), covenant.getVis(Art.AURAM), covenant.getVis(Art.CORPUS), covenant.getVis(Art.HERBAM),
                     covenant.getVis(Art.IGNEM), covenant.getVis(Art.IMAGINEM), covenant.getVis(Art.MENTEM), covenant.getVis(Art.TERRAM), covenant.getVis(Art.VIM));
@@ -724,7 +724,7 @@ public class ListSelectAndShowCovenantTests {
             launcher.coreLoop();
             terminal.close();
 
-            log.info(covenant.getFeatures().toString());
+            log.info(covenant.getCovenantFeatures().toString());
             int seasons = campaign.getCurrentSeason() - covenant.getEstablishmentSeason();
             String idealOutputFormat = ">> show\n" +
                     "Name: %s\n" +
@@ -756,7 +756,7 @@ public class ListSelectAndShowCovenantTests {
                     "Exiting...\n";
             String idealOutput = String.format(idealOutputFormat, covenant.getName(), covenant.getTribunal(), seasons / 4, seasons % 4,
                     covenant.getPlayerCharacters().get(0).toStringShortened(), covenant.getPlayerCharacters().get(1).toStringShortened(),
-                    covenant.getFeatures().get(0).toStringShortened(), covenant.getFeatures().get(1).toStringShortened(),
+                    covenant.getCovenantFeatures().get(0).toStringShortened(), covenant.getCovenantFeatures().get(1).toStringShortened(),
                     covenant.getVis(Art.CREO), covenant.getVis(Art.INTELLEGO), covenant.getVis(Art.MUTO), covenant.getVis(Art.PERDO), covenant.getVis(Art.REGO),
                     covenant.getVis(Art.ANIMAL), covenant.getVis(Art.AQUAM), covenant.getVis(Art.AURAM), covenant.getVis(Art.CORPUS), covenant.getVis(Art.HERBAM),
                     covenant.getVis(Art.IGNEM), covenant.getVis(Art.IMAGINEM), covenant.getVis(Art.MENTEM), covenant.getVis(Art.TERRAM), covenant.getVis(Art.VIM));

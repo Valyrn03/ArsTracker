@@ -9,7 +9,7 @@ import lombok.ToString;
 import java.util.*;
 
 @EqualsAndHashCode
-public class CharacterFeature implements Comparable<CharacterFeature> {
+public class CharacterFeature implements Comparable<CharacterFeature>{
     @Setter @Getter private int id;
     @Getter private FeatureType type;
     @Getter private String name;

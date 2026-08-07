@@ -108,7 +108,7 @@ public class ArsTrackerLauncher {
         commands.put("list", new ListCovenantsCommand(framework, new CovenantDataSource(dataSource)));
         commands.put("select", new CovenantSelectionCommand(framework, new CovenantDataSource(dataSource)));
         commands.put("create", new CovenantCreationCommand(framework, new CovenantDataSource(dataSource)));
-        commands.put("delete", new CampaignDeletionCommand(framework));
+        commands.put("delete", new CampaignDeletionCommand(framework, new CampaignDataSource(dataSource)));
 
     }
 

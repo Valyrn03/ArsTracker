@@ -33,16 +33,18 @@ public interface ICovenantDataSource {
 
     boolean addCovenant(Covenant covenant, Campaign campaign);
 
-    boolean saveCovenantFeature(CovenantFeature feature);
+    boolean saveCovenantFeature(CovenantFeature covenantFeature);
 
     /*
-    If the feature that is passed in does not already exist, also call addNewCovenantFeature
+    If the covenantFeature that is passed in does not already exist, also call addNewCovenantFeature
      */
-    boolean addFeatureToCovenant(Covenant covenant, CovenantFeature feature);
+    boolean addFeatureToCovenant(Covenant covenant, CovenantFeature covenantFeature);
 
 //    boolean addBookToCovenant(Covenant covenant, Book book);
 
     boolean updateCovenantLabTexts(Covenant covenant);
 
     List<Integer> loadCovenantIdsFromCampaign(Campaign campaign);
+
+    boolean deleteCovenant(Covenant covenant);
 }

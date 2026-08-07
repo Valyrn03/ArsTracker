@@ -25,4 +25,6 @@ public interface ICampaignDataSource {
     boolean addCampaign(String name, int seasons);
 
     boolean addCampaign(Campaign campaign);
+
+    boolean deleteCampaign(Campaign campaign);
 }

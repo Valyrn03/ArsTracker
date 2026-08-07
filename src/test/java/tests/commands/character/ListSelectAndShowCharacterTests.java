@@ -15,12 +15,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import static application.utils.CharacterUtils.artExperienceToScore;
-import static application.utils.CharacterUtils.format;
+import static application.utils.artExperienceToScore;
+import static application.utils.format;
 import static org.junit.jupiter.api.Assertions.*;
 import static tests.utils.*;
 

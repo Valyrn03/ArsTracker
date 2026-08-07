@@ -100,18 +100,26 @@ public class CommandFramework {
 
     public int getOptionsIndex(Stream<String> options){
         terminal.writer().println("Choose one of the following options:");
-        AtomicInteger i = new AtomicInteger();
-        i.getAndIncrement();
-        options.forEachOrdered((option) -> {
-            if(i.get() == 1){
-                terminal.writer().println(String.format("\t%d. %s", i.get(), option));
-            }else{
-                terminal.writer().println(String.format("\t%d. %s", i.get(), option));
-            }
-            i.getAndIncrement();
-        });
+        List<String> list = options.toList();
+        return getOptionsIndex(options.toList());
+    }
 
-        return getInt(">") - 1;
+    public int getOptionsIndex(List<String> options){
+        terminal.writer().println("Choose one of the following options:");
+        for(int i = 0; i < options.size(); i++){
+            terminal.writer().println(String.format("\t%d. %s", i, options.get(i)));
+        }
+
+        String input = getString(">");
+        try{
+            int index = Integer.parseInt(input);
+            if(index < 1 || index > options.size() + 1){
+                return getIntLimited(">", 1, options.size() + 1);
+            }
+            return index;
+        }catch (NumberFormatException exp){
+            return options.stream().map(String::toLowerCase).toList().indexOf(input.toLowerCase());
+        }
     }
 
     public String getOptions(List<String> options){
@@ -121,22 +129,24 @@ public class CommandFramework {
             terminal.writer().println(String.format("\t%d: %s\n", i, options.get(i)));
         }
 
-        int index = getInt("> ");
-        return options.get(index);
+        String input = getString("> ");
+        try{
+            int index = Integer.parseInt(input);
+            if(index < 1 || index > options.size() + 1){
+                index = getIntLimited(">", 1, options.size() + 1);
+            }
+            return options.get(index - 1);
+        }catch (NumberFormatException exp){
+            return input;
+        }
     }
 
     public String getOptions(Stream<String> options){
         terminal.writer().println("Choose one of the following options:");
-        List<String> record = new ArrayList<>();
-
-        options.forEachOrdered((option) -> {
-            terminal.writer().println(String.format("\t%d: %s\n", record.size(), option));
-            record.add(option);
-        });
-
-        int index = getInt("> ");
-        return record.get(index);
+        return getOptions(options.toList());
     }
+
+
 
     public String getString(String prompt){
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();

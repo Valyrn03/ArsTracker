@@ -1,23 +1,23 @@
-package application.utils;
+package application;
 
-import application.models.enums.Attribute;
+import application.models.CharacterFeature;
+import application.models.CovenantFeature;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import static application.CharacterController.calculateCost;
 
 @Slf4j
-public class CharacterUtils{
-    public CharacterUtils(){
+public class utils {
+    public utils(){
 
     }
 
     public static int abilityExperienceToScore(int experience){
-        Logger logger = Logger.getLogger(CharacterUtils.class.getName());
+        Logger logger = Logger.getLogger(utils.class.getName());
         logger.info("Experience: " + experience);
         int score = 0;
 
@@ -35,7 +35,7 @@ public class CharacterUtils{
     }
 
     public static int artExperienceToScore(int experience){
-        Logger logger = Logger.getLogger(CharacterUtils.class.getName());
+        Logger logger = Logger.getLogger(utils.class.getName());
         logger.info("Experience: " + experience);
         int score = 0;
 
@@ -85,5 +85,41 @@ public class CharacterUtils{
 
     public static String format(Object obj){
         return obj.toString().substring(0, 1).toUpperCase() + obj.toString().substring(1).toLowerCase();
+    }
+
+    public static int calculateCovenantFeatureBalance(List<CovenantFeature> features){
+        int total = 0;
+
+        for(CovenantFeature feature : features){
+            int value = 1;
+            if(feature.isMajor()){
+                value *= 3;
+            }
+            if(feature.getType().equals(CovenantFeature.FeatureType.HOOK)){
+                value *= -1;
+            }
+
+            total += value;
+        }
+
+        return total;
+    }
+
+    public static int calculateCharacterFeatureBalance(List<CharacterFeature> features){
+        int total = 0;
+
+        for(CharacterFeature feature : features){
+            int value = 1;
+            if(feature.isMajor()){
+                value *= 3;
+            }
+            if(feature.getType().equals(CharacterFeature.FeatureType.FLAW)){
+                value *= -1;
+            }
+
+            total += value;
+        }
+
+        return total;
     }
 }

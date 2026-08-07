@@ -1,7 +1,7 @@
 package application.models;
 
 import application.models.enums.AbilityCategory;
-import application.utils.CharacterUtils;
+import application.utils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,7 +51,7 @@ public class Ability implements Comparable<Ability>{
 
     @Override
     public String toString(){
-        return getAbility() + " (" + getSpeciality() + ") lvl" + CharacterUtils.abilityExperienceToScore(getExperience());
+        return getAbility() + " (" + getSpeciality() + ") lvl" + utils.abilityExperienceToScore(getExperience());
     }
 
     public static List<String> generalAbilities(){

@@ -33,4 +33,6 @@ public interface ICharacterDataSource {
     public boolean updateCharacterArts(ArsCharacter character);
 
     public int loadCharacterArt(ArsCharacter character, Art art);
+
+    boolean deleteCharacter(ArsCharacter character);
 }

@@ -1,7 +1,6 @@
 package tests.dataSources;
 
 import application.data.*;
-import application.models.ArsCharacter;
 import application.models.Campaign;
 import application.models.Covenant;
 import application.models.CovenantFeature;
@@ -134,7 +133,7 @@ public class CovenantTests {
     }
 
     @Nested
-    class SaveCovenantFeature{
+    class SaveCovenantFeature {
         @Test
         void returnsTrueOnAddition(){
             CovenantFeature feature = generateCovenantFeature();
@@ -150,7 +149,7 @@ public class CovenantTests {
     }
 
     @Nested
-    class AddFeatureToCovenant{
+    class AddCovenantFeatureToCovenant {
         @Test
         void returnsTrueOnAddition(){
             Covenant covenant = generateCovenant();
@@ -196,7 +195,7 @@ public class CovenantTests {
     }
 
     @Nested
-    class LoadCovenantFeatureFromId{
+    class LoadCovenantFeatureFromId {
         @Test
         void returnsFeatureOnQuery(){
             CovenantFeature feature = generateCovenantFeature();

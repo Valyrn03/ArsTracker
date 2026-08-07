@@ -3,7 +3,6 @@ package application.commands.covenant;
 import application.Command;
 import application.CommandFramework;
 import application.data.ICharacterDataSource;
-import application.data.ICovenantDataSource;
 import application.models.ArsCharacter;
 import application.models.Covenant;
 import application.models.CovenantFeature;
@@ -44,9 +43,9 @@ public class ShowCovenantCommand implements Command {
             framework.put(covenant.getPlayerCharacters().stream().map(ArsCharacter::toStringShortened));
         }
 
-        if(!covenant.getFeatures().isEmpty()){
+        if(!covenant.getCovenantFeatures().isEmpty()){
             framework.put("Features:");
-            framework.put(covenant.getFeatures().stream().map(CovenantFeature::toStringShortened));
+            framework.put(covenant.getCovenantFeatures().stream().map(CovenantFeature::toStringShortened));
         }
 
         if(!covenant.getBooks().isEmpty()){

@@ -213,7 +213,7 @@ public class CharacterDataSource implements ICharacterDataSource{
             return false;
         }
         if(feature == null || feature.getId() == 0 || loadFeatureFromId(feature.getId()).isEmpty()){
-            log.info("Feature has not been previously saved");
+            log.info("CovenantFeature has not been previously saved");
             return false;
         }
 

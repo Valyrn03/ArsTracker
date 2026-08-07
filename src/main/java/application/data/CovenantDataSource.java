@@ -238,24 +238,24 @@ public class CovenantDataSource implements ICovenantDataSource{
     }
 
     @Override
-    public boolean saveCovenantFeature(CovenantFeature feature) {
-        if(feature == null){
+    public boolean saveCovenantFeature(CovenantFeature covenantFeature) {
+        if(covenantFeature == null){
             return false;
         }
 
         try(Connection connection = source.getConnection();
             PreparedStatement statement = connection.prepareStatement("INSERT INTO covenant_feature (name, description, isBoon, isMajor) VALUES (?, ?, ?, ?)");
             PreparedStatement idStatement = connection.prepareStatement("SELECT last_insert_rowid()")){
-            statement.setString(1, feature.getName());
-            statement.setString(2, feature.getDescription());
+            statement.setString(1, covenantFeature.getName());
+            statement.setString(2, covenantFeature.getDescription());
 
-            if(CovenantFeature.FeatureType.BOON.equals(feature.getType())){
+            if(CovenantFeature.FeatureType.BOON.equals(covenantFeature.getType())){
                 statement.setInt(3, 0);
             }else{
                 statement.setInt(3, 1);
             }
 
-            if(feature.isMajor()){
+            if(covenantFeature.isMajor()){
                 statement.setInt(4, 0);
             }else{
                 statement.setInt(4, 1);
@@ -263,9 +263,9 @@ public class CovenantDataSource implements ICovenantDataSource{
 
             statement.execute();
             ResultSet resultSet = idStatement.executeQuery();
-            feature.setId(resultSet.getInt(1));
+            covenantFeature.setId(resultSet.getInt(1));
         }catch (SQLException exp){
-            log.error("Failed to save covenant feature {}, with error {}", feature.getName(), exp.getMessage());
+            log.error("Failed to save covenant covenantFeature {}, with error {}", covenantFeature.getName(), exp.getMessage());
             return false;
         }
 
@@ -273,14 +273,14 @@ public class CovenantDataSource implements ICovenantDataSource{
     }
 
     @Override
-    public boolean addFeatureToCovenant(Covenant covenant, CovenantFeature feature) {
-        if(covenant == null || feature == null){
+    public boolean addFeatureToCovenant(Covenant covenant, CovenantFeature covenantFeature) {
+        if(covenant == null || covenantFeature == null){
             log.error("Passed in a null value (covenant == null -> {})", covenant == null);
             return false;
         }
 
-        if(feature.getId() == 0){
-            log.error("Feature {} has not been loaded in the database", feature.getName());
+        if(covenantFeature.getId() == 0){
+            log.error("CovenantFeature {} has not been loaded in the database", covenantFeature.getName());
             return false;
         }
 
@@ -292,11 +292,11 @@ public class CovenantDataSource implements ICovenantDataSource{
         try(Connection connection = source.getConnection();
             PreparedStatement statement = connection.prepareStatement("INSERT INTO applied_covenant_feature VALUES (?, ?)")){
             statement.setInt(1, covenant.getId());
-            statement.setInt(2, feature.getId());
+            statement.setInt(2, covenantFeature.getId());
 
             statement.execute();
         }catch (SQLException exp){
-            log.error("Failed to add feature {} to covenant {} with error {}", feature.getName(), covenant.getName(), exp.getMessage());
+            log.error("Failed to add covenantFeature {} to covenant {} with error {}", covenantFeature.getName(), covenant.getName(), exp.getMessage());
             return false;
         }
 
