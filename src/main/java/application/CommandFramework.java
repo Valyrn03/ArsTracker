@@ -98,14 +98,8 @@ public class CommandFramework {
         }
     }
 
-    public int getOptionsIndex(Stream<String> options){
-        terminal.writer().println("Choose one of the following options:");
-        List<String> list = options.toList();
-        return getOptionsIndex(options.toList());
-    }
-
-    public int getOptionsIndex(List<String> options){
-        terminal.writer().println("Choose one of the following options:");
+    public int getOptionsIndex(List<?> options, String prompt){
+        terminal.writer().println(prompt + ":");
         for(int i = 0; i < options.size(); i++){
             terminal.writer().println(String.format("\t%d. %s", i, options.get(i)));
         }
@@ -118,12 +112,37 @@ public class CommandFramework {
             }
             return index;
         }catch (NumberFormatException exp){
-            return options.stream().map(String::toLowerCase).toList().indexOf(input.toLowerCase());
+            return options.stream().
+                    map(Object::toString).
+                    map(String::toLowerCase).
+                    toList().
+                    indexOf(input.toLowerCase());
         }
     }
 
-    public String getOptions(List<String> options){
-        terminal.writer().println("Choose one of the following options:");
+    public int getOptionsIndex(Stream<?> options){
+//        List<String> list = options.toList();
+        return getOptionsIndex(options.toList());
+    }
+
+    public int getOptionsIndex(List<?> options){
+        return getOptionsIndex(options, "Choose one of the following");
+    }
+
+    public int getOptionsIndex(Stream<?> options, String prompt){
+        return getOptionsIndex(options.toList(), prompt);
+    }
+
+    public String getOptions(List<?> options){
+        return getOptions(options, "Choose one of the following options");
+    }
+
+    public String getOptions(Stream<?> options){
+        return getOptions(options.toList());
+    }
+
+    public String getOptions(List<?> options, String prompt){
+        terminal.writer().println(prompt + ":");
 
         for(int i = 0; i < options.size(); i++){
             terminal.writer().println(String.format("\t%d: %s\n", i, options.get(i)));
@@ -135,18 +154,11 @@ public class CommandFramework {
             if(index < 1 || index > options.size() + 1){
                 index = getIntLimited(">", 1, options.size() + 1);
             }
-            return options.get(index - 1);
+            return options.get(index - 1).toString();
         }catch (NumberFormatException exp){
             return input;
         }
     }
-
-    public String getOptions(Stream<String> options){
-        terminal.writer().println("Choose one of the following options:");
-        return getOptions(options.toList());
-    }
-
-
 
     public String getString(String prompt){
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();

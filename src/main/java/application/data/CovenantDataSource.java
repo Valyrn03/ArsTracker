@@ -330,4 +330,51 @@ public class CovenantDataSource implements ICovenantDataSource{
 
         return covenantIds;
     }
+
+    @Override
+    public boolean deleteCovenant(Covenant covenant) {
+        try(Connection connection = source.getConnection();
+            PreparedStatement featureStatement = connection.prepareStatement("DELETE FROM applied_covenant_feature WHERE id = ?");
+            PreparedStatement covenantStatement = connection.prepareStatement("DELETE FROM covenant WHERE id = ?")){
+            featureStatement.setInt(1, covenant.getId());
+            covenantStatement.setInt(1, covenant.getId());
+
+            featureStatement.execute();
+            covenantStatement.execute();
+        }catch (SQLException exp){
+            log.error("Failed to delete covenant with error {}", exp.getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public List<CovenantFeature> loadFeatures(CovenantFeature.FeatureType type) {
+        List<CovenantFeature> features = new ArrayList<>();
+        try(Connection connection = source.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT id FROM covenant_feature WHERE isBoon = ?")){
+            if(type.equals(CovenantFeature.FeatureType.BOON)){
+                statement.setInt(1, 0);
+            }else{
+                statement.setInt(1, 1);
+            }
+
+            try(ResultSet resultSet = statement.executeQuery()){
+                Map<String, String> map = new HashMap<>();
+                map.put("id", resultSet.getString("id"));
+                map.put("name", resultSet.getString("name"));
+                map.put("description", resultSet.getString("description"));
+                map.put("isBoon", resultSet.getString("isBoon"));
+                map.put("isMajor", resultSet.getString("isMajor"));
+
+                features.add(new CovenantFeature(map));
+            }
+        }catch (SQLException exp){
+            log.error("Failed to load features with error {}", exp.getMessage());
+            return Collections.emptyList();
+        }
+
+        return features;
+    }
 }

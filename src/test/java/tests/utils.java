@@ -60,11 +60,7 @@ public class utils {
         CovenantFeature feature = new CovenantFeature();
         feature.setName(UUID.randomUUID().toString());
 
-        if(random.nextBoolean()){
-            feature.setType(CovenantFeature.FeatureType.HOOK);
-        }else{
-            feature.setType(CovenantFeature.FeatureType.BOON);
-        }
+        feature.setType(random.nextBoolean());
 
         feature.setMajor(random.nextBoolean());
         feature.setDescription(feature.getName());

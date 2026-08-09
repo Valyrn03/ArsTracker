@@ -12,7 +12,7 @@ import java.util.Map;
 public class CovenantFeature implements Comparable<CovenantFeature>{
     @Getter @Setter int id;
     @Getter @Setter String name;
-    @Getter @Setter FeatureType type;
+    @Getter FeatureType type;
     @Getter @Setter boolean isMajor;
     @Getter @Setter String description;
 
@@ -78,5 +78,17 @@ public class CovenantFeature implements Comparable<CovenantFeature>{
         }
 
         return builder.toString();
+    }
+
+    public void setType(FeatureType i_type){
+        type = i_type;
+    }
+
+    public void setType(boolean isBoon){
+        if(isBoon){
+            type = FeatureType.BOON;
+        }else{
+            type = FeatureType.HOOK;
+        }
     }
 }
