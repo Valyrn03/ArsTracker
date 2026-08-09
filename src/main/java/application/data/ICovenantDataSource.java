@@ -46,7 +46,5 @@ public interface ICovenantDataSource {
 
     List<Integer> loadCovenantIdsFromCampaign(Campaign campaign);
 
-    boolean deleteCovenant(Covenant covenant);
-
     List<CovenantFeature> loadFeatures(CovenantFeature.FeatureType type);
 }

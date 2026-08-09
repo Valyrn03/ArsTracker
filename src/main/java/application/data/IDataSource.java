@@ -15,4 +15,10 @@ public interface IDataSource {
     List<Ability> loadAbilitiesById(int id);
 
     boolean addAbility(int id, Ability ability);
+
+    boolean deleteCampaign(Campaign campaign);
+
+    boolean deleteCovenant(Covenant covenant);
+
+    boolean deleteCharacter(ArsCharacter character);
 }

@@ -332,24 +332,6 @@ public class CovenantDataSource implements ICovenantDataSource{
     }
 
     @Override
-    public boolean deleteCovenant(Covenant covenant) {
-        try(Connection connection = source.getConnection();
-            PreparedStatement featureStatement = connection.prepareStatement("DELETE FROM applied_covenant_feature WHERE id = ?");
-            PreparedStatement covenantStatement = connection.prepareStatement("DELETE FROM covenant WHERE id = ?")){
-            featureStatement.setInt(1, covenant.getId());
-            covenantStatement.setInt(1, covenant.getId());
-
-            featureStatement.execute();
-            covenantStatement.execute();
-        }catch (SQLException exp){
-            log.error("Failed to delete covenant with error {}", exp.getMessage());
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
     public List<CovenantFeature> loadFeatures(CovenantFeature.FeatureType type) {
         List<CovenantFeature> features = new ArrayList<>();
         try(Connection connection = source.getConnection();

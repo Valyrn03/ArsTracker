@@ -1,6 +1,9 @@
 package application.data;
 
 import application.models.Ability;
+import application.models.ArsCharacter;
+import application.models.Campaign;
+import application.models.Covenant;
 import application.models.enums.AbilityCategory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -225,5 +228,73 @@ public class DataSource implements IDataSource{
         }catch (SQLException exp){
             log.error("Failed to populate Abilities table with the following error: {}", exp.getMessage());
         }
+    }
+
+    @Override
+    public boolean deleteCampaign(Campaign campaign) {
+        boolean deletedCovenants = campaign.getCovenants().stream().map(this::deleteCovenant).toList().contains(false);
+        if(!deletedCovenants){
+            return false;
+        }
+
+        try(Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("")){
+
+        }catch (SQLException exp){
+            log.error("Failed to delete campaign with error {}", exp.getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean deleteCovenant(Covenant covenant) {
+        boolean deletedCharacters = covenant.getPlayerCharacters().stream().map(this::deleteCharacter).toList().contains(false);
+        if(!deletedCharacters){
+            return false;
+        }
+
+        try(Connection connection = getConnection();
+            PreparedStatement featureStatement = connection.prepareStatement("DELETE FROM applied_covenant_feature WHERE id = ?");
+            PreparedStatement visStatement = connection.prepareStatement("DELETE FROM vis WHERE covenant_id = ?");
+            PreparedStatement covenantStatement = connection.prepareStatement("DELETE FROM covenant WHERE id = ?")){
+            featureStatement.setInt(1, covenant.getId());
+            visStatement.setInt(1, covenant.getId());
+            covenantStatement.setInt(1, covenant.getId());
+
+            featureStatement.execute();
+            visStatement.execute();
+            covenantStatement.execute();
+        }catch (SQLException exp){
+            log.error("Failed to delete covenant with error {}", exp.getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean deleteCharacter(ArsCharacter character) {
+        try(Connection connection = getConnection();
+            PreparedStatement featureStatement = connection.prepareStatement("DELETE FROM applied_feature WHERE player_id = ?");
+            PreparedStatement abilityStatement = connection.prepareStatement("DELETE FROM ability WHERE owner_id = ?");
+            PreparedStatement visStatement = connection.prepareStatement("DELETE FROM arts WHERE character_id = ?");
+            PreparedStatement characterStatement = connection.prepareStatement("DELETE FROM character WHERE id = ?")){
+            featureStatement.setInt(1, character.getId());
+            abilityStatement.setInt(1, character.getId());
+            visStatement.setInt(1, character.getId());
+            characterStatement.setInt(1, character.getId());
+
+            featureStatement.execute();
+            abilityStatement.execute();
+            visStatement.execute();
+            characterStatement.execute();
+        }catch (SQLException exp){
+            log.error("Failed to delete character {} with error {}", character.toString(), exp.getMessage());
+            return false;
+        }
+
+        return true;
     }
 }
