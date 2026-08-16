@@ -44,7 +44,7 @@ public class CharacterTests {
         @DisplayName("returns singular saved character")
         void returnsSingularCharacter(){
             ArsCharacter character = generateCharacter();
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             assertEquals(Optional.of(character), dataSource.loadBaseCharacterFromId(character.getId()));
         }
@@ -55,8 +55,8 @@ public class CharacterTests {
             ArsCharacter characterOne = generateCharacter();
             ArsCharacter characterTwo = generateCharacter();
 
-            dataSource.addCharacterToCovenant(covenant, characterOne);
-            dataSource.addCharacterToCovenant(covenant, characterTwo);
+            dataSource.addCharacterToCovenant(characterOne, covenant);
+            dataSource.addCharacterToCovenant(characterTwo, covenant);
 
             assertEquals(Optional.of(characterOne), dataSource.loadBaseCharacterFromId(characterOne.getId()));
         }
@@ -68,7 +68,7 @@ public class CharacterTests {
             covenantDataSource.addCovenant(covenantTwo, campaign);
 
             ArsCharacter character = generateCharacter();
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             assertEquals(Optional.of(character), dataSource.loadBaseCharacterFromId(character.getId()));
         }
@@ -85,7 +85,7 @@ public class CharacterTests {
         @Test
         void returnsTrueOnUpdate(){
             ArsCharacter character = generateCharacter();
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             Random random = new Random();
             Map<Attribute, Integer> newAttributes = new HashMap<>();
@@ -122,7 +122,7 @@ public class CharacterTests {
             ArsCharacter character = generateCharacter();
             Ability ability = generateAbility(false);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             superSource.addAbility(character.getId(), ability);
 
             List<Ability> abilities = superSource.loadAbilitiesById(character.getId());
@@ -136,7 +136,7 @@ public class CharacterTests {
             ArsCharacter character = generateCharacter();
             Ability ability = generateAbility(true);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             superSource.addAbility(character.getId(), ability);
 
             assertEquals(1, superSource.loadAbilitiesById(character.getId()).size());
@@ -150,7 +150,7 @@ public class CharacterTests {
             Ability abilityOne = generateAbility();
             Ability abilityTwo = generateAbility();
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             superSource.addAbility(character.getId(), abilityOne);
             superSource.addAbility(character.getId(), abilityTwo);
 
@@ -199,11 +199,11 @@ public class CharacterTests {
             ArsCharacter characterOne = generateCharacter();
             ArsCharacter characterTwo = generateCharacter();
 
-            dataSource.addCharacterToCovenant(covenant, characterOne);
+            dataSource.addCharacterToCovenant(characterOne, covenant);
             characterOne.addAbility(ability);
             superSource.addAbility(characterOne.getId(), ability);
 
-            dataSource.addCharacterToCovenant(covenant, characterTwo);
+            dataSource.addCharacterToCovenant(characterTwo, covenant);
             characterTwo.addAbility(altAbility);
             superSource.addAbility(characterTwo.getId(), characterTwo.getAbilities().getFirst());
 
@@ -223,7 +223,7 @@ public class CharacterTests {
             character.addAbility(ability);
             character.addAbility(altAbility);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             superSource.addAbility(character.getId(), ability);
             superSource.addAbility(character.getId(), altAbility);
 
@@ -240,7 +240,7 @@ public class CharacterTests {
             ArsCharacter character = generateCharacter();
             character.addAbility(genericAbility);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             superSource.addAbility(character.getId(), fakeAbility);
             assertEquals(fakeAbility, superSource.loadAbilitiesById(character.getId()).getFirst());
         }
@@ -254,7 +254,7 @@ public class CharacterTests {
             ArsCharacter character = generateCharacter();
             CharacterFeature feature = generateCharacterFeature();
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             dataSource.saveNewFeature(feature);
             dataSource.addFeatureToCharacter(character, feature);
 
@@ -271,7 +271,7 @@ public class CharacterTests {
             CharacterFeature featureOne = generateCharacterFeature();
             CharacterFeature featureTwo = generateCharacterFeature();
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             dataSource.saveNewFeature(featureOne);
             dataSource.saveNewFeature(featureTwo);
             dataSource.addFeatureToCharacter(character, featureOne);
@@ -391,13 +391,13 @@ public class CharacterTests {
         @Test
         void returnsTrueOnAddition(){
             ArsCharacter character = generateCharacter();
-            assertTrue(dataSource.addCharacterToCovenant(covenant, character));
+            assertTrue(dataSource.addCharacterToCovenant(character, covenant));
             log.info("New ID: {}", character.getId());
         }
 
         @Test
         void returnsFalseOnNonexistentCovenant(){
-            assertFalse(dataSource.addCharacterToCovenant(generateCovenant(), generateCharacter()));
+            assertFalse(dataSource.addCharacterToCovenant(generateCharacter(), generateCovenant()));
         }
 
         @Test
@@ -408,17 +408,17 @@ public class CharacterTests {
 
             ArsCharacter character = generateCharacter();
 
-            assertTrue(dataSource.addCharacterToCovenant(covenant, character));
+            assertTrue(dataSource.addCharacterToCovenant(character, covenant));
         }
 
         @Test
         void returnsFalseOnNullCovenant(){
-            assertFalse(dataSource.addCharacterToCovenant(null, generateCharacter()));
+            assertFalse(dataSource.addCharacterToCovenant(generateCharacter(), null));
         }
 
         @Test
         void returnsFalseOnNullCharacter(){
-            assertFalse(dataSource.addCharacterToCovenant(covenant, null));
+            assertFalse(dataSource.addCharacterToCovenant(null, covenant));
         }
 
         @Test
@@ -426,7 +426,7 @@ public class CharacterTests {
         void returnsFalseOnUnloadedCovenant(){
             Covenant unloadedCovenant = generateCovenant();
 
-            assertFalse(dataSource.addCharacterToCovenant(unloadedCovenant, generateCharacter()));
+            assertFalse(dataSource.addCharacterToCovenant(generateCharacter(), unloadedCovenant));
         }
     }
 
@@ -437,7 +437,7 @@ public class CharacterTests {
             ArsCharacter character = generateCharacter();
             Ability ability = generateAbility();
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             assertTrue(superSource.addAbility(character.getId(), ability));
         }
@@ -448,7 +448,7 @@ public class CharacterTests {
             Ability abilityOne = generateAbility();
             Ability abilityTwo = generateAbility();
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             assertTrue(superSource.addAbility(character.getId(), abilityOne));
             assertTrue(superSource.addAbility(character.getId(), abilityTwo));
@@ -457,7 +457,7 @@ public class CharacterTests {
         @Test
         void returnsFalseOnNullAbility(){
             ArsCharacter character = generateCharacter();
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             assertFalse(superSource.addAbility(character.getId(), null));
         }
@@ -475,7 +475,7 @@ public class CharacterTests {
             ArsCharacter character = generateCharacter();
             CharacterFeature feature = generateCharacterFeature();
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             dataSource.saveNewFeature(feature);
 
             assertTrue(dataSource.addFeatureToCharacter(character, feature));
@@ -487,7 +487,7 @@ public class CharacterTests {
             CharacterFeature featureOne = generateCharacterFeature();
             CharacterFeature featureTwo = generateCharacterFeature();
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             dataSource.saveNewFeature(featureOne);
             dataSource.saveNewFeature(featureTwo);
 
@@ -503,7 +503,7 @@ public class CharacterTests {
         @Test
         void returnsFalseOnNullFeature(){
             ArsCharacter character = generateCharacter();
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             assertFalse(dataSource.addFeatureToCharacter(character, null));
         }
@@ -517,7 +517,7 @@ public class CharacterTests {
         @DisplayName("Make sure it fails if the feature hasn't been saved yet")
         void returnsFalseOnUnsavedFeature(){
             ArsCharacter character = generateCharacter();
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             CharacterFeature unsavedFeature = generateCharacterFeature();
 
@@ -604,7 +604,7 @@ public class CharacterTests {
             ArsCharacter character = generateCharacter();
 
             covenantDataSource.addCovenant(covenant, campaign);
-            characterDataSource.addCharacterToCovenant(covenant, character);
+            characterDataSource.addCharacterToCovenant(character, covenant);
 
             assertEquals(1, dataSource.loadCovenantCharacters(covenant).size());
             assertEquals(character, dataSource.loadCovenantCharacters(covenant).getFirst());
@@ -626,7 +626,7 @@ public class CharacterTests {
             ArsCharacter character = generateCharacter();
 
 //            dataSource.addCovenant(covenant, campaign);
-            characterDataSource.addCharacterToCovenant(covenant, character);
+            characterDataSource.addCharacterToCovenant(character, covenant);
 
             assertEquals(0, dataSource.loadCovenantCharacters(covenant).size());
             assertEquals(Collections.emptyList(), dataSource.loadCovenantCharacters(covenant));
@@ -645,8 +645,8 @@ public class CharacterTests {
             ArsCharacter characterTwo = generateCharacter();
 
             covenantDataSource.addCovenant(covenant, campaign);
-            characterDataSource.addCharacterToCovenant(covenant, characterOne);
-            characterDataSource.addCharacterToCovenant(covenant, characterTwo);
+            characterDataSource.addCharacterToCovenant(characterOne, covenant);
+            characterDataSource.addCharacterToCovenant(characterTwo, covenant);
 
             assertEquals(2, dataSource.loadCovenantCharacters(covenant).size());
             assertTrue(dataSource.loadCovenantCharacters(covenant).contains(characterOne));
@@ -661,7 +661,7 @@ public class CharacterTests {
 
             covenantDataSource.addCovenant(covenantOne, campaign);
             covenantDataSource.addCovenant(covenantTwo, campaign);
-            characterDataSource.addCharacterToCovenant(covenantOne, character);
+            characterDataSource.addCharacterToCovenant(character, covenantOne);
 
             assertEquals(1, dataSource.loadCovenantCharacters(covenantOne).size());
             assertEquals(character, dataSource.loadCovenantCharacters(covenantOne).getFirst());
@@ -674,7 +674,7 @@ public class CharacterTests {
         @Test
         void returnsTrueOnSingularUpdate(){
             ArsCharacter character = generateCharacter(ArsCharacter.CharacterType.MAGUS);
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             Random random = new Random();
             character.incrementArt(Art.values()[random.nextInt(Art.values().length)], random.nextInt(1000));
@@ -685,7 +685,7 @@ public class CharacterTests {
         @Test
         void returnsTrueOnMultipleUpdates(){
             ArsCharacter character = generateCharacter(ArsCharacter.CharacterType.MAGUS);
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             Random random = new Random();
             List<Art> arts = new ArrayList<>();
@@ -722,7 +722,7 @@ public class CharacterTests {
 
             character.incrementArt(art, random.nextInt(1000));
             Map<Art, Integer> artMap = new HashMap<>(character.getArts());
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             dataSource.updateCharacterArts(character); //Should refactor later to make this unnecessary
 
             character.setArt(art, 0);
@@ -749,7 +749,7 @@ public class CharacterTests {
             }
 
             Map<Art, Integer> artMap = new HashMap<>(character.getArts());
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             dataSource.updateCharacterArts(character); //Should refactor later to make this unnecessary
 
             for(Art art : arts){
@@ -770,7 +770,7 @@ public class CharacterTests {
         @Test
         void returnsZeroOnArtIfNoArtSet(){
             ArsCharacter character = generateCharacter(ArsCharacter.CharacterType.MAGUS);
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             Random random = new Random();
             assertEquals(0, dataSource.loadCharacterArt(character, Art.values()[random.nextInt(Art.values().length)]));
@@ -792,7 +792,7 @@ public class CharacterTests {
             }
 
             character.incrementArt(arts.getFirst(), random.nextInt(1000));
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             dataSource.updateCharacterArts(character); //Should refactor later to make this unnecessary
 
             assertEquals(0, dataSource.loadCharacterArt(character, arts.getLast()));

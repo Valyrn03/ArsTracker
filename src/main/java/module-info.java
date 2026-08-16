@@ -10,7 +10,6 @@ module application {
     requires org.apache.commons.io;
 
     exports application;
-    exports application.utils;
     exports application.terminal;
     exports application.models;
     exports application.commands;

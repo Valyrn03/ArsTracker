@@ -54,4 +54,19 @@ public class MockDataSource implements IDataSource{
     public boolean addAbility(int id, Ability ability) {
         return dataSource.addAbility(id, ability);
     }
+
+    @Override
+    public boolean deleteCampaign(Campaign campaign) {
+        return dataSource.deleteCampaign(campaign);
+    }
+
+    @Override
+    public boolean deleteCovenant(Covenant covenant) {
+        return dataSource.deleteCovenant(covenant);
+    }
+
+    @Override
+    public boolean deleteCharacter(ArsCharacter character) {
+        return dataSource.deleteCharacter(character);
+    }
 }

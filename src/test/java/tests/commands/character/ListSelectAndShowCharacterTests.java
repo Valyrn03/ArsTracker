@@ -103,7 +103,7 @@ public class ListSelectAndShowCharacterTests {
         @Test
         void listOneCharacterFromQuery() throws IOException {
             ArsCharacter character = generateCharacter();
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             String simulatedInput = "list\nclose\n";
             ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
@@ -168,7 +168,7 @@ public class ListSelectAndShowCharacterTests {
             List<ArsCharacter> characters = new ArrayList<>();
             for(int i = 0; i < 2; i++){
                 characters.add(generateCharacter());
-                dataSource.addCharacterToCovenant(covenant, characters.getLast());
+                dataSource.addCharacterToCovenant(characters.getLast(), covenant);
             }
             characters.sort(null);
 
@@ -204,7 +204,7 @@ public class ListSelectAndShowCharacterTests {
             characters.add(generateCharacter());
 
             covenant.addCharacter(characters.getFirst());
-            dataSource.addCharacterToCovenant(covenant, characters.getLast());
+            dataSource.addCharacterToCovenant(characters.getLast(), covenant);
             characters.sort(null);
 
             String simulatedInput = "list\nclose\n";
@@ -447,7 +447,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             assertTrue(superSource.addAbility(character.getId(), ability));
 
             launcher.coreLoop();
@@ -496,7 +496,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             launcher.coreLoop();
             terminal.close();
@@ -543,7 +543,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             superSource.addAbility(character.getId(), abilities.get(0));
             superSource.addAbility(character.getId(), abilities.get(1));
 
@@ -679,7 +679,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             dataSource.saveNewFeature(feature);
             dataSource.addFeatureToCharacter(character, feature);
 
@@ -730,7 +730,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             launcher.coreLoop();
             terminal.close();
@@ -780,7 +780,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             launcher.coreLoop();
             terminal.close();
@@ -831,7 +831,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             launcher.coreLoop();
             terminal.close();
@@ -879,7 +879,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             dataSource.saveNewFeature(virtue);
             dataSource.saveNewFeature(flaw);
             dataSource.addFeatureToCharacter(character, virtue);
@@ -931,7 +931,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             features.forEach((feature) -> {
                 dataSource.saveNewFeature(feature);
                 dataSource.addFeatureToCharacter(character, feature);
@@ -988,7 +988,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
 
             launcher.coreLoop();
             terminal.close();
@@ -1084,7 +1084,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             dataSource.updateCharacterArts(character);
 
             launcher.coreLoop();
@@ -1198,7 +1198,7 @@ public class ListSelectAndShowCharacterTests {
             launcher.getFramework().setActiveCovenant(covenant);
             launcher.getFramework().setActiveCharacter(character);
 
-            dataSource.addCharacterToCovenant(covenant, character);
+            dataSource.addCharacterToCovenant(character, covenant);
             dataSource.updateCharacterArts(character);
 
             launcher.coreLoop();

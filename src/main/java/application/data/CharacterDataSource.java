@@ -168,7 +168,7 @@ public class CharacterDataSource implements ICharacterDataSource{
     }
 
     @Override
-    public boolean addCharacterToCovenant(Covenant covenant, ArsCharacter character) {
+    public boolean addCharacterToCovenant(ArsCharacter character, Covenant covenant) {
         if(covenant == null || character == null || covenant.getId() == 0){
             return false;
         }

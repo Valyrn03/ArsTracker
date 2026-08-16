@@ -41,9 +41,7 @@ public class CampaignTests {
         void testAddCampaign(){
             Campaign campaign = generateCampaign();
 
-            boolean result = dataSource.addCampaign(campaign.getName(), campaign.getCurrentSeason());
-
-            assertTrue(result);
+            assertTrue(dataSource.addCampaign(campaign.getName(), campaign.getCurrentSeason()));
             assertEquals(1, dataSource.getCampaigns().size());
             assertTrue(dataSource.getCampaigns().contains(campaign));
         }

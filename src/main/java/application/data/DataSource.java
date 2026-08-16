@@ -232,14 +232,22 @@ public class DataSource implements IDataSource{
 
     @Override
     public boolean deleteCampaign(Campaign campaign) {
-        boolean deletedCovenants = campaign.getCovenants().stream().map(this::deleteCovenant).toList().contains(false);
-        if(!deletedCovenants){
+        if(campaign == null){
             return false;
         }
 
-        try(Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement("")){
+        if(!campaign.getCovenants().isEmpty()){
+            boolean deletedCovenants = campaign.getCovenants().stream().map(this::deleteCovenant).toList().contains(false);
+            log.info("res: {}", deletedCovenants);
+            if(!deletedCovenants){
+                return false;
+            }
+        }
 
+        try(Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM campaign WHERE name = ?")){
+            statement.setString(1, campaign.getName());
+            statement.execute();
         }catch (SQLException exp){
             log.error("Failed to delete campaign with error {}", exp.getMessage());
             return false;

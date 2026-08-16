@@ -17,7 +17,7 @@ public interface ICharacterDataSource {
 
     Optional<CharacterFeature> loadFeatureFromId(int featureId);
 
-    boolean addCharacterToCovenant(Covenant covenant, ArsCharacter character);
+    boolean addCharacterToCovenant(ArsCharacter character, Covenant covenant);
 
     boolean addFeatureToCharacter(ArsCharacter character, CharacterFeature feature);
 
